@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://phamhakhanhchi.github.io/sitemap.xml
+Sitemap: https://phamhakhanhchi.com/sitemap.xml
