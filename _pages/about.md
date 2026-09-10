@@ -2,20 +2,21 @@
 layout: about
 title: about
 permalink: /
-subtitle: TODO — your role or intended major, e.g. "Prospective Computer Science undergraduate"
+subtitle: >
+  <span class="hero-role">Computer Science Student</span>
+  <span class="hero-line">Exploring the intersection of computation, mathematics, and intelligent systems.</span>
+  <span class="hero-school">BVIS Hanoi</span>
 
-profile:
-  align: right
-  image: prof_pic.jpg
-  image_circular: true # crops the image to make it circular
-  more_info: >
-    <p>Born TODO — DD Month YYYY</p>
-    <p>TODO — city, country</p>
+# Photo goes here once you pick one. Drop it at assets/img/prof_pic.jpg and
+# uncomment this block — the layout floats it alongside the text above.
+# profile:
+#   align: right
+#   image: prof_pic.jpg
+#   image_circular: true
 
-# All three are off because this site has no publications, news or blog.
-# Flip one back to true if you later add that collection.
+# No publications, news or blog on this site.
 selected_papers: false
-social: true # includes social icons at the bottom of the page
+social: true
 
 announcements:
   enabled: false
@@ -24,26 +25,24 @@ latest_posts:
   enabled: false
 ---
 
-TODO — **About me.** Two or three short paragraphs, written in your own voice.
+## About me
 
-Say who you are and what you are working towards. Name the subjects that
-actually interest you and why, rather than listing them. If you are applying
-somewhere, this is the paragraph an admissions reader will remember, so make it
-specific: a problem you got stuck on, a thing you built because nobody had built
-it, a question you keep coming back to.
+The one thing I want you to remember about me is how I'm drawn to questions that make me want to keep digging. My interest in Computer Science has grown from the wow factor of seeing technology for the first time, to exploring how algorithms shape what we see, to studying the mechanisms inside modern AI systems. Throughout this journey, I enjoy learning independently, reading beyond the curriculum, and turning questions into experiments and projects. Whether I'm investigating transformer models or building an application, I'm most interested in diving into how and why it works, but more especially what impact could it make.
 
-Keep it to roughly 150–250 words. Everything measurable belongs on the
-[academics](/academics/) page instead.
+## Academics
 
-## Academic results
+**IGCSE** — 9A\*, 1A · **A Level** — 4A\* predicted
 
-TODO — the two or three headline numbers you want seen immediately.
+More details listed in [Academics](/academics/).
 
-|       |                              |
-| ----- | ---------------------------- |
-| GPA   | 9.4 / 10 (example — replace) |
-| IELTS | 8.0 (example — replace)      |
-| SAT   | 1500 (example — replace)     |
+## Currently exploring
 
-The full list — every award, competition and certificate — lives on the
-[academics](/academics/) page. This table is only the highlights.
+<p class="exploring">
+  <span class="exploring-item">Computer Science</span>
+  <span class="exploring-sep">·</span>
+  <span class="exploring-item">Artificial Intelligence</span>
+  <span class="exploring-sep">·</span>
+  <span class="exploring-item">Mathematics</span>
+  <span class="exploring-sep">·</span>
+  <span class="exploring-item">Mechanistic Interpretability</span>
+</p>
