@@ -1,38 +1,83 @@
 # Content for the "Academics" tab (_pages/academics.md).
-# Replace every example entry below with your own. Delete what you don't need.
 #
-# `year` is shown on the left and also used for sorting (newest first).
-# `detail` is optional and rendered under the title.
+# TODO — every `year:` below is blank because I don't know your dates. Fill them
+# in: entries are sorted newest-first, and the year is shown beside each entry.
 
-awards:
-  - year: 2025
-    title: EXAMPLE — Replace me
-    issuer: Name of the school, organisation or programme
-    detail: One line on what the award was for, or why it mattered.
-  - year: 2024
-    title: EXAMPLE — Another award
-    issuer: Issuing body
-    detail:
+qualifications:
+  - year: # TODO — expected results year
+    title: A Level
+    score: 4A* predicted
+    subjects:
+      - name: Mathematics
+        grade: A*
+      - name: Further Mathematics
+        grade: A*
+      - name: Physics
+        grade: A*
+      - name: English Literature
+        grade: A*
+
+  - year: # TODO — year sat
+    title: IGCSE
+    score: 9A*, 1A
+    subjects:
+      - name: Mathematics
+        grade: A*
+      - name: Additional Mathematics
+        grade: A*
+      - name: Coordinated Science (Double Award)
+        grade: A*
+      - name: English First Language
+        grade: A*
+      - name: English Literature
+        grade: A*
+      - name: Vietnamese First Language
+        grade: A*
+      - name: Business
+        grade: A*
+      - name: History
+        grade: A*
+      - name: Computer Science
+        grade: A
 
 competitions:
-  - year: 2025
-    title: EXAMPLE — Competition name
-    result: 1st place / Finalist / Honourable mention
-    scope: School / Provincial / National / International
-    detail: A sentence on the task, your role, or the size of the field.
-  - year: 2024
-    title: EXAMPLE — Another competition
-    result: Participant
-    scope: National
+  - year: # TODO
+    title: UK Mathematics Trust — Intermediate Challenge
+    result: Gold
+    scope: International
     detail:
 
-# Grades, standardised tests, certificates — anything measurable.
-attainments:
-  - year: 2025
-    title: EXAMPLE — IELTS
-    score: "8.0"
-    detail: Listening 8.5 · Reading 8.5 · Writing 7.0 · Speaking 7.5
-  - year: 2024
-    title: EXAMPLE — GPA
-    score: "9.4 / 10"
-    detail: Grade 11, name of school
+  - year: # TODO
+    title: UK Mathematics Trust — Senior Challenge
+    result: Silver
+    scope: International
+    detail:
+
+  - year: # TODO
+    title: Olympic Miền Trung – Tây Nguyên, Bảng AI Challenge
+    result: Giải Khuyến Khích
+    scope: Regional
+    detail: Consolation prize in the AI Challenge division of the Central Highlands regional olympiad.
+
+  - year: # TODO
+    title: Tin học trẻ Miền Bắc
+    result: Giải Ba
+    scope: Regional
+    detail: Third prize at the Northern Vietnam round of the national youth informatics competition.
+
+# Termly subject attainment certificates — roughly 3–6 per term.
+#
+# TODO — you said you don't have the figures yet. Two ways to handle this:
+#
+#   1. Summarise. One entry per academic year, e.g.
+#        - year: 2025
+#          title: Subject attainment certificates
+#          score: 14 across the year
+#          detail: Mathematics, Physics, Computer Science, English Literature
+#
+#   2. List them. One entry per term, using the same fields.
+#
+# Option 1 reads better on a portfolio — a long undifferentiated list of
+# certificates dilutes the stronger results above it. Delete this block entirely
+# if you would rather leave them off the site.
+subject_attainment: []

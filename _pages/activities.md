@@ -1,6 +1,6 @@
 ---
 layout: page
-title: activities
+title: Activities
 permalink: /activities/
 description: Sport, performing arts, languages and leadership.
 nav: true

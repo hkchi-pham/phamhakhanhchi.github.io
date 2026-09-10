@@ -1,0 +1,58 @@
+// Site-specific style overrides.
+//
+// This is the only local SCSS partial. Everything under the gem's `_sass/`
+// stays untouched, so a gem update never collides with work done here.
+// `assets/css/main.scss` is a verbatim copy of the gem's file plus one
+// `@use "custom";` line at the end, which pulls this in last so these rules
+// win on specificity ties.
+
+// The about layout wraps the first name in `.font-weight-bold`, which renders
+// "Phạm Hà Khánh Chi" with the family name heavier than the rest. Level it out.
+.post-title .font-weight-bold {
+  font-weight: inherit;
+}
+
+// Minimal legibility for the data-driven entry lists. Deliberately plain --
+// the real design pass replaces this wholesale.
+.entry-list,
+.subject-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.entry {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.entry-year {
+  flex: 0 0 5rem;
+  opacity: 0.6;
+}
+
+.entry-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+}
+
+.entry-meta {
+  opacity: 0.75;
+}
+
+.subject-list {
+  margin-top: 0.75rem;
+}
+
+.subject {
+  display: flex;
+  justify-content: space-between;
+  max-width: 26rem;
+  padding: 0.15rem 0;
+  border-bottom: 1px solid currentColor;
+  border-color: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.subject-grade {
+  opacity: 0.75;
+}

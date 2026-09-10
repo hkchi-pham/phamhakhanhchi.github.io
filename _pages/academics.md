@@ -1,14 +1,14 @@
 ---
 layout: page
-title: academics
+title: Academics
 permalink: /academics/
-description: Awards, competitions and academic attainments.
+description: Qualifications, competitions and subject attainment.
 nav: true
 nav_order: 1
 ---
 
-{% assign sections = "awards,competitions,attainments" | split: "," %}
-{% assign headings = "Awards,Competitions,Academic attainments" | split: "," %}
+{% assign sections = "qualifications,competitions,subject_attainment" | split: "," %}
+{% assign headings = "Qualifications,Competitions,Subject attainment" | split: "," %}
 
 {% for key in sections %}
 {% assign entries = site.data.academics[key] %}
@@ -23,10 +23,17 @@ nav_order: 1
         <div class="entry-year">{{ e.year }}</div>
         <div class="entry-body">
           <h3 class="entry-title">{{ e.title }}</h3>
-          {% if e.issuer %}<div class="entry-meta">{{ e.issuer }}</div>{% endif %}
-          {% if e.result %}<div class="entry-meta">{{ e.result }}{% if e.scope %} · {{ e.scope }}{% endif %}</div>{% endif %}
           {% if e.score %}<div class="entry-meta">{{ e.score }}</div>{% endif %}
+          {% if e.result %}<div class="entry-meta">{{ e.result }}{% if e.scope %} · {{ e.scope }}{% endif %}</div>{% endif %}
+          {% if e.issuer %}<div class="entry-meta">{{ e.issuer }}</div>{% endif %}
           {% if e.detail %}<p class="entry-detail">{{ e.detail }}</p>{% endif %}
+          {% if e.subjects and e.subjects.size > 0 %}
+          <ul class="subject-list">
+            {% for s in e.subjects %}
+            <li class="subject"><span class="subject-name">{{ s.name }}</span><span class="subject-grade">{{ s.grade }}</span></li>
+            {% endfor %}
+          </ul>
+          {% endif %}
         </div>
       </li>
       {% endfor %}

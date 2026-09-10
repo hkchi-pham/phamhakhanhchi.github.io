@@ -1,6 +1,6 @@
 ---
 layout: page
-title: research & learning
+title: Research & Learning
 permalink: /research/
 description: Research work, courses and independent study.
 nav: true
