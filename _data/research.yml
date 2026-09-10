@@ -1,0 +1,26 @@
+# Content for the "Research & Learning" tab (_pages/research.md).
+# Replace every example entry below with your own. Delete what you don't need.
+
+# Research work: papers, lab work, supervised projects, science-fair entries.
+research:
+  - year: 2025
+    title: EXAMPLE — Title of the research work
+    role: Lead author / Research assistant / Team member
+    venue: Where it was presented, published or submitted (optional)
+    detail: Two or three lines on the question you asked and what you found.
+    url: # optional link to the paper, poster or repository
+
+# Formal courses taken outside (or beyond) the standard curriculum.
+courses:
+  - year: 2025
+    title: EXAMPLE — Course name
+    provider: University, MOOC platform, or summer programme
+    detail: What the course covered, or what you built in it.
+    url: # optional link to the certificate or syllabus
+
+# Self-directed learning: books worked through, topics taught to yourself.
+independent_study:
+  - year: 2025
+    title: EXAMPLE — Topic or book
+    detail: What you studied, how you studied it, and what came out of it.
+    url: # optional link to notes, a repo, or a write-up
