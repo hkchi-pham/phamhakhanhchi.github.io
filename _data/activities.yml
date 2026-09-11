@@ -48,13 +48,15 @@
       title: Shrek — school musical
       detail: # TODO — your role
 
-# TODO — you listed Languages in the original structure but have not sent the
-# content. Fill `items` in and this section appears; leave it empty and it stays
-# hidden. Example shape:
-#
-#   - year:
-#     title: Vietnamese
-#     detail: Native
 - section: Languages
   icon: fa-solid fa-language
-  items: []
+  items:
+    - year: # TODO
+      title: Chinese qualification # TODO — the actual name, e.g. "HSK Level 4"
+      detail: # TODO — level, score, awarding body, date
+    # TODO — you listed Languages in the original structure. Vietnamese and
+    # English belong here too if you want them stated outright:
+    #
+    #   - year:
+    #     title: Vietnamese
+    #     detail: Native

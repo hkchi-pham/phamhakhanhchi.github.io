@@ -2,13 +2,13 @@
 layout: page
 title: Research & Learning
 permalink: /research/
-description: Research work, courses and independent study.
+description: Research work and courses.
 nav: true
 nav_order: 2
 ---
 
-{% assign sections = "research,courses,independent_study" | split: "," %}
-{% assign headings = "Research,Courses,Independent study" | split: "," %}
+{% assign sections = "research,courses" | split: "," %}
+{% assign headings = "Research,Courses" | split: "," %}
 
 {% for key in sections %}
 {% assign entries = site.data.research[key] %}

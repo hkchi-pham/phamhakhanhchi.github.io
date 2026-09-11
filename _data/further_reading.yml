@@ -1,0 +1,28 @@
+# Content for the "Further Reading" tab (_pages/further-reading.md).
+#
+# Entries render in the order they appear here, so keep each list newest-first.
+# Fields: year, title, author, venue, notes, url. All optional except title.
+#
+# `notes` is the point of this page. A bare list of titles says only that you
+# read them; a sentence on what you took from one says you thought about it.
+# Markdown works inside notes.
+#
+# Both lists are empty, so the page shows a short placeholder instead of
+# fabricated entries. Uncomment a block below and fill it in to start.
+
+papers: []
+# papers:
+#   - year: 2026
+#     title: Efficient Streaming Language Models with Attention Sinks
+#     author: Xiao et al.
+#     venue: ICLR 2024
+#     notes: What the paper argues, and what you took from it.
+#     url: https://arxiv.org/abs/2309.17453
+
+books: []
+# books:
+#   - year: 2025
+#     title: Book title
+#     author: Author
+#     notes: What it covered and what stayed with you.
+#     url:

@@ -4,7 +4,7 @@ title: Activities
 permalink: /activities/
 description: Sport, performing arts, languages and leadership.
 nav: true
-nav_order: 4
+nav_order: 5
 ---
 
 {% for block in site.data.activities %}

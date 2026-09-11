@@ -39,13 +39,3 @@ courses:
     provider: Hanoi University of Science and Technology (HUST)
     detail:
     url:
-
-# Self-directed learning: topics taught to yourself, books worked through.
-independent_study:
-  - year: 2025 – 2026
-    title: Mechanistic interpretability
-    topics:
-      - Transformer circuits
-      # TODO — add the rest of the topics here, one per line
-    detail: # TODO — a sentence or two on what you studied and what came out of it
-    url:
