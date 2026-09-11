@@ -1,4 +1,4 @@
-name: Integration tests
+name: Style contract
 
 on:
   push:
@@ -39,23 +39,19 @@ on:
       - ".github/workflows/unit-tests.yml"
 
 jobs:
-  comments-integration-tests:
+  style-contract:
+    # The seven test/integration_*.sh scripts that used to run here belong to
+    # the al-folio template: they build the site and then assert against the
+    # template's own demo posts (blog/2022/giscus-comments, blog/2015/rtl and
+    # so on). This site deleted that content, so those tests can never pass
+    # again and were removed along with the scripts.
+    #
+    # The style contract stays: it still checks the theme pin, the plugin list,
+    # the third_party_libraries SRI pins and the al_math version pin.
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
-
-      - name: Setup Ruby 💎
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3.5"
-          bundler-cache: true
-
-      - name: Setup Python 🐍
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-          cache: "pip"
 
       - name: Setup Node 🧰
         uses: actions/setup-node@v4
@@ -68,29 +64,3 @@ jobs:
 
       - name: Run style contract lint 🧷
         run: npm run lint:style-contract
-
-      - name: Install build prerequisites 🔧
-        run: |
-          sudo apt-get update && sudo apt-get install -y imagemagick
-          pip3 install --upgrade nbconvert
-
-      - name: Run comments integration test 🧪
-        run: bash test/integration_comments.sh
-
-      - name: Run plugin toggle integration test 🔌
-        run: bash test/integration_plugin_toggles.sh
-
-      - name: Run distill integration test 📄
-        run: bash test/integration_distill.sh
-
-      - name: Run bootstrap compatibility integration test 🧩
-        run: bash test/integration_bootstrap_compat.sh
-
-      - name: Run upgrade CLI integration test ⬆️
-        run: bash test/integration_upgrade_cli.sh
-
-      - name: Run CSS minify integration test 🎨
-        run: bash test/integration_css_minify.sh
-
-      - name: Run new plugin integration checks 🧩
-        run: bash test/integration_new_plugins.sh

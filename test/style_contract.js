@@ -94,11 +94,18 @@ for (const forbiddenGlobPath of [
   }
 }
 
-for (const requiredPath of ["test/visual", "test/integration_plugin_toggles.sh", "test/integration_distill.sh"]) {
-  if (!exists(requiredPath)) {
-    failures.push(`Starter integration/visual contract missing required path: \`${requiredPath}\`.`);
-  }
-}
+// DISABLED FOR THIS SITE — same reasoning as the forbidden-path block above.
+//
+// These scripts assert against al-folio's demo content (blog/2022/giscus-comments,
+// blog/2015/rtl and so on), which this site deleted. They can no longer pass, so
+// they were removed and the workflow no longer runs them. Requiring their
+// presence here would fail CI for a site that is doing nothing wrong.
+//
+// for (const requiredPath of ["test/visual", "test/integration_plugin_toggles.sh", "test/integration_distill.sh"]) {
+//   if (!exists(requiredPath)) {
+//     failures.push(`Starter integration/visual contract missing required path: \`${requiredPath}\`.`);
+//   }
+// }
 
 if (failures.length > 0) {
   console.error("Starter style contract check failed:");
