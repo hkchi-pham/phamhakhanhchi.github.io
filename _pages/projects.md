@@ -5,7 +5,9 @@ permalink: /projects/
 description: Things I built.
 nav: true
 nav_order: 3
-display_categories: [work, fun]
+# No `display_categories` while there are only a couple of projects — a single
+# grid reads better than one-card sections. Add it back (and a `category:` to
+# each project) once the list is long enough to need splitting.
 horizontal: false
 ---
 

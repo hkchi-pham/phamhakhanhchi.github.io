@@ -1,34 +1,60 @@
 # Content for the "Activities" tab (_pages/activities.md).
+#
 # Each block is one section on the page, rendered in the order listed here.
-# Add, remove or rename sections freely — the page loops over whatever is here.
-
-- section: Sport
-  icon: fa-solid fa-person-running
-  items:
-    - year: 2023 – now
-      title: EXAMPLE — Sport and team
-      detail: Position, level of competition, notable results.
-
-- section: Performing arts
-  icon: fa-solid fa-music
-  items:
-    - year: 2022 – now
-      title: EXAMPLE — Instrument, dance form or theatre group
-      detail: Grade, ensemble, performances, competitions.
-
-- section: Languages
-  icon: fa-solid fa-language
-  items:
-    - year:
-      title: EXAMPLE — Vietnamese
-      detail: Native
-    - year:
-      title: EXAMPLE — English
-      detail: Fluent — IELTS 8.0
+# Items render in file order too, so keep each list newest-first.
+# A block with no items is skipped, so an empty section never shows up blank.
 
 - section: Leadership
   icon: fa-solid fa-users
   items:
-    - year: 2024 – now
-      title: EXAMPLE — Role and organisation
-      detail: What you were responsible for, and what changed because of it.
+    - year: 2025 – 2026
+      title: Co-founder, STEM Club
+      detail: Lead the club's extracurricular sessions, teaching younger students how to run a scientific research project.
+
+    - year: 2026
+      title: EDIB Prefect
+      detail: # TODO — what the role covers and what you have done in it
+
+- section: Duke of Edinburgh's Award
+  icon: fa-solid fa-award
+  items:
+    - year: 2025
+      title: Silver Award
+      detail:
+
+    - year: 2024
+      title: Bronze Award
+      detail:
+
+- section: Sport
+  icon: fa-solid fa-person-running
+  items:
+    - year: 2022 – 2026
+      title: Taekwondo
+      detail: # TODO — belt level, club, any competitions
+
+- section: Performing arts
+  icon: fa-solid fa-music
+  items:
+    - year: 2024
+      title: Wizard of Oz — school musical
+      detail: # TODO — your role
+
+    - year: 2023
+      title: Rock of Ages — school musical
+      detail: # TODO — your role
+
+    - year: 2022
+      title: Shrek — school musical
+      detail: # TODO — your role
+
+# TODO — you listed Languages in the original structure but have not sent the
+# content. Fill `items` in and this section appears; leave it empty and it stays
+# hidden. Example shape:
+#
+#   - year:
+#     title: Vietnamese
+#     detail: Native
+- section: Languages
+  icon: fa-solid fa-language
+  items: []
