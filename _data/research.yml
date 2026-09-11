@@ -1,26 +1,51 @@
 # Content for the "Research & Learning" tab (_pages/research.md).
-# Replace every example entry below with your own. Delete what you don't need.
+#
+# Entries render in the order they appear here, so keep each list newest-first.
+# Fields: year, title, role, provider, venue, status, detail, topics, url.
+# All optional except title — leave out what does not apply.
 
-# Research work: papers, lab work, supervised projects, science-fair entries.
+# Research work: papers, lab work, supervised projects.
 research:
-  - year: 2025
-    title: EXAMPLE — Title of the research work
-    role: Lead author / Research assistant / Team member
-    venue: Where it was presented, published or submitted (optional)
-    detail: Two or three lines on the question you asked and what you found.
-    url: # optional link to the paper, poster or repository
+  - year: 2026
+    title: "Rethinking Attention Sinks: Query-Side Attribution, Layer-Wise Dynamics, and Regime-Dependent Function"
+    role: Lead author
+    status: In progress — writing
+    detail:
+    url: # TODO — link once the paper is posted
+
+  - year: 2026
+    title: Investigating the emergence of echo chambers across three recommender algorithms
+    role: Lead author
+    status: In progress — not yet submitted
+    detail: Comparing content-based, popularity-based and collaborative filtering approaches.
+    url:
 
 # Formal courses taken outside (or beyond) the standard curriculum.
 courses:
   - year: 2025
-    title: EXAMPLE — Course name
-    provider: University, MOOC platform, or summer programme
-    detail: What the course covered, or what you built in it.
-    url: # optional link to the certificate or syllabus
+    title: CS50's Introduction to Artificial Intelligence with Python
+    provider: Harvard University (CS50, online)
+    detail:
+    url:
 
-# Self-directed learning: books worked through, topics taught to yourself.
-independent_study:
   - year: 2025
-    title: EXAMPLE — Topic or book
-    detail: What you studied, how you studied it, and what came out of it.
-    url: # optional link to notes, a repo, or a write-up
+    title: AI for Beginners
+    provider: Hanoi University of Science and Technology (HUST)
+    detail:
+    url:
+
+  - year: 2024
+    title: Introduction to AI
+    provider: Hanoi University of Science and Technology (HUST)
+    detail:
+    url:
+
+# Self-directed learning: topics taught to yourself, books worked through.
+independent_study:
+  - year: 2025 – 2026
+    title: Mechanistic interpretability
+    topics:
+      - Transformer circuits
+      # TODO — add the rest of the topics here, one per line
+    detail: # TODO — a sentence or two on what you studied and what came out of it
+    url:

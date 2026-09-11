@@ -17,7 +17,7 @@ nav_order: 1
   <section class="entry-group" id="{{ key }}">
     <h2 class="entry-group-title">{{ headings[forloop.index0] }}</h2>
     <ul class="entry-list">
-      {% assign sorted = entries | sort: "year" | reverse %}
+      {% comment %}Order follows the file, newest first. Liquid sort is unstable, so sorting here reshuffles same-year entries.{% endcomment %}{% assign sorted = entries %}
       {% for e in sorted %}
       <li class="entry">
         <div class="entry-year">{{ e.year }}</div>

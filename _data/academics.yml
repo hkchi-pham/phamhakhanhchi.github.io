@@ -1,7 +1,8 @@
 # Content for the "Academics" tab (_pages/academics.md).
 #
-# TODO — every `year:` below is blank because I don't know your dates. Fill them
-# in: entries are sorted newest-first, and the year is shown beside each entry.
+# Entries render in the order they appear here, so keep each list newest-first.
+#
+# TODO — every `year:` below is blank because I don't know your dates.
 
 qualifications:
   - year: # TODO — expected results year
