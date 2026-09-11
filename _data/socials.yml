@@ -1,7 +1,7 @@
 # this file contains the social media links and usernames of the author
 # the socials will be displayed in the order they are defined here
 # for more information, please refer to the documentation of jekyll-socials plugin: https://github.com/george-gca/jekyll-socials
-cv_pdf: /assets/pdf/cv.pdf # put your CV at this exact path; shows a CV icon in the social row
+# cv_pdf: /assets/pdf/cv.pdf # uncomment once the file exists — until then this puts a CV icon on the home page linking to a 404
 email: khanhchi.phamha@gmail.com # your email address
 # inspirehep_id: # Inspire HEP author ID — physics-only, not needed here
 # rss_icon: true # no blog on this site, so no RSS icon
