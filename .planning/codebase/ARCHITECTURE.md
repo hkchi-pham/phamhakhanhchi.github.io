@@ -87,7 +87,7 @@
 - Pattern: Site shadows gem-owned files by creating matching paths locally (e.g., `assets/css/main.scss`)
 - Tracking: `.al-folio-overrides.yml` records upstream gem, version, SHA256 hashes to detect drift
 - Enforcement: `bundle exec al-folio upgrade overrides audit` flags when upstream file changes; `bundle exec al-folio upgrade overrides diff <path>` shows diff; `accept <path>` acknowledges override
-- Only for this personal site — the `al-folio` starter repo itself must not contain gem-owned files per stop-sign rule
+- Legal on this personal site: `test/style_contract.js` has its forbidden-path block commented out here. The stop-sign rule governs contributions to the upstream `alshedivat/al-folio` repo, not a site built from it.
 
 **Collection-to-Layout Mapping:**
 - `_pages/` → `layout: about | page | cv | distill` → `al_folio_core` provides base layouts, `al_folio_cv` provides `layout: cv`, `al_folio_distill` provides `layout: distill`
@@ -178,7 +178,7 @@
 
 2. `_sass/_custom.scss` — Tracked in git, but NOT acknowledged in `.al-folio-overrides.yml`
    - Committed to the repo (working tree is clean), yet absent from the override manifest — run `bundle exec al-folio upgrade overrides audit` to register it
-   - Note: `_sass/` is a stop-sign path in `AGENTS.md`; that restriction applies to the upstream starter repo only. A personal site built from the template may legally shadow gem-owned Sass (see `docs/ARCHITECTURE.md` → local overrides)
+   - Note: `AGENTS.md` lists `_sass/` as a stop-sign path, but that restriction applies to the upstream starter repo only, and `test/style_contract.js` has the check commented out here. A personal site built from the template may legally shadow gem-owned Sass (see `docs/ARCHITECTURE.md` → local overrides).
    - Purpose: Site-specific SCSS customizations applied after all gem Sass imports
    - Contains: Custom styles for `.entry`, `.entry-list`, `.subject-list`, typography overrides
    - Scope: Intentionally minimal — only fixes specificity issues and adds basic entry list styling; real design pass should replace wholesale

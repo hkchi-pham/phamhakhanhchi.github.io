@@ -305,18 +305,32 @@ docker compose down            # Stop
 - `_config.yml` line 106: `max_width: 930px` (layout container width)
 - `_config.yml` line 254: `theme: al_folio_core` (sets theme to gem; local files can override)
 
-## Stop Sign: Paths That Must NOT Exist Here
+## Stop Sign: What Is Actually Enforced Here
 
-**Strictly forbidden by `npm run lint:style-contract`:**
-- `_layouts/` — All layouts come from gems
-- `_includes/` — All includes come from gems
-- `_sass/` — This exists but only as override hook; must be minimal
-- `_scripts/` — No local JS build pipeline
-- `assets/tailwind/` — Tailwind ships prebuilt in gem
-- `tailwind.config.js` — Tailwind configured in gem
-- `assets/webfonts/`, icon font artifacts — All icons come from gem
+**Verified by reading `test/style_contract.js`, not by trusting `AGENTS.md`.**
 
-**Exception:** This repo is the template; users' personal sites may legally shadow these (see ARCHITECTURE.md local overrides section). The `style-contract` check is enforced here to maintain thin-starter boundary.
+This repo is a personal site, not the upstream starter. The forbidden-path block in
+`test/style_contract.js` is **commented out**, with an explicit rationale in the file: the
+thin-starter boundary governs contributions to `alshedivat/al-folio` itself, and
+`docs/ARCHITECTURE.md` ("Local overrides: your site vs. this repo") states that a user site MAY
+shadow gem-owned files.
+
+**Legal here, despite what `AGENTS.md` says:**
+
+- `_sass/` — exists and is the intended style seam (`_sass/_custom.scss`)
+- `_layouts/`, `_includes/` — permitted if a design genuinely requires overriding a gem template.
+  The site's own policy is CSS-first, overriding only when forced, and recording each one in
+  `.al-folio-overrides.yml` — an upgrade-cost discipline, not a CI rule.
+
+**Still enforced by `npm run lint:style-contract`:**
+
+- No `build:css` / `build:tailwind` npm scripts, no `assets/tailwind/`, no `tailwind.config.js` —
+  the gem ships prebuilt Tailwind that this site cannot recompile
+- `theme: al_folio_core` pin in `_config.yml`
+- The required plugin list
+- Icon SRI pins in `_data/`, and no local icon font artifacts (`assets/fonts/academicons.*`,
+  `assets/fonts/scholar-icons.*`) — icon ownership belongs to `al_icons`
+- `al_math` pinned to an exact released version, never a git branch
 
 ---
 
