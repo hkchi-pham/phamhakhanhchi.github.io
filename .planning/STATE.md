@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-09-13T10:30:00.000Z"
+last_updated: "2026-09-13T13:30:00.000Z"
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 ## Current Position
 
 Phase: 1 of 8 (Deployment Guardrails)
-Plan: 3 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: In progress
-Last activity: 2026-09-13 - Plan 01-03 complete (verify.sh harness; guardrails pushed to origin/main, 778f68b -> 2383196, deploy fired and went green as predicted)
+Last activity: 2026-09-13 - Plan 01-04 complete (`_sass`-only commit b07bc86 deployed end to end; `--deploy-proof` is live in the served CSS; checkpoint approved, site visually unchanged)
 
-Progress: [██████░░░░] 60%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ _Updated after each plan completion_
 | Phase 01 P01 | 7min | 2 tasks | 20 files |
 | Phase 01 P02 | 2min | 2 tasks | 2 files |
 | Phase 01 P03 | 10min | 2 tasks | 1 file |
+| Phase 01 P04 | 13min | 3 tasks | 1 file |
 
 ## Accumulated Context
 
@@ -72,6 +73,9 @@ Recent decisions affecting current work:
 - [Phase 01]: `test/visual/` and the `test:visual*` npm scripts deliberately KEPT even though `visual-regression.yml` was deleted — a future TEST-01 milestone may retarget them.
 - [Phase 01]: `.planning/**` added to `.prettierignore` rather than reformatting 17 generated planning docs; `prettier.yml` has no path filter so they gated every push.
 - [Phase 01]: Phase verification lives in `.planning/phases/01-deployment-guardrails/verify.sh` — a flat `check <label> <expr>` list with a tally, `set -uo pipefail` (never `-e`), NO test framework and NO npm script (01-VALIDATION forbids a starter-local test pipeline). Criteria that are not yet true stay in as `[red until plan NN]` rows rather than being omitted.
+- [Phase 01]: The `--deploy-proof` canary in `_sass/_custom.scss` is RETAINED, not reverted — no revert deploy is pending. It is an unreferenced `:root` custom property (35 bytes, `var(--deploy-proof)` appears 0 times in the served CSS, so it provably repaints nothing). Re-date it and push a `_sass`-only commit to answer "did my change ship?". Phase 2 must leave it in place and must NOT fold it in with the design tokens, where a token audit would delete it as unused.
+- [Phase 01]: A deploy canary must be a DECLARATION, not a comment — Sass strips `//` entirely and the minifier may strip `/* */`. And it must be grepped from the CDN-served asset with a `?cb=` buster, never from `_site/`: a green tick proves the workflow ran, `gh-pages` advancing is stronger, but only the served-asset grep proves the rule survived PurgeCSS.
+- [Phase 01]: Plan 01-04's checkpoint was SPLIT rather than delegated whole — the Actions step-list half was asserted programmatically via the unauthenticated REST API and only the "does it look the same" half went to the human. This de-manuals the Actions half of 01-VALIDATION row `01-04-03`; only settings-based rows (Pages, Rules) remain genuinely browser-only.
 - [Phase 01]: The guardrail push was a SINGLE `git push origin main`, not the split the plan offered. GitHub evaluates a push's path filters against the workflow at the TIP of the pushed ref; the only available split point (`854916b`) predates the denylist, so its first push would have been judged by the old `"**/*.md"` allowlist and deployed — proving nothing.
 
 ### Pending Todos
@@ -84,7 +88,9 @@ None yet.
 - **Tooling: Git Bash mangles `git show <rev>:<path>`** via MSYS path conversion (`origin/main:.github/...` becomes `origin\main;.github\...`). Prefix every such command with `MSYS_NO_PATHCONV=1`. Also: `$TMPDIR` is unset in this shell — write commit-message files to the session scratchpad, not `$TMPDIR`.
 - **No CI gate covers contrast, performance or accessibility on this site.** `axe.yml` is `workflow_dispatch`-only; `lighthouse-badger.yml` measures the upstream demo. Every QA number in this milestone is self-enforced.
 - ~~**The CNAME fix on `main` is untested.**~~ CORRECTED then RESOLVED in plan 01-02. Research found three deploys DID run on 2026-09-11 after `CNAME` reached `main`, and `origin/gh-pages:CNAME` is byte-identical to `main:CNAME`; the pipeline is healthy. `bin/verify-cname.sh` (`5c72870`) is now regression insurance on that working state, not a repair.
-- ~~**`_sass/**` is absent from `deploy.yml`'s push path filter.**~~ RESOLVED in plan 01-02 (`9b2750e`) and now LIVE on `origin/main` as of 01-03 (`2383196`). Still not demonstrated by a `_sass`-ONLY commit — plan 01-04 supplies that last proof. Everything else about the new workflow is proven: run `34751688430` ran the CNAME gate (step 10), the publish (11) and the live-domain gate (12) all green, in order, and advanced `gh-pages` `f7b878d` -> `931970f`.
+- ~~**`_sass/**` is absent from `deploy.yml`'s push path filter.**~~ FULLY RESOLVED. Fixed in 01-02 (`9b2750e`), live on `origin/main` as of 01-03 (`2383196`), and DEMONSTRATED in 01-04 by `b07bc86`, whose entire diff is `_sass/_custom.scss` (+8 lines, one path): run `34756737328` fired on it, went green in 69s with the CNAME gate (step 10) above the publish (11) and the live-domain gate (12) below, advanced `gh-pages` `931970f` -> `9d0d929`, and put `--deploy-proof` into the CSS served by the CDN. Criteria 1 and 2 of the phase are met by demonstration, not by reading the YAML.
+- **Deploy latency, measured — expect ~2-3 minutes, and poll rather than refreshing once.** From push: workflow starts ~2s, finishes ~71s, `gh-pages` advances ~97s, the new CSS is served ~124s. The last gap is GitHub's SEPARATE "pages build and deployment" run, which `deploy.yml` does not wait on. Also: `main.css` carries `Cache-Control: max-age=600` behind a proxy cache, so always grep it with `?cb=$(date +%s)`.
+- **`_custom.scss` is `@use`d LAST, so its rules land near the END of `main.css`, not the top.** The `--deploy-proof` marker sits at byte 25942 of 26581 (~97.6% down). Search the served stylesheet; do not scroll to the top and conclude the deploy failed. (Plan 01-04's own checkpoint text got this wrong, and also printed the Actions URL under org `phamhakhanhchi` — the real remote is **`hkchi-pham`**.)
 - **Register overshoot (PITFALLS 3) is partly unrecoverable.** Prevention lives in Phase 2 (cap the token vocabulary) and Phase 8 (count the markers); there is no recovery path after a reader forms an impression.
 - **Environment constraint: subagents cannot commit under `.github/workflows/`.** This environment's permission classifier denies subagent `git add`/`git commit` on those paths; plan 01-01's 19 deletions had to be staged and committed by the orchestrator from the repo root. Any future plan that adds, modifies or deletes a workflow file needs the same hand-off — budget for it, do not treat it as a failure.
 - **Tooling: `gsd-tools` state commands no-op against this STATE.md.** `update-progress`, `record-session` and `advance-plan` match bold `**Progress:**` / `**Stopped At:**`; this file uses the template's plain `Progress:` / `Stopped at:`. STATE.md is correct and the tool's regex is the bug — edit STATE.md directly and do NOT bold the labels. `gsd-tools commit` also word-splits multi-word messages into `git add` pathspecs; use plain `git commit` with explicit `git add <path>`.
@@ -94,9 +100,12 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-09-13
-Stopped at: Completed 01-03-PLAN.md. `verify.sh` exists (14 static + 4 live rows; 4 static FAILs, all SAFE-04, red-by-design until plan 01-05). The guardrails are LIVE: `origin/main` advanced 778f68b -> 2383196 in one fast-forward push, which fired exactly the one deploy predicted (carried by `bin/verify-cname.sh`, the one changed path not in the denylist). That run went green end to end, `prettier.yml` went green, `gh-pages` advanced f7b878d -> 931970f with its CNAME intact, and the live site still returns 200. Next is 01-04 (the `_sass`-only proof commit — the last unproven half of SAFE-01), then 01-05 (tag, Pages/Rules snapshot, docs/DEPLOYMENT.md).
+Stopped at: Completed 01-04-PLAN.md. The last unproven half of SAFE-01 is now proven by demonstration: `b07bc86`, whose ENTIRE diff is `_sass/_custom.scss` (+8 lines, one path — a second path would have made the test vacuous), fired Deploy run `34756737328` (69s, green, both guard steps in order), advanced `gh-pages` `931970f` -> `9d0d929` with CNAME intact, and landed `--deploy-proof: "2026-09-13"` in the CSS served by the CDN — so Sass, PurgeCSS, the force-push and the Pages cache all carried it. Live domain 200; user confirmed the site is visually unchanged ("no change yet, approved"); `var(--deploy-proof)` is referenced 0 times, so it structurally cannot repaint anything. The canary STAYS — no revert is pending. `verify.sh --live` now reads 18 checks, 5 failed, all five SAFE-04 `[red until plan 05]`. Next and last in the phase is 01-05: the `design-00-baseline` tag, the Settings -> Pages / Settings -> Rules browser snapshot, and `docs/DEPLOYMENT.md` (which must document the canary, the latency table and the re-date workflow).
 Resume file: None
 
+Previous session note (01-03): `verify.sh` exists (14 static + 4 live rows; 4 static FAILs, all SAFE-04, red-by-design until plan 01-05). The guardrails are LIVE: `origin/main` advanced 778f68b -> 2383196 in one fast-forward push, which fired exactly the one deploy predicted (carried by `bin/verify-cname.sh`, the one changed path not in the denylist). That run went green end to end, `prettier.yml` went green, `gh-pages` advanced f7b878d -> 931970f with its CNAME intact, and the live site still returns 200. Next is 01-04 (the `_sass`-only proof commit — the last unproven half of SAFE-01), then 01-05 (tag, Pages/Rules snapshot, docs/DEPLOYMENT.md).
+
 Denylist proven in BOTH directions on real pushes, not read off the YAML:
+- `b07bc86` (pure `_sass/**` — the case the OLD allowlist silently excluded, and the reason this phase exists) -> deploy FIRED, green in 69s, gh-pages 931970f -> 9d0d929, marker reached the served CSS ~124s after the push.
 - `2383196` (carries `bin/verify-cname.sh`, a non-ignored path) -> deploy FIRED, green, gh-pages f7b878d -> 931970f.
 - `5571b60` (pure `.planning/**`) -> deploy did NOT fire. `GET /actions/runs?head_sha=5571b60a…` returns `total_count: 1` and that single run is Prettier, which passed. gh-pages unchanged. Under the OLD allowlist `"**/*.md"` would have matched all three files and rebuilt production for a docs edit.
