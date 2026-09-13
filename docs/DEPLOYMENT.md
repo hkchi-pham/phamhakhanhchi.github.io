@@ -158,7 +158,13 @@ If `gh-pages` has not moved and that response contains no run named "Deploy site
 
 **Fix.** Check the push's changed paths against the denylist in §1. If every one of them is on it, that is correct behaviour. If you still need a rebuild, trigger **Deploy site** manually with `workflow_dispatch` from the Actions tab.
 
-**Two silent scale limits, both GitHub's, neither reported anywhere.** A diff of more than **3,000 files** may not be matched against path filters at all. A push of more than **1,000 commits** bypasses path filtering entirely. Either can make a deploy fire when you expected silence, or stay silent when you expected a deploy.
+**Three silent scale limits, all GitHub's, none reported anywhere.** They fail in _opposite_ directions, so which one you hit tells you what to expect:
+
+- **More than 3,000 files in the diff** — if the paths your filter matches are not among the first 3,000 the filter returns, the workflow **does not run**. This is the one that could bite a large redesign commit: the deploy silently never fires.
+- **More than 1,000 commits in the push** — path filtering is bypassed and the workflow **always runs**, denylist or not.
+- **The diff generation times out** — same direction as the commit limit: the workflow **always runs**.
+
+Two traps in the folklore. The file figure was **300** until GitHub raised it to 3,000; older Stack Overflow answers and blog posts still quote 300, and some conflate it with the separate limit in the third-party `dorny/paths-filter` action, which is not what this workflow uses — `deploy.yml` relies on GitHub's native `on.push.paths-ignore`. So if you are debugging a diff in the hundreds of files, the file limit is **not** your explanation; check the denylist in §1 first. Source: [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax), verified 2026-09-13.
 
 ### 5.2 The domain dropped — CNAME
 
