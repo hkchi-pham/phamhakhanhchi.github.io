@@ -56,9 +56,11 @@ created: 2026-09-13
 | 01-05-00 | 05 | 4 | SAFE-03 | ~~manual-only~~ **API-asserted** | Settings → Pages and Settings → Rules read in a browser; stale required checks removed | n/a | ✅ green |
 | 01-05-01 | 05 | 4 | SAFE-04 | integration (remote) | `git ls-remote --tags origin \| grep -q design-00-baseline` ; tag resolves to `778f68b` | ✅ | ✅ green |
 | 01-05-02 | 05 | 4 | SAFE-04 | static | `docs/DEPLOYMENT.md` exists and greps for `path filter`, `CNAME`, `PurgeCSS`, `design-00-baseline`, `verify.sh`, `Enforce HTTPS`; ≥70 non-blank lines; no placeholders | ❌ W0 (task creates it) | ✅ green |
-| 01-05-03 | 05 | 4 | SAFE-04 | **manual-only** | A human reads the doc and confirms the criterion-4 sentence and the three failure-mode entries are actually usable | n/a | ⬜ awaiting read-through |
+| 01-05-03 | 05 | 4 | SAFE-04 | **manual-only** | A human reads the doc and confirms the criterion-4 sentence and the three failure-mode entries are actually usable | n/a | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+
+**The Status column is fully closed: 13 of 13 rows green, no `⬜` remaining.** `01-05-03` was ticked on 2026-09-13 after the human read-through returned **approved** — see the close-out section below for the reviewer's per-section verdicts and the one correction it produced (`b56a9d5`).
 
 **Sampling continuity check:** no three consecutive tasks lack an `<automated>` verify. The three manual-only tasks (01-04-03, 01-05-00, 01-05-03) are each preceded and/or followed by an automated one.
 
@@ -94,9 +96,31 @@ Written at plan 01-05 completion. The table above was drafted on the premise tha
 | Actions run shows both guard steps, correct order, green (`01-04-03`) | **de-manualled in part** — the Actions half was machine-asserted; only "does the site look the same" went to a human | `GET /actions/runs/34756737328/jobs`: step 10 CNAME gate, 11 Deploy, 12 live-domain gate, all `success` |
 | GitHub Pages settings (`01-05-00`, SAFE-02) | **de-manualled** — measured, not transcribed | `/repos/.../pages` returns 404 unauthenticated, but the values are observable: `hkchi-pham.github.io/phamhakhanhchi.github.io/` -> 301 to the custom domain (proves domain configured + DNS validated); `http://` -> 301 `https://` plus HSTS (proves Enforce HTTPS); the `gh-pages` root tree holds `index.html`/`assets/`/`CNAME` and no `docs/` (proves `gh-pages` / root) |
 | No branch rule requires a deleted workflow's check (`01-05-00`, SAFE-03) | **de-manualled** — answered by three independent endpoints, all empty | `/branches` -> `"protected": false` for `main`; `/rules/branches/main` -> `[]`; `/rulesets` -> `[]`. No rule targets `main`, therefore no required status check, therefore nothing stale to remove. Residual caveat: an unauthenticated caller could in principle be shown a filtered ruleset list, so a one-glance browser confirmation is still worth having — but it is a confirmation, not a blocker |
-| A human reads `docs/DEPLOYMENT.md`'s prose (`01-05-03`, SAFE-04) | **genuinely manual, still open** | No grep can settle whether §4's sentence says the right thing. This is the one row left `⬜`, and it is the phase's outstanding checkpoint |
+| A human reads `docs/DEPLOYMENT.md`'s prose (`01-05-03`, SAFE-04) | **genuinely manual — read 2026-09-13, approved** | This row correctly stayed manual: no grep can settle whether §4's sentence says the right thing, and the read-through earned its keep by finding a defect four automated rows had passed over. Verdicts below |
 
 **Method note worth keeping:** the `head_sha` filter on `/actions/runs` requires the **full 40-character SHA**. A short SHA silently returns `"total_count": 0`, which reads exactly like "no run fired" — the same false negative this phase exists to prevent.
+
+### Read-through outcome (`01-05-03`) — approved, with one correction
+
+The human read `docs/DEPLOYMENT.md` end to end on 2026-09-13 and returned **approved**.
+
+| Question asked | Verdict |
+|---|---|
+| §4 — does it state, unhedged, that a revert confined to the `_sass` directory now redeploys, and that it did not before? | **Yes.** "Plain and unhedged. It states outright that the revert now deploys and didn't before, and backs it with a demonstrated example rather than a description of intended behavior: commit `b07bc86`, the gh-pages advance `931970f` -> `9d0d929`, and the marker actually served live. No changes needed." Phase criterion 4 is met by human judgement, not by grep |
+| §5 — could you follow each of the three at 11pm with the site looking wrong? | **Yes, all three.** Each has a recognisable symptom, a copy-pasteable no-auth confirm command and a concrete fix. §5.2's note that Settings → Pages is a third source of truth outside git, and §5.3's cache-buster note, were both called out as worth keeping |
+| §2 — do the Pages values match the browser? | **Yes** — see the browser confirmation below |
+| Any leftover placeholders, `<sha>`-stubs, or claims known to be wrong? | **None.** "Everything else is specific enough — real SHAs, exact commands, exact config names — to read as accurate." One claim was *challenged* rather than known wrong; see below |
+
+**Browser confirmation of the two settings rows.** The reviewer also opened the repository settings, closing the residual caveat recorded above (that an unauthenticated caller could in principle be shown a filtered ruleset list):
+
+- **Settings → Pages:** source `gh-pages` / `(root)`, DNS verified, HTTPS enforced. Matches all three measured values in `docs/DEPLOYMENT.md` §2 exactly.
+- **Settings → Rules → Rulesets:** empty. **Settings → Branches:** empty. Nothing targets `main` on either front, so there is no `visual-regression`, `unit-tests` or `style-contract` requirement to remove.
+
+The browser and the three API endpoints agree, from independent directions. **SAFE-03 is fully closed, caveat and all** — no PR can hang on "Expected — waiting for status to be reported".
+
+**The correction the read-through produced (`b56a9d5`).** The reviewer challenged §5.1's "3,000 files" scale limit, believing it should be 300 and that 3,000 belonged to the third-party `dorny/paths-filter` action. Checked against current GitHub documentation: **3,000 is correct** for the native `on.push.paths-ignore` filter that `deploy.yml` uses; 300 is the historical value, raised by GitHub and still quoted by older sources. **But the challenge exposed a real defect next to the number it questioned.** The old sentence said the limits "can make a deploy fire when you expected silence, or stay silent when you expected a deploy" — vague in both directions, where the documented behaviour is deterministic and opposite: over 3,000 files the workflow does **not** run; over 1,000 commits, and on diff-generation timeout, it **always** runs. §5.1 now states all three as separate bullets with explicit directions, flags 300 as stale folklore, distinguishes the native filter from `dorny/paths-filter`, and answers the reviewer's underlying concern outright — a diff in the hundreds of files is *not* explained by the file limit. Cited to the GitHub workflow-syntax reference, verified 2026-09-13.
+
+This is the argument for keeping the row manual. Every automated check on §5.1 passed both before and after: the file existed, greped for `path filter`, cleared the line count, had no placeholders, and Prettier was clean. Only a human who knew the domain caught that the prose was hedged in a direction the documentation is not.
 
 **Deliberately not tested by breaking production:** the CNAME guard is proven by running `bin/verify-cname.sh` against a synthetic `_site` in four states, never by damaging the real `CNAME`. The domain is currently healthy (`origin/gh-pages:CNAME` is byte-identical to `main:CNAME`) and must stay that way — the guard is regression insurance, not a repair.
 
@@ -111,4 +135,4 @@ Written at plan 01-05 completion. The table above was drafted on the premise tha
 - [x] Feedback latency < 10s for the static suite
 - [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** approved 2026-09-13 (planning); manual rows to be ticked at plan 05 completion.
+**Approval:** approved 2026-09-13 (planning). All manual rows ticked at plan 05 completion; the last of them, `01-05-03`, closed the same day by the human read-through recorded above. **No row in this document is pending.**

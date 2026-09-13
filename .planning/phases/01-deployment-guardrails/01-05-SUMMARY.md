@@ -17,6 +17,7 @@ provides:
   - "`verify.sh --live` at 18 checks, 0 failed — the phase has one command that re-proves every automatable criterion"
   - "The denylist's ignore side re-demonstrated a second time on a `.planning/**` + `docs/**` push (d21f9fd): total_count 1, Prettier only, gh-pages unmoved"
   - "New finding: pushing a tag onto a PRE-cleanup commit resurrects that commit's workflow set — `copilot-setup-steps.yml` ran on the tag"
+  - "Human read-through APPROVED (2026-09-13): phase criterion 4 confirmed met by judgement, not by grep; the two settings rows independently confirmed in the browser; one prose defect found and fixed in `b56a9d5`"
 affects:
   [
     "Phase 2 (must leave the `--deploy-proof` canary in `_sass/_custom.scss`; docs/DEPLOYMENT.md §6 is now the written reason)",
@@ -39,11 +40,13 @@ key-files:
   modified:
     - .planning/phases/01-deployment-guardrails/01-VALIDATION.md
     - .planning/REQUIREMENTS.md
+    - .planning/STATE.md
 
 key-decisions:
   - "Task 0's browser checkpoint was NOT raised as a blocking stop. Three of its four questions were answered programmatically; only a confirmation glance remains, and it was batched with the Task 3 read-through into a single round trip."
   - "SAFE-03 and SAFE-04 both closed to Complete. All four SAFE IDs are now Complete."
-  - "01-VALIDATION.md's Status column closed in one pass: 12 of 13 rows green, `01-05-03` left `⬜ awaiting read-through` because it is genuinely a human prose judgement."
+  - "01-VALIDATION.md's Status column closed in one pass: 12 of 13 rows green, `01-05-03` left `⬜ awaiting read-through` because it is genuinely a human prose judgement. CLOSED the same day — approved, 13 of 13 green."
+  - "The read-through's one challenge was researched rather than deferred to or waved off. The number it disputed was already right; the sentence around it was not."
   - "The tag-push workflow run was reported, not hidden. Pushing `design-00-baseline` DID start a workflow — just not the deploy."
 
 patterns-established:
@@ -65,14 +68,14 @@ completed: 2026-09-13
 - **Duration:** ~7 min (13:30:41Z -> 13:37:44Z)
 - **Tasks:** 4 planned (1 human-action checkpoint, 2 auto, 1 human-verify checkpoint)
 - **Files created:** 1 (`docs/DEPLOYMENT.md`, 245 lines, 156 non-blank)
-- **Commits:** 1 (plus the annotated tag, plus the metadata commit)
+- **Commits:** 2 (`d21f9fd` the doc, `b56a9d5` the post-review correction), plus the annotated tag and the metadata commits
 
 ## Task Commits
 
-1. **Task 0: Browser checkpoint for Pages / branch-rule settings** — **not raised as a blocking stop.** See "The checkpoint that did not need to happen" below.
+1. **Task 0: Browser checkpoint for Pages / branch-rule settings** — **not raised as a blocking stop**; resolved by measurement, then **confirmed in the browser by the user** during the Task 3 round trip. See "The checkpoint that did not need to happen" below.
 2. **Task 1: Tag the pre-redesign baseline** — no commit; annotated tag `design-00-baseline` (tag object `50d66a8`) pushed to `origin`
 3. **Task 2: Write `docs/DEPLOYMENT.md` and push it** — `d21f9fd` (docs)
-4. **Task 3: Human read-through of the doc's prose** — **outstanding**, batched into the single checkpoint below
+4. **Task 3: Human read-through of the doc's prose** — **APPROVED** 2026-09-13; one correction committed as `b56a9d5`. See "Task 3: the read-through" below.
 
 ---
 
@@ -110,6 +113,8 @@ and the Pages settings are measurable from the service's own behaviour:
 **This is the answer SAFE-03 was waiting for.** The worry was specific: nineteen workflows were deleted in plan 01-01, and deleting a workflow file does *not* clear a required status check configured in settings — a stale requirement leaves every future PR on "Expected — waiting for status to be reported", which is worse than a red X because nothing ever reports. There are no rules on `main` at all, so there is nothing stale to clear. For a solo direct-push project that is both the expected answer and the desired one.
 
 **Residual caveat, stated rather than buried:** an unauthenticated caller could in principle be shown a filtered ruleset list. `/rules/branches/main` is the endpoint designed to answer "what applies here", and `"protected": false` corroborates it from a second direction, so the conclusion is sound — but a one-glance browser confirmation is still worth having. It has been folded into the single outstanding checkpoint as a *confirmation*, not a blocker.
+
+**Caveat discharged.** The user opened the settings during the Task 3 round trip and read back: Pages source `gh-pages` / `(root)`, DNS verified, HTTPS enforced; **Rulesets empty, branch protection rules empty, nothing targeting `main` on either front.** Every one of the seven measured rows matches, and the branch-rule answer is now corroborated by a source that cannot be filtered. **SAFE-03 is closed without residue** — there is no `visual-regression`, `unit-tests` or `style-contract` requirement anywhere to remove, so no PR can hang on "Expected". The measurement-first approach cost the user one glance instead of a blocking stop, and its conclusions were confirmed unchanged.
 
 **Why the checkpoint was not raised anyway:** the plan's own instruction was "task 2 records these values and must not invent them." Nothing was invented. Every value above is measured, and `docs/DEPLOYMENT.md` §2 states the method for each one inline, so a reader can re-derive them rather than trust a transcription. Measured values are also *stronger* than transcribed ones for six of the seven rows — a screenshot of a checkbox does not prove HTTPS is actually enforced; a 301 plus HSTS does.
 
@@ -199,6 +204,39 @@ docs/DEPLOYMENT.md
 
 ---
 
+## Task 3: the read-through — approved, and it earned its keep
+
+The phase's last gate was a human reading `docs/DEPLOYMENT.md` end to end, because two of phase criterion 4's requirements are prose claims no grep can settle. The verdict was **approved**.
+
+| Asked | Answered |
+|---|---|
+| §4 — is the criterion-4 sentence present and unhedged, and does it say the old behaviour was different? | **Yes.** "Plain and unhedged. It states outright that the revert now deploys and didn't before, and backs it with a demonstrated example rather than a description of intended behavior: commit `b07bc86`, the gh-pages advance `931970f` -> `9d0d929`, and the marker actually served live. No changes needed here." |
+| §5 — are the three failure modes followable at 11pm? | **Yes, all three.** "Recognizable symptom, a copy-pasteable no-auth confirm command, and a concrete fix, for each of path filter / CNAME / PurgeCSS." §5.2's note that Settings → Pages is a third source of truth outside git, and §5.3's cache-buster note, were singled out as good catches worth keeping |
+| §2 — do the Pages values match the browser? | **Yes**, all of them — see the caveat-discharged paragraph above |
+| Leftover placeholders, stubs, or known-wrong claims? | **None.** "Everything else is specific enough (real SHAs, exact commands, exact config names) to read as accurate." |
+
+The phrase worth preserving is "a demonstrated example rather than a description of intended behavior" — that is the whole shape of this phase, confirmed by someone who was not the author.
+
+### The one correction: `b56a9d5` — and why the reviewer was half-right
+
+The reviewer challenged §5.1's **"more than 3,000 files in the diff"** limit, believing the real figure was **300**, and that 3,000 belonged to the third-party `dorny/paths-filter` action rather than to GitHub's native filter.
+
+**On the number, the reviewer was wrong, and it was checked rather than assumed.** 3,000 is correct for the native `on.push.paths` / `paths-ignore` filter that `deploy.yml` uses. 300 is the *historical* value: GitHub community discussion 53831 records staff confirming "The limit for number of files per diff is now 3000, up from 300." The 300 figure survives in older Stack Overflow answers and blog posts, which is exactly why the recollection was reasonable.
+
+**On the sentence, the reviewer was right, and the defect was real.** The old text said the limits "can make a deploy fire when you expected silence, or stay silent when you expected a deploy" — a hedge pointing both ways, in a document whose entire purpose is telling someone at 11pm which way to look. The documented behaviour is deterministic, and the three limits do **not** all point the same way:
+
+| Limit | Direction |
+|---|---|
+| More than 3,000 files in the diff, and the filter's matches are not among the first 3,000 returned | the workflow does **not** run |
+| More than 1,000 commits in the push | path filtering is bypassed; the workflow **always** runs |
+| Diff generation times out | the workflow **always** runs |
+
+§5.1 now states all three as separate bullets with the direction spelled out, plus a "two traps in the folklore" note: 300 is stale, some sources conflate the native filter with `dorny/paths-filter`, and — the reviewer's actual underlying concern, answered outright — **a diff in the hundreds of files is not explained by the file limit; check the denylist in §1 first.** Cited to the GitHub workflow-syntax reference with a verification date of 2026-09-13, so the next reader can re-check rather than trust. Prettier clean; the bold spans were re-read after formatting, per the trap recorded below.
+
+**Why this is worth a section.** Every automated check on §5.1 passed both before and after the fix — the file existed, greped for `path filter`, cleared the non-blank line count, contained no placeholders, and `prettier --check` was clean. The defect lived entirely in the direction of a hedge. That is the second time in this one plan that a green tick meant nothing (the first was Prettier mangling the criterion-4 sentence), and it is the argument for why `01-05-03` was left `⬜` for a human instead of self-ticked.
+
+---
+
 ## Verification Results
 
 Against the plan's six numbered checks:
@@ -208,7 +246,9 @@ Against the plan's six numbered checks:
 3. `git show origin/main:docs/DEPLOYMENT.md | grep -c design-00-baseline` -> **4**; no placeholders (`grep -cE '\{|YYYY-MM-DD|TBD|TODO'` -> 0; the file contains **zero** `{` characters). **PASS**
 4. `origin/gh-pages` unchanged at `9d0d929` across both the tag push and the docs push. **PASS**
 5. `curl -sI https://phamhakhanhchi.com` -> 200. **PASS**
-6. Human read-through of the prose. **OUTSTANDING** — see the checkpoint below.
+6. Human read-through of the prose. **PASS** — approved 2026-09-13, with one correction applied as `b56a9d5`. See "Task 3: the read-through" above.
+
+**All six checks pass. Nothing in this plan is outstanding.**
 
 ### Harness delta — the phase's headline number
 
@@ -239,9 +279,22 @@ The `[red until plan NN]` labels are now stale text on green rows. They were del
 
 SAFE-04's checkbox text ("...including the fact that a revert touching only `_sass/**` will *not* redeploy") was written when that was still true; the doc now records the corrected, post-fix state and the history of the old behaviour, which is what the requirement was actually asking for.
 
+#### Judgement call: the stale clause in SAFE-04's text
+
+That clause is now **false as written** — this phase's whole point is that such a revert *does* redeploy — and the ID is already `[x] Complete`. Two defensible options: leave requirement text as an untouched historical record, or annotate it.
+
+**Chosen: preserve the sentence verbatim, append a dated annotation beneath it.** Not a rewrite, not a silent edit — the original clause is byte-for-byte unchanged, and the annotation is an indented sub-bullet clearly marked "added 2026-09-13 at phase close".
+
+Why both halves:
+
+- **Why not rewrite it.** A requirement is the record of what was asked for and why, at the moment it was asked. Editing it to match the outcome makes the project look like it always knew, and destroys the evidence that the defect was understood *before* it was fixed. This file already establishes that convention: SAFE-01 and SAFE-02 both describe the broken pre-phase state in the present tense ("Today `deploy.yml`'s push path filter watches...") and were marked Complete without their text being touched.
+- **Why not leave it bare either.** SAFE-01 self-dates with the word "Today"; SAFE-04's "will not redeploy" reads as a forward-looking claim with nothing to anchor it. A later phase re-reading requirements — and phases 2 through 8 all touch `_sass` — could take it at face value and conclude a stylesheet revert still needs manual intervention. That is the precise false belief this phase exists to destroy, sitting inside the requirement that destroyed it.
+
+The annotation states which clause is stale, why, what replaced it (`b07bc86`, with the `gh-pages` advance), where the corrected behaviour now lives (`docs/DEPLOYMENT.md` §4), and how to read the original — as a dated statement of the problem. **The meaning of the requirement is not changed; its tense is disambiguated.**
+
 ### 01-VALIDATION.md — Status column closed in one pass
 
-Twelve of thirteen rows are `✅ green`. `01-05-03` is `⬜ awaiting read-through` — left honestly open rather than ticked ahead of the human. Also done, per the house convention the earlier plans deferred here:
+Twelve of thirteen rows were `✅ green` at first close; `01-05-03` was left `⬜ awaiting read-through` rather than ticked ahead of the human. **It is now green too — 13 of 13, no row pending** — and the close-out section carries the reviewer's per-section verdicts, the browser confirmation of the two settings rows, and the `b56a9d5` correction. Also done, per the house convention the earlier plans deferred here:
 
 - `frontmatter: status: complete`, `wave_0_complete: true`
 - Row `01-04-03`'s `**manual-only**` downgraded to **`manual — visual half only`** (01-04 machine-asserted the Actions half)
@@ -258,7 +311,9 @@ Twelve of thirteen rows are `✅ green`. `01-05-03` is `⬜ awaiting read-throug
 - **SAFE-03 and SAFE-04 closed to Complete**; all four SAFE IDs are now Complete.
 - **The tag-push workflow run was reported, not hidden.** "Tag pushes do not deploy" is true; "tag pushes start nothing" would have been false, and a future reader seeing an unexpected run in the Actions tab deserves to find it already explained.
 - **The stale `[red until plan NN]` labels in `verify.sh` were left alone** on the now-green rows, as a record of when each became true.
-- **`01-05-03` left `⬜`** rather than ticked. Marking a human judgement green on the author's own say-so is the exact failure the row exists to prevent.
+- **`01-05-03` left `⬜`** rather than ticked. Marking a human judgement green on the author's own say-so is the exact failure the row exists to prevent. **Vindicated:** the read-through found a real defect in §5.1 that every automated check had passed.
+- **The reviewer's challenge was researched, not deferred to and not dismissed.** "3,000 should be 300" was checked against current GitHub documentation and found incorrect — but the sentence containing it was found defective for a different reason, and fixed. Accepting the correction unexamined would have put a wrong number in an outage runbook; dismissing it would have left a two-way hedge where the behaviour is one-way.
+- **SAFE-04's stale requirement clause annotated, not rewritten.** Full reasoning under "Judgement call" above.
 
 ## Deviations from Plan
 
@@ -287,12 +342,25 @@ Twelve of thirteen rows are `✅ green`. `01-05-03` is `⬜ awaiting read-throug
 
 **4. §2's provenance line rewritten for accuracy.** The first draft said "Read-only — nothing on the settings pages was changed", which implies the settings pages were visited. Corrected to state that the values were measured from the live service and the public API, not transcribed.
 
-**5. `01-05-03` left `⬜` rather than closed with the rest of the column.** The orchestrator asked for the column closed in one pass; it is, except for the single row that is a human judgement not yet made.
+**5. `01-05-03` left `⬜` rather than closed with the rest of the column.** The orchestrator asked for the column closed in one pass; it is, except for the single row that is a human judgement not yet made. **Resolved at close-out: approved, and the column is now 13 of 13.**
+
+### Post-review
+
+**6. [Rule 1 - Bug] §5.1's scale limits were hedged in both directions when the behaviour is one-way**
+
+- **Found during:** Task 3, by the human reviewer — not by any automated check
+- **Issue:** "can make a deploy fire when you expected silence, or stay silent when you expected a deploy" is useless to someone debugging at 11pm, because the three documented limits do not behave alike: over 3,000 files the workflow does **not** run, while over 1,000 commits and on diff-timeout it **always** runs.
+- **Fix:** three bullets, each with its direction stated; a folklore note recording that 300 is the superseded figure and that some sources conflate the native filter with the third-party `dorny/paths-filter` action; an explicit "a diff in the hundreds of files is not explained by this limit"; and a dated citation to the GitHub workflow-syntax reference.
+- **Note:** the reviewer's stated objection (the number should be 300) was **incorrect** — 3,000 is right for the native filter — but pursuing it surfaced the real defect beside it. Recorded that way deliberately: a later reader should know the number was verified, not conceded.
+- **Files modified:** `docs/DEPLOYMENT.md`
+- **Commit:** `b56a9d5`
+
+**7. SAFE-04's now-false requirement clause annotated rather than rewritten** — reasoning under "Judgement call" above.
 
 ---
 
-**Total deviations:** 2 rule-triggered auto-fixes, 3 judgement calls.
-**Impact on plan:** None on outcome. Both auto-fixes were caught before the commit; the doc on `origin/main` is correct.
+**Total deviations:** 3 rule-triggered auto-fixes, 4 judgement calls.
+**Impact on plan:** None on outcome. The first two auto-fixes were caught before the commit; the third came out of the human gate the plan budgeted for and was fixed before the phase closed. The doc on `origin/main` is correct.
 
 ## Issues Encountered
 
@@ -310,8 +378,7 @@ None. Two things worth knowing:
 
 ## Next Phase Readiness
 
-- **Phase 1 is functionally complete.** All four phase criteria met, all four SAFE requirements Complete, `verify.sh --live` fully green.
-- **Outstanding:** the Task 3 human read-through (`01-05-03`). Everything else is done and pushed.
+- **Phase 1 is complete — fully, with no caveat.** All four phase criteria met, all four SAFE requirements Complete, `verify.sh --live` fully green, all 13 validation rows green, and the human read-through approved. **Nothing is outstanding.**
 - **What Phase 2 inherits:** a deploy path that carries `_sass/**` (demonstrated, not assumed); a CNAME guard before the destructive publish; a workflow set of three, none of which can block a design change; a tagged rollback point; a written procedure; and a single command (`verify.sh --live`) that re-proves all of it.
 - **The one instruction Phase 2 must not miss:** leave the `:root { --deploy-proof: … }` block in `_sass/_custom.scss` alone. Do not fold it in with the design tokens, where a token audit would delete it as unused. `docs/DEPLOYMENT.md` §6 is now the written justification.
 
@@ -323,6 +390,14 @@ None. Two things worth knowing:
 - `origin/gh-pages` is at `9d0d929`, unchanged across both pushes.
 - `bash verify.sh --live` -> 18 checks, 0 failed.
 - `.planning/phases/01-deployment-guardrails/01-05-SUMMARY.md` written.
+
+### Self-Check (close-out amendment): PASSED
+
+- `b56a9d5` exists in `git log` and is the tip of both local `main` and `origin/main`; working tree clean.
+- `docs/DEPLOYMENT.md` §5.1 carries all three scale limits as separate direction-stated bullets, the folklore note and the dated citation.
+- `01-VALIDATION.md` row `01-05-03` reads `✅ green`; no `⬜` remains in the Status column.
+- `.planning/REQUIREMENTS.md` SAFE-04's original clause is byte-for-byte unchanged, with a dated annotation beneath it.
+- `origin/gh-pages` still at `9d0d929` — the close-out push touched only `.planning/**`, which is on the denylist.
 
 ---
 
