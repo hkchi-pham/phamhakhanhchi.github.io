@@ -183,6 +183,27 @@ Rate limit is 60 requests/hour unauthenticated, which is ample for polling a dep
 
 **3. `deploy.yml` really is unable to self-test.** Worth stating plainly for `docs/DEPLOYMENT.md`: because `.github/**` is in the denylist, no future edit to the deploy workflow will trigger a run of itself. Changes to it are validated either by `workflow_dispatch` or by riding along with a non-ignored path, as happened here.
 
+## Addendum: the denylist's ignore side, observed
+
+The plan's `<expected_push_behaviour>` warns: "What must NOT happen is concluding 'the denylist works' from a push you never checked." The single push in Task 2 only exercised the *deploy* side. The ignore side was observed separately, on this plan's own metadata commit `5571b60` — the first push in the project's history made with the new denylist already live on `origin/main`.
+
+**Push 2:** `2383196..5571b60`, fast-forward. Diff is exactly three files, all under `.planning/**`:
+`ROADMAP.md`, `STATE.md`, `01-03-SUMMARY.md`. Every one matches the `".planning/**"` ignore entry.
+
+| | Predicted | Observed |
+|---|---|---|
+| "Deploy site" run | **none** | **none.** `GET /actions/runs?head_sha=5571b60a18cd67fa22d7eb72c71ee3c68f06ce27` returns `"total_count": 1`, and that one run is `Prettier code formatter` |
+| `gh-pages` | unchanged at `931970f` | **unchanged at `931970f`** across five polls over ~2.5 minutes (10:26:36Z → 10:28:36Z) and again afterwards |
+| `prettier.yml` | green | **green** (`push`, `completed`, `success`) |
+
+`total_count: 1` is the load-bearing number: it is the whole run list for that commit, so the absence of a deploy is a measured fact rather than an unobserved silence.
+
+**What this proves beyond the YAML.** Under the old allowlist, `"**/*.md"` matched every planning document, so each of the 13 backlogged `.planning/` commits would have triggered a full production Jekyll build, a PurgeCSS pass and a destructive force-push to `gh-pages` — for a documentation edit. That is now suppressed, while `_sass/**` (which the old allowlist silently *excluded*) is not. The filter was not merely narrowed; its polarity was inverted, and both halves of that inversion are now demonstrated.
+
+**Secondary confirmation:** `prettier.yml` passed on a push containing three freshly generated planning documents. Plan 01-01's `.planning/**` entry in `.prettierignore` therefore works as CI sees it, not just locally — and it is doing so on exactly the workload it was added for.
+
+---
+
 ## Verification Results
 
 Plan-level checks, all re-run after the push:
@@ -195,6 +216,7 @@ Plan-level checks, all re-run after the push:
 6. `git ls-tree origin/main .github/workflows/` -> `broken-links-site.yml`, `deploy.yml`, `prettier.yml`, `schedule-posts.txt`. No `visual-regression`. **PASS**
 7. `git ls-tree origin/main bin/` -> `100755 … bin/verify-cname.sh`. Executable bit survived the push. **PASS**
 8. gh-pages SHA recorded before (`f7b878d`) and after (`931970f`); deploy fired, matching the prediction. **PASS**
+9. Ignore side observed on the docs-only push `5571b60`: zero deploy runs (`total_count: 1`, Prettier only), `gh-pages` unchanged. **PASS**
 
 Not done, deliberately: no `_sass` proof commit was created. Criterion 1 needs a commit whose *entire* diff is `_sass/_custom.scss`; bundling it here would make that test vacuous. Plan 01-04 owns it.
 
