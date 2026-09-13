@@ -13,8 +13,8 @@ Nothing else in this milestone is safely recoverable without these. They come fi
 
 - [x] **SAFE-01**: A commit that changes only `_sass/**` triggers a production deploy. Today `deploy.yml`'s push path filter watches `assets/**, **.bib, **.html, **.js, **.liquid, **/*.md, **.yml, Gemfile*` — `_sass/_custom.scss` matches none of them, so the entire design pass would silently never reach the live site, with no failed workflow to signal it.
 - [x] **SAFE-02**: A production deploy leaves `phamhakhanhchi.com` resolving. `CNAME` must appear in `_site/` and survive `JamesIves/github-pages-deploy-action@v4` replacing the `gh-pages` branch. Verified, not assumed — the two deploys on 2026-09-10 both shipped without it and the domain was rescued by a manual commit onto `gh-pages`; `CNAME` reached `main` only afterwards and no deploy has exercised it since.
-- [ ] **SAFE-03**: Design PRs are not blocked by `visual-regression.yml`, whose specs target `/al-folio/` routes and demo content this site does not have.
-- [ ] **SAFE-04**: A known-good commit is identified and the rollback procedure is written down, including the fact that a revert touching only `_sass/**` will not redeploy either.
+- [x] **SAFE-03**: Design PRs are not blocked by `visual-regression.yml`, whose specs target `/al-folio/` routes and demo content this site does not have.
+- [x] **SAFE-04**: A known-good commit is identified and the rollback procedure is written down, including the fact that a revert touching only `_sass/**` will not redeploy either.
 
 ### Design Tokens
 
@@ -102,8 +102,8 @@ Populated during roadmap creation (2026-09-13). Phase definitions live in `.plan
 | --- | --- | --- |
 | SAFE-01 | Phase 1 | Complete |
 | SAFE-02 | Phase 1 | Complete |
-| SAFE-03 | Phase 1 | Pending |
-| SAFE-04 | Phase 1 | Pending |
+| SAFE-03 | Phase 1 | Complete |
+| SAFE-04 | Phase 1 | Complete |
 | TOKEN-01 | Phase 2 | Pending |
 | TOKEN-02 | Phase 2 | Pending |
 | TOKEN-03 | Phase 2 | Pending |

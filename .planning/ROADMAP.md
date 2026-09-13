@@ -20,7 +20,7 @@ Deviations from the researched six-phase shape, stated up front:
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Deployment Guardrails** - Make a stylesheet change able to reach the live site, and the domain able to survive it
+- [x] **Phase 1: Deployment Guardrails** - Make a stylesheet change able to reach the live site, and the domain able to survive it
 - [ ] **Phase 2: Palette and Design Tokens** - Re-point every `--global-*` token so all seven pages land on warm paper in one commit
 - [ ] **Phase 3: Typography** - Serif body, companion face, real hierarchy, and a name that renders in one typeface
 - [ ] **Phase 4: Notebook Art Style** - Paper texture and a small, defended vocabulary of notebook marks
@@ -205,7 +205,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Phase                                                | Plans Complete | Status      | Completed |
 | ---------------------------------------------------- | -------------- | ----------- | --------- |
-| 1. Deployment Guardrails                             | 4/5            | In Progress | -         |
+| 1. Deployment Guardrails                             | 5/5            | Complete    | 2026-09-13 |
 | 2. Palette and Design Tokens                         | 0/TBD          | Not started | -         |
 | 3. Typography                                        | 0/TBD          | Not started | -         |
 | 4. Notebook Art Style                                | 0/TBD          | Not started | -         |
