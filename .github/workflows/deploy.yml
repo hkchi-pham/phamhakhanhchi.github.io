@@ -3,59 +3,38 @@ name: Deploy site
 on:
   push:
     branches:
-      - master
       - main
-    paths:
-      - "assets/**"
-      - "**.bib"
-      - "**.html"
-      - "**.js"
-      - "**.liquid"
-      - "**/*.md"
-      - "**.yml"
-      - "Gemfile"
-      - "Gemfile.lock"
-      - "!.github/workflows/axe.yml"
-      - "!.github/workflows/broken-links.yml"
-      - "!.github/workflows/deploy-docker-tag.yml"
-      - "!.github/workflows/deploy-image.yml"
-      - "!.github/workflows/docker-slim.yml"
-      - "!.github/workflows/lighthouse-badger.yml"
-      - "!.github/workflows/prettier.yml"
-      - "!lighthouse_results/**"
-      - "!docs/CONTRIBUTING.md"
-      - "!docs/CUSTOMIZE.md"
-      - "!docs/FAQ.md"
-      - "!docs/INSTALL.md"
-      - "!README.md"
-  pull_request:
-    branches:
-      - master
-      - main
-    paths:
-      - "assets/**"
-      - "**.bib"
-      - "**.html"
-      - "**.js"
-      - "**.liquid"
-      - "**/*.md"
-      - "**.yml"
-      - "Gemfile"
-      - "Gemfile.lock"
-      - "!.github/workflows/axe.yml"
-      - "!.github/workflows/broken-links.yml"
-      - "!.github/workflows/deploy-docker-tag.yml"
-      - "!.github/workflows/deploy-image.yml"
-      - "!.github/workflows/docker-slim.yml"
-      - "!.github/workflows/lighthouse-badger.yml"
-      - "!.github/workflows/prettier.yml"
-      - "!lighthouse_results/**"
-      - "!docs/CONTRIBUTING.md"
-      - "!docs/CUSTOMIZE.md"
-      - "!docs/FAQ.md"
-      - "!docs/INSTALL.md"
-      - "!README.md"
+    # DENYLIST, not an allowlist. Every push to main deploys unless EVERY
+    # changed file in the push matches a pattern below.
+    #
+    # The previous allowlist ("assets/**", "**/*.md", "**.yml", ...) never
+    # listed _sass/**, so a commit touching only _sass/_custom.scss silently
+    # never reached the live site — with no failed workflow to signal it.
+    # An allowlist would have re-broken for the next unlisted file type
+    # (fonts, .json data, images), so the shape is inverted rather than patched.
+    #
+    # Note: `paths` and `paths-ignore` are mutually exclusive, and GitHub
+    # rejects a `paths:` list made only of `!` exclusions — `paths-ignore`
+    # is the only supported way to express this.
+    paths-ignore:
+      - ".planning/**"
+      - "docs/**"
+      - "lighthouse_results/**"
+      - ".github/**"
+      - "README.md"
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - "LICENSE"
+      - ".prettierignore"
+      - ".prettierrc"
+      - ".gitignore"
   workflow_dispatch:
+
+# gh-pages is published by a destructive force-push. Serialise runs so two
+# deploys minutes apart cannot race and leave gh-pages holding the older build.
+concurrency:
+  group: deploy-gh-pages
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -101,8 +80,37 @@ jobs:
         run: |
           npm install -g purgecss
           purgecss -c purgecss.config.js
+      # Must run BEFORE the deploy: the deploy action rsyncs --delete over
+      # gh-pages, so a guard placed after it would report a disaster instead
+      # of preventing one.
+      - name: Verify CNAME before deploying 🔒
+        run: bash bin/verify-cname.sh _site
       - name: Deploy 🚀
+        # Retained verbatim from the previous workflow. Always true now that the
+        # pull_request trigger is gone, but kept so re-adding a PR trigger cannot
+        # silently start publishing from pull requests.
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: _site
+      # Asserts only that the domain RESOLVES and serves — catching DNS loss,
+      # the custom domain being unset, or Pages being disabled. It does NOT
+      # prove the new content is live: served CSS carries Cache-Control
+      # max-age=600 behind a CDN. Proving content actually shipped is the job
+      # of the marker grep in plan 04 and docs/DEPLOYMENT.md's by-hand recipe.
+      - name: Verify live domain responds 🌐
+        run: |
+          set -uo pipefail
+          url="https://phamhakhanhchi.com"
+          code=000
+          for attempt in $(seq 1 12); do
+            code="$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 20 "$url" || echo 000)"
+            echo "attempt ${attempt}: ${code}"
+            if [ "$code" = "200" ]; then
+              echo "Live domain OK (${url} -> 200)" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error title=Live domain not responding::${url} did not return 200 within ~3 minutes of deploying (last status ${code}). Check Settings > Pages still shows the custom domain, and that gh-pages still has a CNAME file."
+          exit 1
