@@ -52,7 +52,7 @@ Plans:
 - [x] 01-02-PLAN.md — `deploy.yml`: `paths-ignore` denylist, `bin/verify-cname.sh` gate, live-domain check, concurrency (SAFE-01, SAFE-02)
 - [x] 01-03-PLAN.md — Phase `verify.sh` harness; push the guardrails to `origin/main` (SAFE-01, SAFE-02, SAFE-03)
 - [x] 01-04-PLAN.md — `_sass`-only proof commit; prove `gh-pages` advanced and the marker reached the served CSS (SAFE-01, SAFE-02)
-- [ ] 01-05-PLAN.md — Tag `design-00-baseline`; Pages/branch-rule snapshot; write `docs/DEPLOYMENT.md` (SAFE-03, SAFE-04)
+- [x] 01-05-PLAN.md — Tag `design-00-baseline`; Pages/branch-rule snapshot; write `docs/DEPLOYMENT.md` (SAFE-03, SAFE-04)
 
 ### Phase 2: Palette and Design Tokens
 
