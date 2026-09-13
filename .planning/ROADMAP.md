@@ -2,7 +2,7 @@
 
 ## Overview
 
-This milestone is a single design pass over an existing seven-page academic site, not a rebuild. The journey runs in one direction: make the pipeline able to carry a stylesheet change at all, then re-point the gem's 29 `--global-*` custom properties so the whole site repaints at once, then layer typography, then art style, then page-level presentation, then verify by hand the things no CI gate on this repo checks. The token architecture is what makes this safe under a deadline — because the gem's prebuilt Tailwind and its own Sass both read the same custom properties, there is no state where the navbar is cream and the cards are still white. Every phase boundary below is chosen so the live domain is left in a coherent, shippable state, and each phase states what the site looks like if work stops right there.
+This milestone is a single design pass over an existing seven-page academic site, not a rebuild. The journey runs in one direction: make the pipeline able to carry a stylesheet change at all, then re-point the gem's 30 `--global-*` custom properties so the whole site repaints at once, then layer typography, then art style, then page-level presentation, then verify by hand the things no CI gate on this repo checks. The token architecture is what makes this safe under a deadline — because the gem's prebuilt Tailwind and its own Sass both read the same custom properties, there is no state where the navbar is cream and the cards are still white. Every phase boundary below is chosen so the live domain is left in a coherent, shippable state, and each phase states what the site looks like if work stops right there.
 
 Deviations from the researched six-phase shape, stated up front:
 
@@ -69,7 +69,15 @@ Plans:
 
 **If work stops here**: The whole site reads as a deliberate, tasteful recolour on warm paper. Type is still the gem default at gem sizes, so it looks plain rather than designed — but it is globally consistent, light-only and contrast-safe. This is the single best value-per-hour state in the project.
 **Notes**: GROUND-04 (links underlined) lands here rather than with the art style, because re-pointing `--global-theme-color` to a warm ink accent is what creates the hazard — every warm ink-like accent fails the 3:1-against-body-text test, so the underline must ship in the same commit as the accent. `enable_progressbar: false` and the `footer_fixed` / footer-token decision are supporting work in this phase. TOKEN-04 is here, not in Phase 1, by hard constraint.
-**Plans**: TBD
+
+Research corrected three premises. (1) There are **30** `--global-*` tokens, not 29 — this document, `STACK.md` and CONTEXT were all wrong; the dark block has 29 because it omits `--global-highlight-color`. (2) `enable_darkmode: false` alone does **not** satisfy criterion 2 — the flag is a Liquid gate that drops the toggle and `theme.js`, but the gem's `html[data-theme="dark"]` CSS block is compiled into `main.css` unconditionally; the fix is to emit the semantic map under the selector list `:root, html[data-theme="dark"]`, which ties (0,1,1) and wins on source order, and which is also the TOKEN-05 hook. (3) Six things tokens cannot reach need hand-written rules: `pre`/`code` colour, `.card`'s hardcoded box-shadow literal, `.navbar { opacity: .95 }`, heading ink, the body-copy underline, and `:focus-visible`. Verification is a shell harness plus a Node contrast calculator; **the Playwright visual suite must not be run or updated** (deleted workflow, `/al-folio` baseurl, no baseline for this site).
+**Plans**: 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Wave 0 tooling: `contrast.js`, the phase `verify.sh` with the 30 token names read off the live CSS, and the `CLAUDE.md` fork note (TOKEN-01, TOKEN-03, TOKEN-06)
+- [ ] 02-02-PLAN.md — `_sass/_tokens.scss`: primitives + written cap + all 30 `--global-*` under `:root, html[data-theme="dark"]`; wire into `main.scss` (TOKEN-01, TOKEN-02, TOKEN-05, TOKEN-06, GROUND-01)
+- [ ] 02-03-PLAN.md — `_sass/_custom.scss`: strip all `opacity` and literals; the six gem overrides; body-copy underline (TOKEN-01, TOKEN-02, TOKEN-03, GROUND-04)
+- [ ] 02-04-PLAN.md — Three `_config.yml` flags; one push; live-CDN proof; human seven-page sweep (TOKEN-04, TOKEN-05, GROUND-01, GROUND-04)
 
 ### Phase 3: Typography
 
@@ -206,7 +214,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | Phase                                                | Plans Complete | Status      | Completed |
 | ---------------------------------------------------- | -------------- | ----------- | --------- |
 | 1. Deployment Guardrails                             | 5/5            | Complete    | 2026-09-13 |
-| 2. Palette and Design Tokens                         | 0/TBD          | Not started | -         |
+| 2. Palette and Design Tokens                         | 0/4            | Planned     | -         |
 | 3. Typography                                        | 0/TBD          | Not started | -         |
 | 4. Notebook Art Style                                | 0/TBD          | Not started | -         |
 | 5. Shared Page Components                            | 0/TBD          | Not started | -         |
