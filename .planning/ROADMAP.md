@@ -44,7 +44,15 @@ Decimal phases appear between their surrounding integers in numeric order.
 4. A known-good commit is tagged and the rollback procedure is written down, including the fact that a revert touching only `_sass/**` now redeploys because of criterion 1.
 
 **If work stops here**: The site is pixel-identical to today. Everything that changed is invisible and entirely in this phase's favour — SCSS commits now deploy, a CNAME-less deploy can no longer take the domain down silently, and there is a tag to fall back to. Strictly safer than today.
-**Plans**: TBD
+**Notes**: Research corrected three premises carried in REQUIREMENTS.md and CONTEXT.md. (1) The locked "invert the path filter" decision must be implemented as `on.push.paths-ignore:` — GitHub rejects a `paths:` list made only of `!` patterns, and `paths`/`paths-ignore` are mutually exclusive. (2) CNAME is currently healthy (`origin/gh-pages:CNAME` is byte-identical to `main:CNAME`; three deploys ran on 2026-09-11 after it landed), so the guard is regression insurance, not a repair — the real uncovered hazard is a present-but-wrong `_site/CNAME`. (3) `unit-tests.yml` passes today (`81e55bd` disabled its forbidden-path check); it is still deleted, for irrelevance rather than failure. Ordering constraints: `.prettierignore` must gain `.planning/**` and `update-tocs.yml` must be deleted before the first push and before `docs/DEPLOYMENT.md` is created.
+**Plans**: 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Prune 19 inherited workflows to 3; add `.planning/**` to `.prettierignore` (SAFE-03)
+- [ ] 01-02-PLAN.md — `deploy.yml`: `paths-ignore` denylist, `bin/verify-cname.sh` gate, live-domain check, concurrency (SAFE-01, SAFE-02)
+- [ ] 01-03-PLAN.md — Phase `verify.sh` harness; push the guardrails to `origin/main` (SAFE-01, SAFE-02, SAFE-03)
+- [ ] 01-04-PLAN.md — `_sass`-only proof commit; prove `gh-pages` advanced and the marker reached the served CSS (SAFE-01, SAFE-02)
+- [ ] 01-05-PLAN.md — Tag `design-00-baseline`; Pages/branch-rule snapshot; write `docs/DEPLOYMENT.md` (SAFE-03, SAFE-04)
 
 ### Phase 2: Palette and Design Tokens
 
@@ -197,7 +205,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Phase                                                | Plans Complete | Status      | Completed |
 | ---------------------------------------------------- | -------------- | ----------- | --------- |
-| 1. Deployment Guardrails                             | 0/TBD          | Not started | -         |
+| 1. Deployment Guardrails                             | 0/5            | Planned     | -         |
 | 2. Palette and Design Tokens                         | 0/TBD          | Not started | -         |
 | 3. Typography                                        | 0/TBD          | Not started | -         |
 | 4. Notebook Art Style                                | 0/TBD          | Not started | -         |
