@@ -96,48 +96,63 @@ Blocked on content that does not exist yet, not on design effort.
 
 ## Traceability
 
-Populated during roadmap creation.
+Populated during roadmap creation (2026-09-13). Phase definitions live in `.planning/ROADMAP.md`.
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| SAFE-01 | — | Pending |
-| SAFE-02 | — | Pending |
-| SAFE-03 | — | Pending |
-| SAFE-04 | — | Pending |
-| TOKEN-01 | — | Pending |
-| TOKEN-02 | — | Pending |
-| TOKEN-03 | — | Pending |
-| TOKEN-04 | — | Pending |
-| TOKEN-05 | — | Pending |
-| TOKEN-06 | — | Pending |
-| TYPE-01 | — | Pending |
-| TYPE-02 | — | Pending |
-| TYPE-03 | — | Pending |
-| TYPE-04 | — | Pending |
-| TYPE-05 | — | Pending |
-| GROUND-01 | — | Pending |
-| GROUND-02 | — | Pending |
-| GROUND-03 | — | Pending |
-| GROUND-04 | — | Pending |
-| GROUND-05 | — | Pending |
-| PAGE-01 | — | Pending |
-| PAGE-02 | — | Pending |
-| PAGE-03 | — | Pending |
-| PAGE-04 | — | Pending |
-| PAGE-05 | — | Pending |
-| PAGE-06 | — | Pending |
-| QA-01 | — | Pending |
-| QA-02 | — | Pending |
-| QA-03 | — | Pending |
-| QA-04 | — | Pending |
+| SAFE-01 | Phase 1 | Pending |
+| SAFE-02 | Phase 1 | Pending |
+| SAFE-03 | Phase 1 | Pending |
+| SAFE-04 | Phase 1 | Pending |
+| TOKEN-01 | Phase 2 | Pending |
+| TOKEN-02 | Phase 2 | Pending |
+| TOKEN-03 | Phase 2 | Pending |
+| TOKEN-04 | Phase 2 | Pending |
+| TOKEN-05 | Phase 2 | Pending |
+| TOKEN-06 | Phase 2 | Pending |
+| TYPE-01 | Phase 3 | Pending |
+| TYPE-02 | Phase 3 | Pending |
+| TYPE-03 | Phase 3 | Pending |
+| TYPE-04 | Phase 3 | Pending |
+| TYPE-05 | Phase 3 | Pending |
+| GROUND-01 | Phase 2 | Pending |
+| GROUND-02 | Phase 4 | Pending |
+| GROUND-03 | Phase 4 | Pending |
+| GROUND-04 | Phase 2 | Pending |
+| GROUND-05 | Phase 4 | Pending |
+| PAGE-01 | Phase 5 | Pending |
+| PAGE-02 | Phase 6 | Pending |
+| PAGE-03 | Phase 7 | Pending |
+| PAGE-04 | Phase 7 | Pending |
+| PAGE-05 | Phase 7 | Pending |
+| PAGE-06 | Phase 5 | Pending |
+| QA-01 | Phase 8 | Pending |
+| QA-02 | Phase 8 | Pending |
+| QA-03 | Phase 8 | Pending |
+| QA-04 | Phase 8 | Pending |
 
 **Coverage:**
 
 - v1 requirements: 30 total
-- Mapped to phases: 0
-- Unmapped: 30 ⚠️
+- Mapped to phases: 30
+- Unmapped: 0 ✓
+- Duplicates (a requirement in more than one phase): 0 ✓
+
+**Per-phase totals:**
+
+| Phase | Name | Requirements |
+| --- | --- | --- |
+| 1 | Deployment Guardrails | 4 |
+| 2 | Palette and Design Tokens | 8 |
+| 3 | Typography | 5 |
+| 4 | Notebook Art Style | 3 |
+| 5 | Shared Page Components | 2 |
+| 6 | Home Page Presence | 1 |
+| 7 | Mobile, Print and Scannability | 3 |
+| 8 | Contrast, Register and Deployed-Site Verification | 4 |
+| | **Total** | **30** |
 
 ---
 
 _Requirements defined: 2026-09-13_
-_Last updated: 2026-09-13 after initial definition_
+_Last updated: 2026-09-13 — traceability populated from ROADMAP.md (8 phases, 30/30 mapped)_
