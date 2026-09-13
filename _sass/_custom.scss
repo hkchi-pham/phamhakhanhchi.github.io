@@ -6,6 +6,14 @@
 // `@use "custom";` line at the end, which pulls this in last so these rules
 // win on specificity ties.
 
+// Deploy-path canary. `//` comments are stripped by Sass, so the custom
+// property below is what actually reaches _site/assets/css/main.css and the
+// live domain. Re-date it and push a _sass-only commit to answer "did my
+// change ship?" without guessing. See docs/DEPLOYMENT.md.
+:root {
+  --deploy-proof: "2026-09-13";
+}
+
 // The about layout wraps the first name in `.font-weight-bold`, which renders
 // "Phạm Hà Khánh Chi" with the family name heavier than the rest. Level it out.
 .post-title .font-weight-bold {
