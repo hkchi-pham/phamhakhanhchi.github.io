@@ -33,6 +33,9 @@
 @use "teachings";
 @use "typograms";
 
+// Design tokens: emitted after the gem's themes partial (which declares the --global-* defaults) and before the site's custom partial (consumes them).
+@use "tokens";
+
 // Site-specific overrides live in one partial so the rest of this file stays a
 // verbatim copy of the gem's, and re-syncing after a gem update stays trivial.
 @use "custom";

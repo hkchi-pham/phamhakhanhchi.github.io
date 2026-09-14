@@ -1,10 +1,17 @@
 ---
 version: 1
 overrides:
+  # Re-recorded BY HAND on 2026-09-14 (plan 02-02). There is no Ruby toolchain
+  # on this machine, so `bundle exec al-folio upgrade overrides accept
+  # assets/css/main.scss` cannot be run; local_sha256 below was recomputed with
+  # sha256sum over the file as it sits on disk (LF endings; core.autocrlf=true,
+  # so a fresh checkout could differ). upstream_sha256 and gem_version are
+  # untouched — the gem's copy has not changed. The whole local delta is two
+  # added @use lines: `@use "tokens";` immediately before `@use "custom";`.
   assets/css/main.scss:
     owner: al_folio_core
     gem_version: 1.0.15
     upstream_path: assets/css/main.scss
     upstream_sha256: 437c6c911c596391413e435dc0ea7095e682e85c572c1fd3fff69f9597455b3e
-    local_sha256: e51ec6fb5bd4afc4444b1acbabdedbb51e573652e527fcb50c560c52347735ac
-    acknowledged_at: "2026-09-10"
+    local_sha256: 8a43e85c17a3839f30cba96a991fa47d64f2bee7db689177ad448ef7bfca79ae
+    acknowledged_at: "2026-09-14"
