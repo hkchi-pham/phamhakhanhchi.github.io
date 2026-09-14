@@ -33,6 +33,14 @@
 # --deploy-proof canary row, the overrides hash row, the contrast self-test,
 # the style contract and Prettier. Everything else goes green as plans 02-02,
 # 02-03 and 02-04 land.
+#
+# UPDATE 2026-09-14 (plan 02-04, after the phase's single push): all of them
+# landed. 95 checks, 0 failed, and EXPECTED_RED is now 0 — every
+# `[red until plan 02-NN]` label has been REMOVED from its row, because a
+# green row that still carries one would hide a genuine future regression
+# inside the red-by-design tally. The label mechanism below is retained
+# deliberately, for later phases that write their rows before the work.
+# From here on, a red row in this harness is a real failure.
 # ---------------------------------------------------------------------------
 #
 # ---------------------------------------------------------------------------
@@ -218,7 +226,7 @@ echo "=== Phase 2 — Palette and Design Tokens: static checks =================
 echo
 
 echo "TOKEN-01 — one token file, and no gem partial shadowed"
-check "TOKEN-01  $TOKENS exists  [red until plan 02-02]" \
+check "TOKEN-01  $TOKENS exists" \
   'test -f "$TOKENS"'
 # Written out flat rather than looped, matching Phase 1's convention: the list
 # of gem partials this site must NOT shadow is itself the assertion, and it
@@ -239,18 +247,18 @@ check "TOKEN-01  gem partial _teachings.scss is NOT shadowed locally" 'test ! -f
 check "TOKEN-01  gem partial _typograms.scss is NOT shadowed locally" 'test ! -f _sass/_typograms.scss'
 echo
 
-echo "TOKEN-01 — all 30 --global-* tokens re-pointed  [all red until plan 02-02]"
+echo "TOKEN-01 — all 30 --global-* tokens re-pointed"
 # One row per name, deliberately. A single "all 30 present" row would tell you
 # that something is missing; these tell you WHICH, which is the difference
 # between a five-minute fix and a hunt for the one link that stayed purple.
 for t in "${GLOBAL_TOKENS[@]}"; do
-  check "TOKEN-01  ${t} is declared in _tokens.scss  [red until plan 02-02]" \
+  check "TOKEN-01  ${t} is declared in _tokens.scss" \
     "grep -qE '^[[:space:]]*${t}:' \"\$TOKENS\""
 done
 echo
 
 echo "TOKEN-01 — the token file is wired in ahead of the overrides"
-check "TOKEN-01  main.scss has @use tokens before @use custom  [red until plan 02-02]" \
+check "TOKEN-01  main.scss has @use tokens before @use custom" \
   '[ "$(line_of_in "$MAIN" "@use \"tokens\";")" -gt 0 ] && [ "$(line_of_in "$MAIN" "@use \"tokens\";")" -lt "$(line_of_in "$MAIN" "@use \"custom\";")" ]'
 # NOT labelled red-by-design: this row is GREEN today and must be RE-greened by
 # plan 02-02, which edits main.scss and then re-hashes BY HAND (there is no
@@ -262,13 +270,13 @@ check "TOKEN-01  .al-folio-overrides.yml local_sha256 matches main.scss  [re-has
 echo
 
 echo "TOKEN-02 — a capped scale, consumed by the overrides"
-check "TOKEN-02  exactly 4 --step- declarations (have: $(decl_count '--step-'))  [red until plan 02-02]" \
+check "TOKEN-02  exactly 4 --step- declarations (have: $(decl_count '--step-'))" \
   '[ "$(decl_count "--step-")" -eq 4 ]'
-check "TOKEN-02  exactly 4 --space- declarations (have: $(decl_count '--space-'))  [red until plan 02-02]" \
+check "TOKEN-02  exactly 4 --space- declarations (have: $(decl_count '--space-'))" \
   '[ "$(decl_count "--space-")" -eq 4 ]'
-check "TOKEN-02  _custom.scss consumes var(--space-  [red until plan 02-03]" \
+check "TOKEN-02  _custom.scss consumes var(--space-" \
   'grep -q -- "var(--space-" "$CUSTOM"'
-check "TOKEN-02  _custom.scss consumes var(--step-  [red until plan 02-03]" \
+check "TOKEN-02  _custom.scss consumes var(--step-" \
   'grep -q -- "var(--step-" "$CUSTOM"'
 echo
 
@@ -300,7 +308,7 @@ no_faded_text() {
   hits="$(grep -rnE 'opacity:' _sass/ | grep -vE 'opacity:[[:space:]]*1;[[:space:]]*$')"
   [ -z "$hits" ]
 }
-check "TOKEN-03  no text in _sass/ is faded (only value 1 is allowed)  [red until plan 02-03]" \
+check "TOKEN-03  no text in _sass/ is faded (only value 1 is allowed)" \
   'no_faded_text'
 check "TOKEN-03  muted ink #5c5349 on paper #faf6ee clears 4.5:1" \
   'node .planning/tools/contrast.js "#5c5349" "#faf6ee" | grep -q "AA-text"'
@@ -309,9 +317,9 @@ echo
 echo "TOKEN-04 / TOKEN-05 — dark mode off, and defused in CSS as well as config"
 check "TOKEN-04  _config.yml sets enable_darkmode: false" \
   "grep -qE '^enable_darkmode:[[:space:]]*false' _config.yml"
-check "TOKEN-04/05  _tokens.scss merges :root, with html[data-theme=dark]  [red until plan 02-02]" \
+check "TOKEN-04/05  _tokens.scss merges :root, with html[data-theme=dark]" \
   'root_dark_pair'
-check "TOKEN-05  that block declares color-scheme: light  [red until plan 02-02]" \
+check "TOKEN-05  that block declares color-scheme: light" \
   'grep -qE "^[[:space:]]*color-scheme:[[:space:]]*light" "$TOKENS"'
 echo
 
@@ -319,50 +327,50 @@ echo "TOKEN-06 — the vocabulary is capped, and the cap is written down"
 # The cap is the whole anti-overshoot mechanism (PITFALLS 3: register overshoot
 # is partly unrecoverable). A cap nobody wrote down is a cap the next agent
 # raises by one token at a time.
-check "TOKEN-06  cap comment names 'paper tones'  [red until plan 02-02]" \
+check "TOKEN-06  cap comment names 'paper tones'" \
   'grep -qi "paper tones" "$TOKENS"'
-check "TOKEN-06  cap comment names 'ink steps'  [red until plan 02-02]" \
+check "TOKEN-06  cap comment names 'ink steps'" \
   'grep -qi "ink steps" "$TOKENS"'
-check "TOKEN-06  cap comment names 'accent colours'  [red until plan 02-02]" \
+check "TOKEN-06  cap comment names 'accent colours'" \
   'grep -qi "accent colours" "$TOKENS"'
-check "TOKEN-06  cap comment names 'type families'  [red until plan 02-02]" \
+check "TOKEN-06  cap comment names 'type families'" \
   'grep -qi "type families" "$TOKENS"'
-check "TOKEN-06  exactly 2 --paper- declarations (have: $(decl_count '--paper-'))  [red until plan 02-02]" \
+check "TOKEN-06  exactly 2 --paper- declarations (have: $(decl_count '--paper-'))" \
   '[ "$(decl_count "--paper-")" -eq 2 ]'
-check "TOKEN-06  exactly 4 --ink- declarations (have: $(decl_count '--ink-'))  [red until plan 02-02]" \
+check "TOKEN-06  exactly 4 --ink- declarations (have: $(decl_count '--ink-'))" \
   '[ "$(decl_count "--ink-")" -eq 4 ]'
-check "TOKEN-06  exactly 1 --accent- declaration (have: $(decl_count '--accent-'))  [red until plan 02-02]" \
+check "TOKEN-06  exactly 1 --accent- declaration (have: $(decl_count '--accent-'))" \
   '[ "$(decl_count "--accent-")" -eq 1 ]'
 # --rule-[0-9], not --rule-: the cap is on rule COLOURS. Plan 02-02 also
 # declares --rule-hairline, a 1px stroke WIDTH that plan 02-03 consumes for
 # the .subject border, and counting a length against a colour cap is a false
 # positive. Narrowed on 2026-09-14 (plan 02-02); the row is unchanged in
 # intent and still catches a third rule colour such as --rule-300.
-check "TOKEN-06  exactly 2 --rule- colour declarations (have: $(decl_count '--rule-[0-9]'))  [red until plan 02-02]" \
+check "TOKEN-06  exactly 2 --rule- colour declarations (have: $(decl_count '--rule-[0-9]'))" \
   '[ "$(decl_count "--rule-[0-9]")" -eq 2 ]'
 echo
 
 echo "Criterion 5 — every primitive carries its ratio; the overrides carry no literals"
-check "Crit-5   every --paper-/--ink-/--accent-/--rule- line has an N.NN:1 comment  [red until plan 02-02]" \
+check "Crit-5   every --paper-/--ink-/--accent-/--rule- line has an N.NN:1 comment" \
   'primitives_have_ratio'
-check "Crit-5   _custom.scss has no hex / rem / px / em / color-mix literal  [red until plan 02-03]" \
+check "Crit-5   _custom.scss has no hex / rem / px / em / color-mix literal" \
   'custom_has_no_literals'
 echo
 
 echo "GROUND-04 and the six gem overrides"
-check "GROUND-04  _custom.scss styles body-copy links (.post article a)  [red until plan 02-03]" \
+check "GROUND-04  _custom.scss styles body-copy links (.post article a)" \
   'grep -q "\.post article a" "$CUSTOM"'
-check "GROUND-04  that rule declares text-decoration: underline  [red until plan 02-03]" \
+check "GROUND-04  that rule declares text-decoration: underline" \
   'grep -qE "text-decoration:[[:space:]]*underline" "$CUSTOM"'
-check "Override  pre/code ink re-pointed  [red until plan 02-03]" \
+check "Override  pre/code ink re-pointed" \
   'grep -qE "^[[:space:]]*(pre|code)[,[:space:]{]" "$CUSTOM"'
-check "Override  .card box-shadow: none (flush panels, no floating white)  [red until plan 02-03]" \
+check "Override  .card box-shadow: none (flush panels, no floating white)" \
   'grep -A6 "\.card" "$CUSTOM" | grep -qE "box-shadow:[[:space:]]*none"'
-check "Override  .navbar opacity: 1 (gem ships opacity .95 — 02-RESEARCH Pitfall 8)  [red until plan 02-03]" \
+check "Override  .navbar opacity: 1 (gem ships opacity .95 — 02-RESEARCH Pitfall 8)" \
   'grep -A6 "\.navbar" "$CUSTOM" | grep -qE "opacity:[[:space:]]*1"'
-check "Override  headings h1..h6 re-pointed to heading ink  [red until plan 02-03]" \
+check "Override  headings h1..h6 re-pointed to heading ink" \
   'grep -qE "h1[,[:space:]]" "$CUSTOM" && grep -qE "h6[,[:space:]{]" "$CUSTOM"'
-check "Override  :focus-visible carries a visible outline  [red until plan 02-03]" \
+check "Override  :focus-visible carries a visible outline" \
   'grep -A6 ":focus-visible" "$CUSTOM" | grep -qE "outline:"'
 # Green today and must STAY green: this is the one row in this group that is a
 # negative assertion, so it is not red-by-design. Killing the focus ring while
@@ -399,9 +407,11 @@ echo
 if [ "$LIVE" -eq 1 ]; then
   echo "=== Live checks (--live) ====================================================="
   echo
-  # Everything here is red until plan 02-04 performs this phase's SINGLE push.
-  # enable_darkmode:false and the token re-point must reach the live site in
-  # one deploy, so there is deliberately nothing to see before then.
+  # Everything here was red until plan 02-04 performed this phase's SINGLE
+  # push. enable_darkmode:false and the token re-point had to reach the live
+  # site in one deploy, so there was deliberately nothing to see before then.
+  # That push landed 2026-09-14 as 0a7c7b0 (gh-pages 9d0d929 -> 2e763c1) and
+  # every row below has been green since; they are live regression rows now.
   #
   # The cache-buster is mandatory, not decorative: main.css is served with
   # Cache-Control max-age=600 behind a CDN, so a plain fetch can show the
@@ -413,42 +423,42 @@ if [ "$LIVE" -eq 1 ]; then
   curl -s -L --max-time 30 "${SITE}/?cb=$(date +%s)" >"$LIVE_HTML" 2>/dev/null
 
   for page in "" academics research further-reading projects activities cv; do
-    check "Live      ${SITE}/${page} returns 200  [red until plan 02-04]" \
+    check "Live      ${SITE}/${page} returns 200" \
       "[ \"\$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 20 '${SITE}/${page}')\" = '200' ]"
   done
   echo
 
   # The served stylesheet is minified, so every grep below tolerates optional
   # whitespace after the colon rather than assuming the authored spacing.
-  check "Live      served main.css declares --paper-100  [red until plan 02-04]" \
+  check "Live      served main.css declares --paper-100" \
     'grep -q -- "--paper-100" "$LIVE_CSS"'
-  check "Live      served main.css: --global-bg-color -> var(--paper-100)  [red until plan 02-04]" \
+  check "Live      served main.css: --global-bg-color -> var(--paper-100)" \
     'grep -qE -- "--global-bg-color:[[:space:]]*var\(--paper-100\)" "$LIVE_CSS"'
   # This IS criterion 1's code-block clause. No page on this site renders a
   # code block (02-RESEARCH.md Pitfall 12), so it is verified by inspecting the
   # served CSS and never visually. Do not add a throwaway page to make it
   # visual.
-  check "Live      served main.css: --global-code-bg-color -> var(--paper-200)  [red until plan 02-04]" \
+  check "Live      served main.css: --global-code-bg-color -> var(--paper-200)" \
     'grep -qE -- "--global-code-bg-color:[[:space:]]*var\(--paper-200\)" "$LIVE_CSS"'
   # Compares the served canary against the LOCAL one rather than a hardcoded
   # date, so this row keeps working after plan 02-03 re-dates it and after any
   # later re-date. A mismatch means the push did not ship — or has not landed
   # yet; see the ~2-3 min latency note above.
-  check "Live      served main.css carries the CURRENT --deploy-proof value  [red until plan 02-04]" \
+  check "Live      served main.css carries the CURRENT --deploy-proof value" \
     'grep -q -- "$(grep -o -- "--deploy-proof:[^;]*" "$CUSTOM" | sed "s/.*\"\(.*\)\".*/\1/")" "$LIVE_CSS"'
   # PurgeCSS strips rules whose selectors appear in no HTML. footer_fixed:false
   # puts sticky-bottom into the markup, which restores those rules — so this
   # row is a live proof that the config flag actually took effect, not merely
   # that it was written.
-  check "Live      served main.css contains sticky-bottom (PurgeCSS restored it)  [red until plan 02-04]" \
+  check "Live      served main.css contains sticky-bottom (PurgeCSS restored it)" \
     'grep -q -- "sticky-bottom" "$LIVE_CSS"'
   echo
 
-  check "Live      home HTML has zero light-toggle occurrences  [red until plan 02-04]" \
+  check "Live      home HTML has zero light-toggle occurrences" \
     '! grep -q -- "light-toggle" "$LIVE_HTML"'
-  check "Live      home HTML has zero fixed-bottom occurrences  [red until plan 02-04]" \
+  check "Live      home HTML has zero fixed-bottom occurrences" \
     '! grep -q -- "fixed-bottom" "$LIVE_HTML"'
-  check "Live      home HTML has zero progress-bar occurrences  [red until plan 02-04]" \
+  check "Live      home HTML has zero progress-bar occurrences" \
     '! grep -q -- "progress-bar" "$LIVE_HTML"'
 
   # Informational, always PASS. Record before a push, compare after.
