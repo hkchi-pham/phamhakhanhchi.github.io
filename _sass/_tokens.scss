@@ -1,0 +1,106 @@
+/* ===========================================================================
+ * _tokens.scss — THE token file for this site.
+ *
+ * Every colour and length literal in the design lives here and nowhere else
+ * (Phase 2, success criterion 5). A hex, rem, em or px value appearing in any
+ * other file under `_sass/` is a bug: re-point a token instead of writing a
+ * second literal. `_custom.scss` consumes these and declares none.
+ *
+ * Every ratio written below was computed with
+ *     node .planning/tools/contrast.js "<foreground>" "<background>"
+ * against --paper-100 #faf6ee unless the comment names another ground. That
+ * tool self-tests (`--selftest`) against eight pre-measured figures, so these
+ * numbers are reproducible rather than asserted. No CI gate on this site
+ * covers contrast; these comments and that tool are the whole enforcement.
+ *
+ * THE CAP (TOKEN-06). Adding a colour or a family means editing a stated
+ * number here, three lines above the declarations — not quietly appending one
+ * more line:
+ *
+ *     paper tones ........ 2
+ *     ink steps .......... 4  (heading, body, footer-text, muted)
+ *     accent colours ..... 1
+ *     type families ...... 2  (value set in Phase 3)
+ *
+ * Register overshoot is only partly recoverable: a reader who has already
+ * formed an impression of a busy, over-decorated page cannot un-form it. The
+ * cap is the mechanism that prevents it, and a cap nobody wrote down is a cap
+ * the next agent raises one token at a time.
+ * ========================================================================= */
+
+/* ---------------------------------------------------------------------------
+ * TIER 1 — primitives. These are the only literals in the design.
+ * Tier 2 (further down) maps the gem's --global-* names onto these; a future
+ * dark theme re-points these nine colours inside one new block and rewrites
+ * no rule at all.
+ * ------------------------------------------------------------------------ */
+:root {
+  /* Paper — the grounds. Every ratio in this file is measured against the
+     ground --paper-100 unless its own comment says otherwise. */
+  --paper-100: #faf6ee; /* ground: body, navbar, cards — the reference every ratio below is measured against (self: 1.00:1) */
+  --paper-200: #f2ebdd; /* recess: code blocks, footer — 1.10:1 against --paper-100, i.e. a tone step, never a contrast */
+
+  /* Ink — four steps, no more. */
+  --ink-900: #1f1b16; /* 15.88:1  headings */
+  --ink-800: #2b2621; /* 13.90:1  body */
+  --ink-700: #3d3630; /* 11.01:1  footer text */
+  --ink-500: #5c5349; /*  6.99:1  muted meta — replaces the gem's #828282, which is 3.57:1 and fails AA for body text */
+
+  /* Accent — exactly one. */
+  --accent-600: #1d4ed8; /* 6.22:1 on paper; 2.24:1 against --ink-800 -> links MUST be underlined, colour alone cannot carry them (GROUND-04) */
+
+  /* Rules — hairline structure instead of tonal bands. */
+  --rule-200: #d9cfba; /* 1.43:1  DECORATIVE ONLY — never load-bearing. WCAG 1.4.11 wants 3:1 for anything needed to understand content */
+  --rule-500: #9c8b6e; /* 3.08:1  structural separators (.subject rows, entry-group boundaries) */
+
+  /* Ratios on the recess ground --paper-200 #f2ebdd, measured the same way,
+     for the footer and for code blocks:
+         #1f1b16 on #f2ebdd = 14.43:1   headings
+         #2b2621 on #f2ebdd = 12.63:1   body
+         #3d3630 on #f2ebdd = 10.01:1   footer text
+         #5c5349 on #f2ebdd =  6.35:1   muted meta
+         #1d4ed8 on #f2ebdd =  5.65:1   accent
+     On that recess ground --rule-500 drops to 2.80:1 and --rule-200 to
+     1.30:1, so a structural hairline inside the footer or a code block needs
+     an ink, not a rule colour.
+
+     AGREED FALLBACK, not a re-opened decision: --accent-600 may be swapped to
+     oxblood #9a3412 (6.78:1 on paper) if the blue reads too loud once the real
+     ground is composited. That is a value swap on one line; every consumer
+     follows automatically.
+
+     NOTE: --paper-50 IS DELIBERATELY NOT DECLARED. It was cut the moment cards were
+     decided flush with the body — a card that is the same colour as the page
+     needs no third ground. Re-adding it is one line here plus a visible edit
+     to the cap above, which is the point. */
+
+  /* ---------------------------------------------------------------------
+   * TOKEN-02 — the provisional type and space scale.
+   *
+   * The NAMES are locked; the VALUES are provisional and Phase 3 re-tunes
+   * them here without rewriting a single rule. The numbers below are the
+   * gem's real shipped sizes, so adopting the scale moves nothing today.
+   * ------------------------------------------------------------------- */
+  --step-0: 0.85rem; /* meta, status, grade   (gem .entry-status 0.85em) */
+  --step-1: 1rem; /* body                  (gem body 1rem) */
+  --step-2: 1.1rem; /* entry title           (gem .entry-title 1.1rem) */
+  --step-3: 1.5rem; /* section heading       — provisional, Phase 3 re-tunes */
+  --leading-body: 1.5; /* gem body line-height */
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+
+  /* Named measures and strokes. These are lengths, not steps on the spacing
+     scale, so they are named rather than numbered — and they exist so that
+     `_custom.scss` can be literal-free. */
+  --entry-year-col: 5rem; /* year gutter in .entry */
+  --subject-row-max: 26rem; /* .subject row measure */
+  --rule-hairline: 1px; /* stroke width for a hairline rule; the colour is --rule-200 or --rule-500 */
+  --underline-thickness: 1px; /* GROUND-04: body-copy links are underlined */
+  --underline-thickness-hover: 2px; /* hover thickens the stroke; the colour holds */
+  --underline-offset: 0.18em; /* clears the Vietnamese below-baseline marks in "Phạm Hà Khánh Chi": ạ, ợ */
+  --focus-ring-width: 2px; /* >= 2px, and never `outline: none` */
+  --focus-ring-offset: 2px;
+}
