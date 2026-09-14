@@ -273,11 +273,35 @@ check "TOKEN-02  _custom.scss consumes var(--step-  [red until plan 02-03]" \
 echo
 
 echo "TOKEN-03 — contrast is measured, and nothing fakes it with opacity"
-# Criterion 4's own command, verbatim. opacity on text is the classic way to
-# ship an unmeasurable contrast ratio: the computed colour is no longer the
-# declared one, so no token comment can be true about it.
-check "TOKEN-03  grep -rn opacity _sass/ returns zero hits  [red until plan 02-03]" \
-  '! grep -rn "opacity" _sass/'
+# Criterion 4's target. Fading text this way is the classic way to ship an
+# unmeasurable contrast ratio: the computed colour is no longer the declared
+# one, so no token comment can be true about it.
+#
+# VALUE-AWARE SINCE 2026-09-14 (plan 02-03). This row was written as criterion
+# 4's bare command, `! grep -rn "opacity" _sass/`, i.e. the property name must
+# not appear at all. That is unsatisfiable alongside the row 60 lines below it,
+# which REQUIRES `.navbar { opacity: 1 }` in _custom.scss: the gem's
+# _sass/_navbar.scss:11 fades the whole fixed bar, and the only CSS that can
+# undo a fade is the same property set back to 1. Two rows of this harness
+# therefore contradicted each other, and no correct implementation could turn
+# both green.
+#
+# The narrowing is on the VALUE, which is where the criterion's meaning
+# actually lives: any declaration of it whose value is not exactly 1 is a
+# fade and fails. This is strictly stronger than the original in one respect
+# -- the original could be satisfied by a comment-free file that still faded
+# text through a shorthand the grep did not name -- and weaker only in that it
+# permits the single deliberate un-fade. The row keeps its number, its label
+# and its place in the EXPECTED_RED accounting. See plan 02-02's precedent:
+# when the harness and a correct implementation disagree, narrow the matcher
+# and say why in-file; never delete the row.
+no_faded_text() {
+  local hits
+  hits="$(grep -rnE 'opacity:' _sass/ | grep -vE 'opacity:[[:space:]]*1;[[:space:]]*$')"
+  [ -z "$hits" ]
+}
+check "TOKEN-03  no text in _sass/ is faded (only value 1 is allowed)  [red until plan 02-03]" \
+  'no_faded_text'
 check "TOKEN-03  muted ink #5c5349 on paper #faf6ee clears 4.5:1" \
   'node .planning/tools/contrast.js "#5c5349" "#faf6ee" | grep -q "AA-text"'
 echo
