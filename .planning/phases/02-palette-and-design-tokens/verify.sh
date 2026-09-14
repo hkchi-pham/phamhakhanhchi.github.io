@@ -184,7 +184,12 @@ root_dark_pair() {
 primitives_have_ratio() {
   [ -f "$TOKENS" ] || return 1
   local lines bad
-  lines="$(grep -nE '^[[:space:]]*--(paper|ink|accent|rule)-[a-z0-9-]*:' "$TOKENS" 2>/dev/null)"
+  # Matched by VALUE (a hex literal), not by name prefix. Narrowed on
+  # 2026-09-14 (plan 02-02) from a --(paper|ink|accent|rule)- name match,
+  # which also caught --rule-hairline: 1px — a stroke width has no contrast
+  # ratio to carry. Matching on the hex is strictly STRONGER: it now also
+  # covers a colour declared under a name outside those four prefixes.
+  lines="$(grep -nE '^[[:space:]]*--[a-z0-9-]+:[[:space:]]*#[0-9a-fA-F]{3,8};' "$TOKENS" 2>/dev/null)"
   [ -n "$lines" ] || return 1
   bad="$(printf '%s\n' "$lines" | grep -vE '/\*.*:1.*\*/')"
   [ -z "$bad" ]
@@ -304,8 +309,13 @@ check "TOKEN-06  exactly 4 --ink- declarations (have: $(decl_count '--ink-'))  [
   '[ "$(decl_count "--ink-")" -eq 4 ]'
 check "TOKEN-06  exactly 1 --accent- declaration (have: $(decl_count '--accent-'))  [red until plan 02-02]" \
   '[ "$(decl_count "--accent-")" -eq 1 ]'
-check "TOKEN-06  exactly 2 --rule- declarations (have: $(decl_count '--rule-'))  [red until plan 02-02]" \
-  '[ "$(decl_count "--rule-")" -eq 2 ]'
+# --rule-[0-9], not --rule-: the cap is on rule COLOURS. Plan 02-02 also
+# declares --rule-hairline, a 1px stroke WIDTH that plan 02-03 consumes for
+# the .subject border, and counting a length against a colour cap is a false
+# positive. Narrowed on 2026-09-14 (plan 02-02); the row is unchanged in
+# intent and still catches a third rule colour such as --rule-300.
+check "TOKEN-06  exactly 2 --rule- colour declarations (have: $(decl_count '--rule-[0-9]'))  [red until plan 02-02]" \
+  '[ "$(decl_count "--rule-[0-9]")" -eq 2 ]'
 echo
 
 echo "Criterion 5 — every primitive carries its ratio; the overrides carry no literals"
