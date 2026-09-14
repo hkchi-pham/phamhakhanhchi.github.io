@@ -3,7 +3,7 @@ phase: 2
 slug: palette-and-design-tokens
 status: approved
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-09-14
 ---
 
@@ -44,17 +44,17 @@ created: 2026-09-14
 
 | Task ID | Plan | Wave | Requirement                | Test Type     | Automated Command                                                                                        | File Exists | Status    |
 | ------- | ---- | ---- | -------------------------- | ------------- | -------------------------------------------------------------------------------------------------------- | ----------- | --------- |
-| 2-01-01 | 01   | 1    | TOKEN-03                   | computation   | `node .planning/tools/contrast.js --selftest`                                                             | ❌ W0 (creates) | ⬜ pending |
-| 2-01-02 | 01   | 1    | TOKEN-01, TOKEN-06         | harness build | `bash …/verify.sh` runs to a tally; `GLOBAL_TOKENS` holds 30 names read off the served CSS                | ❌ W0 (creates) | ⬜ pending |
-| 2-01-03 | 01   | 1    | TOKEN-01                   | static grep   | `grep -q style_contract CLAUDE.md && npx prettier CLAUDE.md --check --end-of-line auto`                   | ✅          | ⬜ pending |
-| 2-02-01 | 02   | 2    | TOKEN-02, TOKEN-06         | static grep   | primitive counts 2/4/1/2, step/space counts 4/4, cap comment present, 7 ratio comments matched            | ✅ (after 02-01) | ⬜ pending |
-| 2-02-02 | 02   | 2    | TOKEN-01, TOKEN-05, GROUND-01 | static grep | 30 `--global-*` declarations, zero literals among them, `:root,` + `html[data-theme="dark"]`, `color-scheme: light` | ✅          | ⬜ pending |
-| 2-02-03 | 02   | 2    | TOKEN-01                   | static + hash | `@use "tokens";` precedes `@use "custom";`; `.al-folio-overrides.yml` `local_sha256` matches the file     | ✅          | ⬜ pending |
-| 2-03-01 | 03   | 3    | TOKEN-02, TOKEN-03         | static grep   | `grep -rn "opacity" _sass/` empty; no hex/rem/px/em/`color-mix` in `_custom.scss`; `#5c5349` ≥ 4.5:1      | ✅          | ⬜ pending |
-| 2-03-02 | 03   | 3    | TOKEN-01, GROUND-04        | static grep   | six override rules present; `.post article a` underlined; `:focus-visible` with offset; no `outline: none` | ✅          | ⬜ pending |
-| 2-04-01 | 04   | 4    | TOKEN-04, TOKEN-05         | static grep   | three flags `false`, `max_width` untouched, Prettier + style contract pass, full static block green       | ✅          | ⬜ pending |
-| 2-04-02 | 04   | 4    | TOKEN-01, GROUND-01        | live          | `bash …/verify.sh --live` — 7 pages 200, served CSS greps, served HTML zero-counts                        | ✅          | ⬜ pending |
-| 2-04-03 | 04   | 4    | GROUND-01, GROUND-04, TOKEN-04 | **manual** | checkpoint:human-verify — see Manual-Only table                                                          | n/a         | ⬜ pending |
+| 2-01-01 | 01   | 1    | TOKEN-03                   | computation   | `node .planning/tools/contrast.js --selftest`                                                             | ❌ W0 (creates) | ✅ green |
+| 2-01-02 | 01   | 1    | TOKEN-01, TOKEN-06         | harness build | `bash …/verify.sh` runs to a tally; `GLOBAL_TOKENS` holds 30 names read off the served CSS                | ❌ W0 (creates) | ✅ green |
+| 2-01-03 | 01   | 1    | TOKEN-01                   | static grep   | `grep -q style_contract CLAUDE.md && npx prettier CLAUDE.md --check --end-of-line auto`                   | ✅          | ✅ green |
+| 2-02-01 | 02   | 2    | TOKEN-02, TOKEN-06         | static grep   | primitive counts 2/4/1/2, step/space counts 4/4, cap comment present, 7 ratio comments matched            | ✅ (after 02-01) | ✅ green |
+| 2-02-02 | 02   | 2    | TOKEN-01, TOKEN-05, GROUND-01 | static grep | 30 `--global-*` declarations, zero literals among them, `:root,` + `html[data-theme="dark"]`, `color-scheme: light` | ✅          | ✅ green |
+| 2-02-03 | 02   | 2    | TOKEN-01                   | static + hash | `@use "tokens";` precedes `@use "custom";`; `.al-folio-overrides.yml` `local_sha256` matches the file     | ✅          | ✅ green |
+| 2-03-01 | 03   | 3    | TOKEN-02, TOKEN-03         | static grep   | `grep -rn "opacity" _sass/` empty; no hex/rem/px/em/`color-mix` in `_custom.scss`; `#5c5349` ≥ 4.5:1      | ✅          | ✅ green |
+| 2-03-02 | 03   | 3    | TOKEN-01, GROUND-04        | static grep   | six override rules present; `.post article a` underlined; `:focus-visible` with offset; no `outline: none` | ✅          | ✅ green |
+| 2-04-01 | 04   | 4    | TOKEN-04, TOKEN-05         | static grep   | three flags `false`, `max_width` untouched, Prettier + style contract pass, full static block green       | ✅          | ✅ green |
+| 2-04-02 | 04   | 4    | TOKEN-01, GROUND-01        | live          | `bash …/verify.sh --live` — 7 pages 200, served CSS greps, served HTML zero-counts                        | ✅          | ✅ green |
+| 2-04-03 | 04   | 4    | GROUND-01, GROUND-04, TOKEN-04 | **manual** | checkpoint:human-verify — see Manual-Only table                                                          | n/a         | ✅ green |
 
 _Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky_
 
@@ -88,6 +88,22 @@ All four sit in plan 02-04 Task 3 as one blocking `checkpoint:human-verify`, bat
 
 - **Criterion 1's code-block clause.** No page on this site renders a code block or inline code today (zero fenced blocks; the only backticks in `_pages/` sit inside a YAML comment). It is verified by CSS inspection of the served stylesheet — `--global-code-bg-color: var(--paper-200)` — never visually. Do not add a throwaway page to make it visual.
 - **Criterion 4's contrast measurements.** ROADMAP wording says "with the DevTools colour picker". The contrast tool reproduces every published figure exactly and is scriptable, so `.entry-year`, `.entry-meta`, `.entry-status` and `.subject-grade` are all checked by `node .planning/tools/contrast.js "#5c5349" "#faf6ee"` → 6.99:1, plus the static grep proving all four carry `var(--ink-500)`. Phase 8's QA-01 still re-measures on the final *composited* ground (text over Phase 4 texture), which is a different measurement and is correctly deferred.
+
+### Checkpoint verdict — row `2-04-03`, 2026-09-14: **APPROVED**
+
+The reviewer ran all four checks against the deployed site after plan 02-04 Task 2's single push (`0a7c7b0`, `gh-pages` `9d0d929` -> `2e763c1`), across all seven live URLs in order.
+
+| Check | Criterion | Verdict | Notes |
+| --- | --- | --- | --- |
+| A | 1 — the repaint | APPROVED | Warm cream ground behind navbar, body and footer on all seven pages. No leftover white panel, including the projects page's cards. No dark-grey bar pinned to the bottom — the gem's `#1c1c1d` footer default is gone and the footer reads as the bottom of the page. The CV page's embedded PDF object and its buttons are fine. |
+| B | 2 — dark is unreachable | APPROVED | No theme toggle anywhere. `document.documentElement.setAttribute('data-theme','dark')` changed no colour: the `:root, html[data-theme="dark"]` selector list from `_sass/_tokens.scss` wins as designed. |
+| C | 3 — links survive greyscale | APPROVED | Under Achromatopsia emulation every body-copy link is still obviously a link. Underlines clear the descenders and the Vietnamese marks in "Phạm Hà Khánh Chi". Bare navbar and footer links confirmed as intended, not a miss. |
+| D | register sanity | APPROVED | Reads as a deliberate, tasteful recolour on warm paper — not broken or unfinished. Plain type is expected at this stage. |
+
+**The two visual bets carried into this checkpoint were both accepted as-is**, so neither contingency fires:
+
+- The flush, shadowless projects `.card` reads as deliberate. The fallback — a `--rule-200` hairline boundary in Phase 4/5 — is **not** needed, and a re-added shadow was never the fix.
+- `--underline-offset: 0.18em` clears `ạ` and `ợ`. It was a computed guess that had never been rendered; it is now a measured-by-eye value. No token change follows.
 
 ---
 
