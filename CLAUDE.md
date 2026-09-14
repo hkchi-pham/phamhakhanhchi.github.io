@@ -8,6 +8,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Read those three before editing anything.** Everything below is Claude-specific or longer-form operational detail that does not belong in the short entry point. Do not restate facts from those files here — link to them.
 
+## This fork: the stop sign is disabled
+
+Everything above and below this section describes the upstream al-folio demo. This is a personal site built from that template, and three of the claims it makes are **false here**. Read this before deleting anything as a "contract violation".
+
+- **`_sass/` is this site's own design surface, not a forbidden path.** `test/style_contract.js` carries its forbidden-path loop commented out at lines 68–84, with an in-file explanation; `node test/style_contract.js` passes today with `_sass/` present. (A second block, lines 96–108, is disabled the same way.) `_sass/_tokens.scss` and `_sass/_custom.scss` are deliberate and must not be removed. `_tokens.scss` is the single token file every colour, step and space value comes from; `_custom.scss` holds the site's gem overrides and the `--deploy-proof` deploy canary.
+- **Nothing runs that check any more.** `unit-tests.yml`, its only runner, was deleted in Phase 1. The surviving workflows are `deploy.yml`, `prettier.yml` and `broken-links-site.yml` — so the "CI gates and the style contract" and "Validated local command set" lists below name workflows and integration tests that no longer exist.
+- **This site's effective baseurl is empty, not `/al-folio`.** Every `--baseurl /al-folio` and `localhost:4000/al-folio/` reference below belongs to the upstream demo. Docker previews serve at `http://127.0.0.1:8080/`.
+
+Authoritative for this site: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md), `.planning/PROJECT.md`, `.planning/STATE.md`. The upstream text is kept verbatim as the historical record rather than rewritten — same convention `.planning/STATE.md` records for annotating requirements instead of silently editing them.
+
 ## Daily dev loop
 
 ```bash
