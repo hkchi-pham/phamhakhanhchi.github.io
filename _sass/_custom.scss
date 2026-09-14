@@ -16,7 +16,7 @@
 // live domain. Re-date it and push a _sass-only commit to answer "did my
 // change ship?" without guessing. See docs/DEPLOYMENT.md.
 :root {
-  --deploy-proof: "2026-09-13";
+  --deploy-proof: "2026-09-14 phase-02-tokens";
 }
 
 // The about layout wraps the first name in `.font-weight-bold`, which renders
@@ -97,4 +97,119 @@
   margin-top: var(--space-2);
   padding-left: var(--space-3);
   list-style: disc;
+}
+
+// ===========================================================================
+// Six gem behaviours no token can reach.
+//
+// Everything above this line is this site's own CSS. Everything below is an
+// OVERRIDE of a rule shipped by al_folio_core or by its prebuilt Tailwind,
+// each one named with its source so a later reader can tell a correction from
+// a design choice. Re-pointing a token cannot fix any of them: three are
+// hardcoded literals in the gem, two are properties no --global-* name
+// controls, and one is a rule the gem never wrote at all.
+//
+// Why none of these needs !important. The gem's prebuilt
+// assets/css/tailwind.css is entirely inside @layer; main.css, which is what
+// this partial compiles into, is unlayered and loads last, and an unlayered
+// normal declaration beats every layered one whatever its specificity. The
+// single exception is tailwind's @layer components, whose !important
+// utilities cannot be beaten from here -- nothing below needs to.
+// ===========================================================================
+
+// 1. CODE IS INK, NOT A LINK. Gem _sass/_utilities.scss:26 and :47 paint both
+//    pre and code with var(--global-theme-color), so on this palette a whole
+//    block renders in the link accent. The accent must mean exactly one
+//    thing: this is interactive. The recess GROUND for these two comes from
+//    --global-code-bg-color, already re-pointed in plan 02-02.
+pre,
+code {
+  color: var(--ink-800);
+}
+
+// 2. CARDS SIT FLUSH. The gem's prebuilt tailwind.css hardcodes two black
+//    drop shadows on .card as raw literals, so they survive every token
+//    change, while --global-card-bg-color is now the same paper as the page.
+//    Without this a card is an invisible box wearing a grey halo. The
+//    .hoverable lift goes with it (gem _sass/_components.scss:56-67: a
+//    translate plus two more black shadows). The projects page renders .card.
+.card {
+  box-shadow: none;
+}
+
+.hoverable:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+// 3. THE NAVBAR IS NOT TRANSLUCENT. Gem _sass/_navbar.scss:11 fades the whole
+//    fixed bar to 95 per cent, which dims every glyph in it and lets scrolled
+//    content smear through the paper. That declaration lives in the gem, so
+//    this phase's no-faded-text grep over _sass/ cannot see it; the fix has
+//    to be asserted here instead. This is the one deliberate reset in the
+//    file, and it is the only reason the grep is value-aware.
+.navbar {
+  opacity: 1;
+}
+
+// 4. HEADINGS ARE A DEEPER INK THAN BODY COPY. Gem _sass/_typography.scss:7-19
+//    paints p, h1..h6, em, div, li, span and strong from one single
+//    --global-text-color, so a separate heading ink is unreachable through
+//    tokens alone. DECISION (02-CONTEXT left this open): all six levels plus
+//    .post-title take --ink-900, 15.88:1 on paper against body copy's
+//    13.90:1. Hierarchy then rides on size, weight AND ink depth, which is
+//    the second lever Phase 7's greyscale-blur test needs. Specificity ties
+//    the gem's (0,0,1) and this file is emitted later, so it wins.
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.post-title {
+  color: var(--ink-900);
+}
+
+// 5. BODY-COPY LINKS ARE UNDERLINED (GROUND-04). Forced by measurement, not
+//    by taste: --accent-600 against --ink-800 is 2.24:1, far under the 3:1
+//    colour alone would need to distinguish a link from the text around it,
+//    and it disappears altogether in greyscale.
+//
+//    Scope is exactly .post article a. Both layouts this site uses
+//    (page.liquid and about.liquid) wrap content as .post > header.post-header
+//    + article, so this reaches body copy and nothing else: navbar and footer
+//    links sit outside .post and stay un-underlined, because position already
+//    signals clickability in navigational furniture and an underlined nav row
+//    reads as 1997.
+//
+//    Hover thickens the stroke and the colour holds -- no second accent
+//    value, nothing extra to keep in contrast, and it is the hook Phase 4's
+//    hand-drawn rule plugs into. The underline offset token is sized to clear
+//    the below-baseline marks in Vietnamese diacritics.
+.post article a {
+  text-decoration: underline;
+  text-decoration-thickness: var(--underline-thickness);
+  text-underline-offset: var(--underline-offset);
+}
+
+.post article a:hover {
+  text-decoration-thickness: var(--underline-thickness-hover);
+}
+
+// A button is already a shape; underlining it reads as a mistake. Covers the
+// CV page's .cv-actions .btn.
+.post article a.btn {
+  text-decoration: none;
+}
+
+// 6. KEYBOARD FOCUS IS VISIBLE. The gem defines no :focus-visible rule
+//    anywhere, so focus falls back to whatever the browser draws over a
+//    repainted ground. --ink-900 on --paper-100 is 15.88:1, and the offset
+//    token puts the ring on clean paper, clear of the glyphs. Two standing
+//    rules for later work on this block: the ring is never suppressed, and it
+//    is never carried by a shadow alone -- a shadow disappears in Windows
+//    High Contrast Mode, an outline survives it.
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--ink-900);
+  outline-offset: var(--focus-ring-offset);
 }
