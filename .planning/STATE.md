@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-09-14T03:16:21.533Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-09-14T15:11:52.449Z"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 9
-  completed_plans: 6
-  percent: 67
+  completed_plans: 7
+  percent: 78
 ---
 
 # Project State
@@ -25,11 +25,11 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 ## Current Position
 
 Phase: 2 of 8 (Palette and Design Tokens)
-Plan: 1 of 4 complete in current phase
-Status: In progress — Wave 1 (02-01) done, ready for 02-02
-Last activity: 2026-09-14 - Plan 02-01 complete: Wave 0 verification infrastructure. `.planning/tools/contrast.js` reproduces all eight PITFALLS.md figures to within 0.01 and self-tests via `--selftest`; `.planning/phases/02-palette-and-design-tokens/verify.sh` runs 79 static / 95 `--live` rows, 59 red-by-design and 0 unlabelled. The `--global-*` token count is settled at **30** by reading the served `main.css` — ROADMAP, STACK and 02-CONTEXT all say 29 and are all wrong. `CLAUDE.md` now carries an additive note that this fork owns `_sass/`. Nothing pushed: plan 02-04 owns this phase's single push.
+Plan: 2 of 4 complete in current phase
+Status: In progress — Wave 2 (02-02) done, ready for 02-03
+Last activity: 2026-09-14 - Plan 02-02 complete: the token file exists and everything reads from it. `_sass/_tokens.scss` (201 lines) holds every colour and length literal in the design — nine Tier 1 primitives each carrying its measured `N.NN:1` ratio, the TOKEN-06 cap written three lines above them, the `--step-*`/`--space-*` scale and eight named measures — then maps all 30 `--global-*` onto them under `:root, html[data-theme="dark"]`, matching the gem's dark block at (0,1,1) and winning on source order, with `color-scheme: light` re-declared. Zero literals in Tier 2. `assets/css/main.scss` loads it immediately before `@use "custom";` and `.al-folio-overrides.yml`'s `local_sha256` was re-recorded BY HAND (`8a43e85c…`). The phase harness went 59 red -> **14 red, all 14 labelled for 02-03/02-04, 0 unlabelled**. Nothing pushed: 02-04 owns this phase's single push.
 
-Previous activity: 2026-09-13 - Phase 1 closed out in full. The Task 3 human read-through of `docs/DEPLOYMENT.md` returned APPROVED: §4's criterion-4 sentence judged "plain and unhedged", all three §5 failure modes judged followable at 11pm, no placeholders or stale claims. The reviewer's one challenge (§5.1's "3,000 files" limit) was researched — the number is correct for GitHub's native `paths-ignore` filter, 300 is the superseded figure — but it exposed a genuinely defective two-way hedge around it, fixed in `b56a9d5`. GitHub settings independently confirmed in the browser (Pages `gh-pages`/root, DNS verified, HTTPS enforced; Rulesets and branch protection both EMPTY), discharging the last SAFE-03 caveat. `01-VALIDATION.md` is 13 of 13 rows green.
+Previous activity: 2026-09-14 - Plan 02-01 complete: Wave 0 verification infrastructure. `.planning/tools/contrast.js` reproduces all eight PITFALLS.md figures to within 0.01 and self-tests via `--selftest`; `verify.sh` runs 79 static / 95 `--live` rows. The `--global-*` token count is settled at **30** by reading the served `main.css`.
 
 Progress: [█░░░░░░░░░] 13% (1 of 8 phases complete)
 
@@ -59,6 +59,7 @@ _Updated after each plan completion_
 | Phase 01 P04 | 13min | 3 tasks | 1 file |
 | Phase 01 P05 | 7min | 4 tasks | 3 files |
 | Phase 02 P01 | 5min | 3 tasks | 3 files |
+| Phase 02 P02 | 6min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -93,10 +94,15 @@ Recent decisions affecting current work:
 - [Phase 02]: Red-by-design labelling is now precise about direction. A row that is GREEN today and must merely STAY green (the `.al-folio-overrides.yml` hash, `no outline: none`) must NOT carry a `[red until plan 02-NN]` label, or a genuine future regression gets absorbed into the `EXPECTED_RED` tally and hides among 59 expected failures. `verify.sh` also prints `FAILED - EXPECTED_RED` when non-zero. Convention: the red label means "not true yet", never "do not worry about this".
 - [Phase 02]: Live check rows compare the served asset against the LOCAL source rather than a hardcoded value — the `--deploy-proof` row greps the served CSS for whatever date `_sass/_custom.scss` currently declares. The row then survives plan 02-03's re-date and every later one, instead of needing an edit each time.
 - [Phase 02]: `CLAUDE.md` reconciliation is ADDITIVE only (10 insertions, 0 deletions), same convention as SAFE-04's annotation. `AGENTS.md`, `docs/ARCHITECTURE.md` and `docs/BOUNDARIES.md` are explicitly OUT OF SCOPE for Phase 2 — rewriting the upstream thin-starter contract is a documentation milestone of its own and no Phase 2 requirement covers it.
+- [Phase 02]: The 30 `--global-*` names written into `_sass/_tokens.scss` diff IDENTICAL to `verify.sh`'s served-CSS ground truth. The plan's `<token_map>` never had to be overruled by the served CSS.
+- [Phase 02]: `--rule-hairline: 1px` (a stroke WIDTH, consumed by 02-03's `.subject` border) is KEPT, and two `verify.sh` matchers were narrowed instead — the TOKEN-06 cap counts `--rule-[0-9]` colours, and the ratio assertion matches hex VALUES rather than name prefixes (strictly stronger: it now also catches a colour declared outside the four known prefixes). Renaming the token would have left 02-03's `var(--rule-hairline)` undeclared, which fails SILENTLY — the declaration is dropped and the separator vanishes. No harness row was deleted or relabelled.
+- [Phase 02]: Comments inside `_sass/` must NOT spell out a string the harness asserts is absent. A comment quoting `outline: none` turned a green negative assertion into an unlabelled failure, and a comment quoting `@use "custom";` made the ordering row match the comment instead of the statement (grep ... | head -1). Prose names a forbidden declaration; it does not reproduce it. Expect this again in 02-03, where six more string-matching rows read `_custom.scss`.
+- [Phase 02]: The `.al-folio-overrides.yml` hash is checkout-dependent. It was recomputed by hand over the LF working copy (no Ruby here), but `core.autocrlf=true` and `.gitattributes` forces `eol=lf` for `*.sh` only, so a fresh Windows clone would hash `assets/css/main.scss` differently and turn that row red for a reason unrelated to staleness. Logged in the phase's `deferred-items.md`; fix is `*.scss text eol=lf` plus a re-record.
 
 ### Pending Todos
 
 - **REQUIREMENTS.md: TOKEN-01, TOKEN-03 and TOKEN-06 stay `Pending` after plan 02-01, deliberately.** All three are listed in 02-01's `requirements:` frontmatter, but every requirement in this phase is claimed by several plans at once (TOKEN-01 by all four; TOKEN-03 by 02-01 and 02-03; TOKEN-06 by 02-01, 02-02 and 02-04). 02-01 built only the means of VERIFYING them — the actual work lands later: TOKEN-01's 30-token redeclaration and TOKEN-06's cap in 02-02, TOKEN-03's `opacity` removal in 02-03. Marking them Complete now would put a false green in the traceability table, so `gsd-tools requirements mark-complete` was deliberately not run. **Plan 02-04, the last plan that touches each, should mark TOKEN-01..06, GROUND-01 and GROUND-04 complete once `verify.sh --live` is fully green.** The `requirements:` field on a plan means "contributes to", not "completes".
+- **Same again after plan 02-02: TOKEN-01, TOKEN-02, TOKEN-05, TOKEN-06 and GROUND-01 stay `Pending`.** TOKEN-01's 30 re-pointed names and TOKEN-06's written cap landed in 02-02, but TOKEN-02 is not satisfied until `_custom.scss` actually consumes `var(--step-` / `var(--space-` (02-03), and GROUND-01 ("a warm paper ground applies across all seven pages") is not verifiable until the change is deployed and checked live (02-04). `gsd-tools requirements mark-complete` was again deliberately not run.
 
 ### Blockers/Concerns
 
@@ -119,9 +125,11 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-09-14
-Stopped at: Completed 02-01-PLAN.md — Wave 1 of Phase 2, the verification infrastructure the rest of the phase depends on. Three commits, nothing pushed (plan 02-04 owns this phase's single push, so `enable_darkmode: false` and the token re-point reach the live site in one deploy). `.planning/tools/contrast.js` (`f8dc251`) reproduces all eight PITFALLS.md figures to within 0.01 and `--selftest` exits 0. `.planning/phases/02-palette-and-design-tokens/verify.sh` (`638ee5f`) runs **79 static checks, 59 failed, all 59 labelled red-by-design, 0 unlabelled**; with `--live` it is 95 / 66, and all seven live pages already return 200. `CLAUDE.md` (`33e74ca`) gained a 10-line additive note that this fork owns `_sass/` — the style contract's forbidden-path loop is commented out at lines 68–84 and its only runner `unit-tests.yml` was deleted in Phase 1.
+Stopped at: Completed 02-02-PLAN.md — Wave 2 of Phase 2, the mechanism the whole phase rests on. Five commits, nothing pushed (02-04 owns this phase's single push, so the token re-point and `enable_darkmode: false` reach the live site in one deploy; a half-deployed state gives a dark-mode visitor a partly repainted page). `_sass/_tokens.scss` (`f6164fa` Tier 1, `587f0ce` Tier 2) is 201 lines: 2 paper / 4 ink / 1 accent / 2 rule colours, each ink/accent/rule line carrying its `contrast.js` ratio, the cap written above them, `--step-0..3` + `--space-1..4` + eight named measures, then all 30 `--global-*` as pure `var()` references under `:root, html[data-theme="dark"]` with `color-scheme: light`. `assets/css/main.scss` (`829b227`) loads it at line 37, four lines above `@use "custom";`, and `.al-folio-overrides.yml` carries the hand-recorded `local_sha256: 8a43e85c…`. Two fixes (`995b775`, `88489aa`) were deviations, both about strings: a comment must not spell out what a harness asserts is absent, and the harness must not count a 1px length as a rule colour.
 
-Next up is **02-02** (write `_sass/_tokens.scss`, re-point all 30 tokens, wire `@use "tokens";` ahead of `@use "custom";`). Two traps recorded in 02-01-SUMMARY.md: (1) **re-hash `.al-folio-overrides.yml` by hand** after editing `assets/css/main.scss` — no Ruby here, so `al-folio upgrade overrides accept` cannot run, and that harness row is green today so a forgotten re-hash shows up as an UNLABELLED failure; (2) **do not fold `--deploy-proof` into the design tokens** — it is an unreferenced custom property retained on purpose and has its own canary row. 02-02 should turn roughly 42 rows green.
+**Harness now: 79 checks, 14 failed, 14 red-by-design, 0 unlabelled** (was 59 failed). Every `[red until plan 02-02]` row is green, including the hand-re-hashed overrides row.
+
+Next up is **02-03** (re-point the six gem overrides in `_custom.scss` onto these tokens, underline body-copy links, add `:focus-visible`, and strip every literal and every `opacity`). Three traps: (1) **`_custom.scss` must end up with NO hex / rem / px / em / `color-mix`** — `custom_has_no_literals` exempts only `//` comment lines and `--deploy-proof`, so a `/* */` comment mentioning `1px` fails it; (2) **do not write `outline: none` anywhere, even inside a comment** — that row is green and unlabelled, so tripping it reads as a real regression (it already did once in 02-02); (3) **`--rule-500` is 3.08:1 on paper but only 2.80:1 on `--paper-200`**, so a structural hairline inside the footer or a code block needs an ink, not a rule colour.
 
 Previous session (01-05): Completed 01-05-PLAN.md — the last plan of Phase 1. `design-00-baseline` is annotated on `origin` at `778f68b` (the commit that produced `gh-pages@f7b878d`, i.e. what was actually live), and `docs/DEPLOYMENT.md` (245 lines, 7 sections, no placeholders) is on `origin/main` as `d21f9fd`. `verify.sh --live` went 18 checks / 5 failed -> **18 checks, 0 failed**. All four SAFE requirements are Complete: SAFE-03 closed because `/branches` reports `"protected": false` for `main` and both `/rules/branches/main` and `/rulesets` return `[]`, so no branch rule requires a status check from any of the 19 deleted workflows and no PR can hang on "Expected". The docs push (`.planning/**` + `docs/**`, four files) fired NO deploy — `total_count: 1`, Prettier only, `gh-pages` unmoved at `9d0d929` — a second independent demonstration of the denylist's ignore side. `01-VALIDATION.md`'s Status column is closed: 12 of 13 rows green, `status: complete`.
 THAT LAST ITEM IS NOW CLOSED. Validation row `01-05-03` — the human read-through of `docs/DEPLOYMENT.md`'s prose — returned APPROVED on 2026-09-13. §4 was judged "plain and unhedged ... backs it with a demonstrated example rather than a description of intended behavior"; all three §5 failure modes were judged followable at 11pm; §2's Pages values were confirmed against the browser; no placeholders or known-wrong claims. Leaving the row `⬜` for a human was vindicated: the read-through found a defect four automated rows had passed over. §5.1 hedged the path-filter scale limits in both directions when the documented behaviour is one-way; corrected in `b56a9d5` (the reviewer's suggested number, 300, was itself wrong — but the sentence around it was genuinely broken). `01-VALIDATION.md` is 13 of 13 green, `status: complete`. NOTHING IN PHASE 1 IS OUTSTANDING.
