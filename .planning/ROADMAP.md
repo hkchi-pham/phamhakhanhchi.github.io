@@ -21,7 +21,7 @@ Deviations from the researched six-phase shape, stated up front:
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Deployment Guardrails** - Make a stylesheet change able to reach the live site, and the domain able to survive it
-- [ ] **Phase 2: Palette and Design Tokens** - Re-point every `--global-*` token so all seven pages land on warm paper in one commit
+- [x] **Phase 2: Palette and Design Tokens** - Re-point every `--global-*` token so all seven pages land on warm paper in one commit (completed 2026-09-14)
 - [ ] **Phase 3: Typography** - Serif body, companion face, real hierarchy, and a name that renders in one typeface
 - [ ] **Phase 4: Notebook Art Style** - Paper texture and a small, defended vocabulary of notebook marks
 - [ ] **Phase 5: Shared Page Components** - Style the one entry vocabulary the four list pages already share
@@ -74,10 +74,10 @@ Research corrected three premises. (1) There are **30** `--global-*` tokens, not
 **Plans**: 4 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Wave 0 tooling: `contrast.js`, the phase `verify.sh` with the 30 token names read off the live CSS, and the `CLAUDE.md` fork note (TOKEN-01, TOKEN-03, TOKEN-06)
-- [ ] 02-02-PLAN.md — `_sass/_tokens.scss`: primitives + written cap + all 30 `--global-*` under `:root, html[data-theme="dark"]`; wire into `main.scss` (TOKEN-01, TOKEN-02, TOKEN-05, TOKEN-06, GROUND-01)
-- [ ] 02-03-PLAN.md — `_sass/_custom.scss`: strip all `opacity` and literals; the six gem overrides; body-copy underline (TOKEN-01, TOKEN-02, TOKEN-03, GROUND-04)
-- [ ] 02-04-PLAN.md — Three `_config.yml` flags; one push; live-CDN proof; human seven-page sweep (TOKEN-04, TOKEN-05, GROUND-01, GROUND-04)
+- [x] 02-01-PLAN.md — Wave 0 tooling: `contrast.js`, the phase `verify.sh` with the 30 token names read off the live CSS, and the `CLAUDE.md` fork note (TOKEN-01, TOKEN-03, TOKEN-06)
+- [x] 02-02-PLAN.md — `_sass/_tokens.scss`: primitives + written cap + all 30 `--global-*` under `:root, html[data-theme="dark"]`; wire into `main.scss` (TOKEN-01, TOKEN-02, TOKEN-05, TOKEN-06, GROUND-01)
+- [x] 02-03-PLAN.md — `_sass/_custom.scss`: strip all `opacity` and literals; the six gem overrides; body-copy underline (TOKEN-01, TOKEN-02, TOKEN-03, GROUND-04)
+- [x] 02-04-PLAN.md — Three `_config.yml` flags; one push; live-CDN proof; human seven-page sweep (TOKEN-04, TOKEN-05, GROUND-01, GROUND-04)
 
 ### Phase 3: Typography
 
@@ -214,7 +214,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | Phase                                                | Plans Complete | Status      | Completed |
 | ---------------------------------------------------- | -------------- | ----------- | --------- |
 | 1. Deployment Guardrails                             | 5/5            | Complete    | 2026-09-13 |
-| 2. Palette and Design Tokens                         | 3/4            | In Progress | -         |
+| 2. Palette and Design Tokens                         | 4/4            | Complete    | 2026-09-14 |
 | 3. Typography                                        | 0/TBD          | Not started | -         |
 | 4. Notebook Art Style                                | 0/TBD          | Not started | -         |
 | 5. Shared Page Components                            | 0/TBD          | Not started | -         |

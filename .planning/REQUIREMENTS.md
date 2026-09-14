@@ -19,12 +19,12 @@ Nothing else in this milestone is safely recoverable without these. They come fi
 
 ### Design Tokens
 
-- [ ] **TOKEN-01**: The full palette is defined by redeclaring the gem's `--global-*` CSS custom properties, so one change repaints every page, the navbar, the footer and code blocks together — no gem file is shadowed.
-- [ ] **TOKEN-02**: A type scale and spacing rhythm exist as named tokens rather than values repeated across rules.
-- [ ] **TOKEN-03**: No text element is de-emphasised with `opacity`. `_sass/_custom.scss` currently does this on `.entry-year`, `.entry-meta` and `.entry-status`, which compounds against a light ground and fails contrast even with dark ink.
-- [ ] **TOKEN-04**: The dark-mode toggle is gone — `enable_darkmode: false`, in the same change as the token work, because `html[data-theme="dark"]` outranks `:root` and would otherwise win.
-- [ ] **TOKEN-05**: Tokens are structured so a dark theme can be reintroduced later without restructuring. Dark mode is deferred, not rejected.
-- [ ] **TOKEN-06**: The token vocabulary is deliberately capped, so adding ornament later is a visible, reviewable act rather than a drift.
+- [x] **TOKEN-01**: The full palette is defined by redeclaring the gem's `--global-*` CSS custom properties, so one change repaints every page, the navbar, the footer and code blocks together — no gem file is shadowed.
+- [x] **TOKEN-02**: A type scale and spacing rhythm exist as named tokens rather than values repeated across rules.
+- [x] **TOKEN-03**: No text element is de-emphasised with `opacity`. `_sass/_custom.scss` currently does this on `.entry-year`, `.entry-meta` and `.entry-status`, which compounds against a light ground and fails contrast even with dark ink.
+- [x] **TOKEN-04**: The dark-mode toggle is gone — `enable_darkmode: false`, in the same change as the token work, because `html[data-theme="dark"]` outranks `:root` and would otherwise win.
+- [x] **TOKEN-05**: Tokens are structured so a dark theme can be reintroduced later without restructuring. Dark mode is deferred, not rejected.
+- [x] **TOKEN-06**: The token vocabulary is deliberately capped, so adding ornament later is a visible, reviewable act rather than a drift.
 
 ### Typography
 
@@ -36,10 +36,10 @@ Nothing else in this milestone is safely recoverable without these. They come fi
 
 ### Ground and Art Style
 
-- [ ] **GROUND-01**: A warm paper ground applies across all seven pages.
+- [x] **GROUND-01**: A warm paper ground applies across all seven pages.
 - [ ] **GROUND-02**: Texture is achieved by a technique that is cheap to render on mobile.
 - [ ] **GROUND-03**: A small, named vocabulary of notebook marks exists — rules, marginalia, annotation — each with a written one-sentence justification.
-- [ ] **GROUND-04**: Links are underlined. Every warm ink-like accent colour fails the 3:1 contrast-against-body-text test, so colour alone cannot distinguish a link.
+- [x] **GROUND-04**: Links are underlined. Every warm ink-like accent colour fails the 3:1 contrast-against-body-text test, so colour alone cannot distinguish a link.
 - [ ] **GROUND-05**: Decorative marks carry no meaning that is unavailable to a reader who cannot see them.
 
 ### Page Presentation
@@ -105,21 +105,21 @@ Populated during roadmap creation (2026-09-13). Phase definitions live in `.plan
 | SAFE-02 | Phase 1 | Complete |
 | SAFE-03 | Phase 1 | Complete |
 | SAFE-04 | Phase 1 | Complete |
-| TOKEN-01 | Phase 2 | Pending |
-| TOKEN-02 | Phase 2 | Pending |
-| TOKEN-03 | Phase 2 | Pending |
-| TOKEN-04 | Phase 2 | Pending |
-| TOKEN-05 | Phase 2 | Pending |
-| TOKEN-06 | Phase 2 | Pending |
+| TOKEN-01 | Phase 2 | Complete |
+| TOKEN-02 | Phase 2 | Complete |
+| TOKEN-03 | Phase 2 | Complete |
+| TOKEN-04 | Phase 2 | Complete |
+| TOKEN-05 | Phase 2 | Complete |
+| TOKEN-06 | Phase 2 | Complete |
 | TYPE-01 | Phase 3 | Pending |
 | TYPE-02 | Phase 3 | Pending |
 | TYPE-03 | Phase 3 | Pending |
 | TYPE-04 | Phase 3 | Pending |
 | TYPE-05 | Phase 3 | Pending |
-| GROUND-01 | Phase 2 | Pending |
+| GROUND-01 | Phase 2 | Complete |
 | GROUND-02 | Phase 4 | Pending |
 | GROUND-03 | Phase 4 | Pending |
-| GROUND-04 | Phase 2 | Pending |
+| GROUND-04 | Phase 2 | Complete |
 | GROUND-05 | Phase 4 | Pending |
 | PAGE-01 | Phase 5 | Pending |
 | PAGE-02 | Phase 6 | Pending |
