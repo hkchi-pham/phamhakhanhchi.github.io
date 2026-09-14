@@ -101,7 +101,7 @@
   --underline-thickness: 1px; /* GROUND-04: body-copy links are underlined */
   --underline-thickness-hover: 2px; /* hover thickens the stroke; the colour holds */
   --underline-offset: 0.18em; /* clears the Vietnamese below-baseline marks in "Phạm Hà Khánh Chi": ạ, ợ */
-  --focus-ring-width: 2px; /* >= 2px, and never `outline: none` */
+  --focus-ring-width: 2px; /* >= 2px, and the ring is never removed — see the negative assertion in this phase's verify.sh */
   --focus-ring-offset: 2px;
 }
 
