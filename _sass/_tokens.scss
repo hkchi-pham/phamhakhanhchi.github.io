@@ -104,3 +104,98 @@
   --focus-ring-width: 2px; /* >= 2px, and never `outline: none` */
   --focus-ring-offset: 2px;
 }
+
+/* ---------------------------------------------------------------------------
+ * TIER 2 — the semantic layer: all 30 of the gem's --global-* custom
+ * properties, re-pointed onto the Tier 1 primitives above.
+ *
+ * WHY THE SELECTOR LIST IS LOAD-BEARING — do NOT collapse it to `:root`.
+ * Specificity is computed per selector in a list, not for the list as a whole.
+ * For an element matching html[data-theme="dark"] our winning selector is
+ * (0,1,1) — identical to the gem's own dark block in _themes.scss, which is
+ * compiled into main.css unconditionally whatever `enable_darkmode` says — and
+ * ours is emitted later in the same stylesheet, so it wins on source order. A
+ * plain `:root` here is (0,1,0) and would LOSE to the gem's dark block. This
+ * is what makes forcing data-theme="dark" in DevTools change no colour;
+ * flipping the config flag alone does not do it.
+ *
+ * color-scheme is re-declared for the same reason: the gem's dark block sets
+ * `color-scheme: dark`, which repaints scrollbars and form controls even when
+ * every colour token is overridden.
+ *
+ * EVERY VALUE HERE IS A var() REFERENCE TO A TIER 1 PRIMITIVE. No hex, rgba,
+ * colour keyword or color-mix may appear in this block: a literal here would
+ * defeat criterion 5 and TOKEN-05 both, because a later dark theme must be
+ * addable by re-pointing primitives inside one new block and nothing else.
+ *
+ * The 30 names were read off the SERVED main.css on 2026-09-14 and are
+ * recorded in .planning/phases/02-palette-and-design-tokens/verify.sh. The gem
+ * has 30 on :root and 29 in its dark block (it omits --global-highlight-color);
+ * 29 is the number that got copied into ROADMAP.md, STACK.md and 02-CONTEXT.md,
+ * and it is wrong.
+ *
+ * NOT declared here, deliberately: --max-content-width (injected as an inline
+ * <style> from site.max_width, and Phase 3's decision) and --deploy-proof (a
+ * retained Phase 1 deploy canary living in _custom.scss — a token audit is
+ * exactly the thing that would wrongly delete it).
+ * ------------------------------------------------------------------------ */
+:root,
+html[data-theme="dark"] {
+  color-scheme: light;
+
+  /* Surfaces. Cards are flush with the body on purpose — same ground, no
+     third paper tone, structure carried by rules instead of tonal bands. */
+  --global-bg-color: var(--paper-100); /* body, navbar, dropdown menus */
+  --global-card-bg-color: var(--paper-100);
+  --global-code-bg-color: var(--paper-200); /* pre, code — the recess ground */
+
+  /* Text. */
+  --global-text-color: var(--ink-800);
+  --global-text-color-light: var(--ink-500); /* was #828282 = 3.57:1, which fails AA for body text */
+
+  /* Accent — one colour, used for both rest and hover, which is the cap in
+     practice. Links are underlined because the accent is only 2.24:1 against
+     the body ink and colour alone cannot carry them. */
+  --global-theme-color: var(--accent-600);
+  --global-hover-color: var(--accent-600);
+  --global-hover-text-color: var(--paper-100); /* text on an accent fill, e.g. .btn-outline-primary:hover on the CV page */
+  --global-highlight-color: var(--accent-600); /* search-term highlight; absent from the gem's dark block */
+  --global-divider-color: var(--rule-200); /* decorative furniture only: hr, table and dropdown borders, navbar and footer edges */
+
+  /* Footer — a recess, not the gem's dark-grey bar (#1c1c1d). */
+  --global-footer-bg-color: var(--paper-200);
+  --global-footer-text-color: var(--ink-700);
+  --global-footer-link-color: var(--ink-900);
+
+  /* Back-to-top button. Enabled at _config.yml back_to_top: true. */
+  --global-back-to-top-bg-color: var(--ink-800);
+  --global-back-to-top-text-color: var(--paper-100); /* 13.90:1 on --ink-800 */
+
+  /* Newsletter block and the distill layout. */
+  --global-newsletter-bg-color: var(--paper-200);
+  --global-newsletter-text-color: var(--ink-800);
+  --global-distill-app-color: var(--ink-500);
+
+  /* Callouts — tip / warning / danger.
+     ZERO CONSUMERS TODAY: no page on this site renders one. They are
+     deliberately monochrome, derived from the paper and ink primitives rather
+     than the usual green/amber/red, and are graded by BAR WEIGHT instead of by
+     hue: --rule-500 (lightest) -> --ink-500 -> --ink-900 (heaviest).
+     If any page ever introduces a callout, Phase 8 must re-check that the
+     three are still distinguishable from one another WITHOUT colour, since
+     hue is not doing that work here. */
+  --global-tip-block: var(--rule-500);
+  --global-tip-block-bg: var(--paper-200);
+  --global-tip-block-text: var(--ink-800);
+  --global-tip-block-title: var(--ink-900);
+
+  --global-warning-block: var(--ink-500);
+  --global-warning-block-bg: var(--paper-200);
+  --global-warning-block-text: var(--ink-800);
+  --global-warning-block-title: var(--ink-900);
+
+  --global-danger-block: var(--ink-900);
+  --global-danger-block-bg: var(--paper-200);
+  --global-danger-block-text: var(--ink-800);
+  --global-danger-block-title: var(--ink-900);
+}
