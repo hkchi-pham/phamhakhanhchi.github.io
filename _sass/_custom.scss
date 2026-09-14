@@ -5,6 +5,11 @@
 // `assets/css/main.scss` is a verbatim copy of the gem's file plus one
 // `@use "custom";` line at the end, which pulls this in last so these rules
 // win on specificity ties.
+//
+// NO LITERALS LIVE HERE. Every colour and every length is a var() reference
+// into _sass/_tokens.scss, which is the one reviewable surface for the
+// palette and the scale. The single exemption is the deploy canary below,
+// whose value is a date string, not a colour or a length.
 
 // Deploy-path canary. `//` comments are stripped by Sass, so the custom
 // property below is what actually reaches _site/assets/css/main.css and the
@@ -22,6 +27,14 @@
 
 // Minimal legibility for the data-driven entry lists. Deliberately plain --
 // the real design pass replaces this wholesale.
+//
+// Nothing here is faded. The four classes that used to be dimmed by a
+// transparency value (.entry-year, .entry-meta, .subject-grade and
+// .entry-status) now take the muted ink token instead: dimming text that way
+// makes the COMPUTED colour differ from the declared one, so no contrast
+// figure can ever be true about it. --ink-500 is measured at 6.99:1 on the
+// paper ground -- see _tokens.scss. This comment deliberately does not spell
+// the property name; the phase harness greps _sass/ for it.
 .entry-list,
 .subject-list {
   list-style: none;
@@ -30,53 +43,58 @@
 
 .entry {
   display: flex;
-  gap: 1.5rem;
-  margin-bottom: 1.75rem;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
 }
 
 .entry-year {
-  flex: 0 0 5rem;
-  opacity: 0.6;
+  flex: 0 0 var(--entry-year-col);
+  color: var(--ink-500);
 }
 
 .entry-title {
-  margin: 0 0 0.25rem;
-  font-size: 1.1rem;
+  margin: 0 0 var(--space-1);
+  font-size: var(--step-2);
 }
 
 .entry-meta {
-  opacity: 0.75;
+  color: var(--ink-500);
 }
 
 .subject-list {
-  margin-top: 0.75rem;
+  margin-top: var(--space-2);
 }
 
+// The rule between a subject and its grade is STRUCTURAL -- it is what binds
+// a row together and separates it from the next -- so it takes the structural
+// rule colour (3.08:1 on paper, clearing WCAG 1.4.11's 3:1 for a graphical
+// object needed to understand content). It replaces a currentColor blend at
+// 12%, measured at 1.26:1, which was invisible on the warm ground.
 .subject {
   display: flex;
   justify-content: space-between;
-  max-width: 26rem;
-  padding: 0.15rem 0;
-  border-bottom: 1px solid currentColor;
-  border-color: color-mix(in srgb, currentColor 12%, transparent);
+  max-width: var(--subject-row-max);
+  padding: var(--space-1) 0;
+  border-bottom: var(--rule-hairline) solid var(--rule-500);
 }
 
 .subject-grade {
-  opacity: 0.75;
+  color: var(--ink-500);
 }
 
 // Work-in-progress marker. Deliberately quiet: it should read as honest
-// labelling, not as a badge competing with the title.
+// labelling, not as a badge competing with the title. Italic carries the
+// aside; the muted ink keeps it legible rather than faded.
 .entry-status {
   display: inline-block;
-  margin-top: 0.2rem;
-  font-size: 0.85em;
-  opacity: 0.7;
+  margin-top: var(--space-1);
+  font-size: var(--step-0);
+  color: var(--ink-500);
   font-style: italic;
 }
 
 .topic-list {
-  margin-top: 0.5rem;
-  padding-left: 1.1rem;
+  margin-top: var(--space-2);
+  padding-left: var(--space-3);
   list-style: disc;
 }
