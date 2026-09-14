@@ -307,7 +307,7 @@ check "TOKEN-03  muted ink #5c5349 on paper #faf6ee clears 4.5:1" \
 echo
 
 echo "TOKEN-04 / TOKEN-05 — dark mode off, and defused in CSS as well as config"
-check "TOKEN-04  _config.yml sets enable_darkmode: false  [red until plan 02-04]" \
+check "TOKEN-04  _config.yml sets enable_darkmode: false" \
   "grep -qE '^enable_darkmode:[[:space:]]*false' _config.yml"
 check "TOKEN-04/05  _tokens.scss merges :root, with html[data-theme=dark]  [red until plan 02-02]" \
   'root_dark_pair'
@@ -372,9 +372,9 @@ check "Override  no outline: none anywhere in _sass/  [must stay true through pl
 echo
 
 echo "Supporting config flags and the retained deploy canary"
-check "Support   _config.yml sets enable_progressbar: false  [red until plan 02-04]" \
+check "Support   _config.yml sets enable_progressbar: false" \
   "grep -qE '^enable_progressbar:[[:space:]]*false' _config.yml"
-check "Support   _config.yml sets footer_fixed: false  [red until plan 02-04]" \
+check "Support   _config.yml sets footer_fixed: false" \
   "grep -qE '^footer_fixed:[[:space:]]*false' _config.yml"
 # Phase 1 decision, restated here because a token audit is exactly the thing
 # that would delete it: --deploy-proof is an UNREFERENCED custom property kept
