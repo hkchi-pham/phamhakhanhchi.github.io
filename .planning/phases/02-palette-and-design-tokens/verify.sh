@@ -478,9 +478,9 @@ if [ "$LIVE" -eq 1 ]; then
   # a purge silently strips must turn a row red here instead of reaching a
   # verifier. Every grep tolerates optional whitespace: the served file is
   # minified, and the authored spacing is not what ships.
-  check "Live      served main.css keeps the focus ring  [red until plan 02-05 deploy]" \
+  check "Live      served main.css keeps the focus ring" \
     'grep -qE -- ":focus-visible\{outline:[[:space:]]*var\(--focus-ring-width\)" "$LIVE_CSS"'
-  check "Live      served focus ring carries the offset  [red until plan 02-05 deploy]" \
+  check "Live      served focus ring carries the offset" \
     'grep -qE -- "outline-offset:[[:space:]]*var\(--focus-ring-offset\)" "$LIVE_CSS"'
   check "Live      served main.css: pre,code painted in --ink-800" \
     'grep -qE -- "pre,[[:space:]]*code\{color:[[:space:]]*var\(--ink-800\)" "$LIVE_CSS"'
@@ -490,7 +490,7 @@ if [ "$LIVE" -eq 1 ]; then
     'grep -qE -- "\.hoverable:hover\{box-shadow:[[:space:]]*none" "$LIVE_CSS"'
   check "Live      served main.css: .navbar opacity 1 (gem ships .95)" \
     'grep -qE -- "\.navbar\{opacity:[[:space:]]*1[;}]" "$LIVE_CSS"'
-  check "Live      served main.css: heading ink keeps h5,h6  [red until plan 02-05 deploy]" \
+  check "Live      served main.css: heading ink keeps h5,h6" \
     'grep -qE -- "h4,h5,h6,\.post-title\{color:[[:space:]]*var\(--ink-900\)" "$LIVE_CSS"'
   check "Live      served main.css: body-copy links underlined" \
     'grep -qE -- "\.post article a\{text-decoration:[[:space:]]*underline" "$LIVE_CSS"'
