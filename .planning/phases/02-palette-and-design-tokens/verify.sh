@@ -377,6 +377,18 @@ check "Override  :focus-visible carries a visible outline" \
 # restyling :focus-visible is the classic way to lose keyboard accessibility.
 check "Override  no outline: none anywhere in _sass/  [must stay true through plan 02-03]" \
   '! grep -rqE "outline:[[:space:]]*none" _sass/'
+# purgecss.config.js is a VERIFIED PHASE ARTIFACT, not build furniture. The
+# focus ring above was correct in source and every static row here confirmed
+# it, and it still did not reach production: PurgeCSS strips a bare
+# pseudo-class selector because it has no tag or class node in the built HTML
+# for the default extractor to match. A source-only check is therefore not
+# evidence that a design rule shipped. These two rows assert the safelist that
+# carries the rule through the purge; the --live block below asserts the
+# outcome in the stylesheet the CDN actually serves.
+check "Purge     purgecss.config.js safelists \":focus-visible\" WITH the leading colon" \
+  'grep -qF -- "\":focus-visible\"" purgecss.config.js'
+check "Purge     purgecss.config.js safelists h5 and h6 (heading ink keeps all six levels)" \
+  'grep -qF -- "\"h5\"" purgecss.config.js && grep -qF -- "\"h6\"" purgecss.config.js'
 echo
 
 echo "Supporting config flags and the retained deploy canary"
@@ -398,8 +410,11 @@ check "Regress   node test/style_contract.js exits 0" \
 # --end-of-line auto is mandatory locally. core.autocrlf=true makes a bare
 # --check report line-ending-only false failures; CI runs on Linux/LF and sees
 # only real ones. Never run `npx prettier . --write` on this checkout.
-check "Regress   npx prettier _sass _config.yml CLAUDE.md --check --end-of-line auto" \
-  'npx prettier _sass _config.yml CLAUDE.md --check --end-of-line auto'
+# Widened in plan 02-05 (never narrowed): purgecss.config.js joined the paths
+# this phase edits, and prettier.yml runs `prettier . --check` with NO path
+# filter, so an unformatted config here fails the push that carries it.
+check "Regress   npx prettier _sass _config.yml CLAUDE.md purgecss.config.js --check --end-of-line auto" \
+  'npx prettier _sass _config.yml CLAUDE.md purgecss.config.js --check --end-of-line auto'
 check "Tool      node .planning/tools/contrast.js --selftest exits 0" \
   'node .planning/tools/contrast.js --selftest'
 echo
@@ -452,6 +467,33 @@ if [ "$LIVE" -eq 1 ]; then
   # that it was written.
   check "Live      served main.css contains sticky-bottom (PurgeCSS restored it)" \
     'grep -q -- "sticky-bottom" "$LIVE_CSS"'
+  echo
+
+  # ---- the six 02-03 overrides, as a GROUP, in the SERVED stylesheet -------
+  # This is the served-CSS inspection the phase was missing. _custom.scss is
+  # checked in source in the static block above; these eight rows prove each
+  # of those six gem-behaviour overrides actually survived Sass, PurgeCSS and
+  # the CDN. The focus ring did not — it was correct in source, green on every
+  # static row, and absent from production for a full day. A design rule that
+  # a purge silently strips must turn a row red here instead of reaching a
+  # verifier. Every grep tolerates optional whitespace: the served file is
+  # minified, and the authored spacing is not what ships.
+  check "Live      served main.css keeps the focus ring  [red until plan 02-05 deploy]" \
+    'grep -qE -- ":focus-visible\{outline:[[:space:]]*var\(--focus-ring-width\)" "$LIVE_CSS"'
+  check "Live      served focus ring carries the offset  [red until plan 02-05 deploy]" \
+    'grep -qE -- "outline-offset:[[:space:]]*var\(--focus-ring-offset\)" "$LIVE_CSS"'
+  check "Live      served main.css: pre,code painted in --ink-800" \
+    'grep -qE -- "pre,[[:space:]]*code\{color:[[:space:]]*var\(--ink-800\)" "$LIVE_CSS"'
+  check "Live      served main.css: .card box-shadow none" \
+    'grep -qE -- "\.card\{box-shadow:[[:space:]]*none" "$LIVE_CSS"'
+  check "Live      served main.css: .hoverable:hover lift removed" \
+    'grep -qE -- "\.hoverable:hover\{box-shadow:[[:space:]]*none" "$LIVE_CSS"'
+  check "Live      served main.css: .navbar opacity 1 (gem ships .95)" \
+    'grep -qE -- "\.navbar\{opacity:[[:space:]]*1[;}]" "$LIVE_CSS"'
+  check "Live      served main.css: heading ink keeps h5,h6  [red until plan 02-05 deploy]" \
+    'grep -qE -- "h4,h5,h6,\.post-title\{color:[[:space:]]*var\(--ink-900\)" "$LIVE_CSS"'
+  check "Live      served main.css: body-copy links underlined" \
+    'grep -qE -- "\.post article a\{text-decoration:[[:space:]]*underline" "$LIVE_CSS"'
   echo
 
   check "Live      home HTML has zero light-toggle occurrences" \

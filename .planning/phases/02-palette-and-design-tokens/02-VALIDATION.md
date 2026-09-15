@@ -55,6 +55,9 @@ created: 2026-09-14
 | 2-04-01 | 04   | 4    | TOKEN-04, TOKEN-05         | static grep   | three flags `false`, `max_width` untouched, Prettier + style contract pass, full static block green       | ✅          | ✅ green |
 | 2-04-02 | 04   | 4    | TOKEN-01, GROUND-01        | live          | `bash …/verify.sh --live` — 7 pages 200, served CSS greps, served HTML zero-counts                        | ✅          | ✅ green |
 | 2-04-03 | 04   | 4    | GROUND-01, GROUND-04, TOKEN-04 | **manual** | checkpoint:human-verify — see Manual-Only table                                                          | n/a         | ✅ green |
+| 2-05-01 | 05   | 5    | TOKEN-01                   | static grep   | `bash …/verify.sh` — safelist rows green, 81 static checks                                               | ✅          | ⬜ pending |
+| 2-05-02 | 05   | 5    | TOKEN-01, GROUND-04        | live          | `bash …/verify.sh --live` — 105 checks, served CSS holds all six overrides                               | ✅          | ⬜ pending |
+| 2-05-03 | 05   | 5    | TOKEN-01                   | **manual**    | checkpoint:human-verify — keyboard focus ring visible on two live pages                                  | n/a         | ⬜ pending |
 
 _Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky_
 
@@ -75,7 +78,7 @@ Wave 0 is plan **02-01**, which runs alone in Wave 1 for exactly this reason. Ev
 
 ## Manual-Only Verifications
 
-All four sit in plan 02-04 Task 3 as one blocking `checkpoint:human-verify`, batched to avoid verification fatigue. Each is manual for a stated environmental reason, not for convenience.
+The first four sit in plan 02-04 Task 3 as one blocking `checkpoint:human-verify`, batched to avoid verification fatigue. Each is manual for a stated environmental reason, not for convenience. The fifth row was added by plan 02-05 and sits in that plan's Task 3: it is a separate checkpoint because the behaviour it looks at was not deployed when 02-04's sweep ran, and 02-04's approved sweep must not be re-requested.
 
 | Behavior                                                     | Requirement          | Why Manual                                                                                                                                                             | Test Instructions                                                                                                                                                   |
 | ------------------------------------------------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -83,6 +86,7 @@ All four sit in plan 02-04 Task 3 as one blocking `checkpoint:human-verify`, bat
 | Criterion 2, second clause — forcing `data-theme="dark"` changes nothing | TOKEN-04, TOKEN-05   | Requires a live DOM and a DevTools console. The *presence* of the mechanism is asserted statically; only its *effect* needs a browser.                                    | DevTools console: `document.documentElement.setAttribute('data-theme','dark')`. Nothing may change colour. A dark background is a real failure — report, do not approve.  |
 | Criterion 3 — links identifiable in a greyscale screenshot     | GROUND-04            | Greyscale perception of a rendered page. No headless tooling exists here.                                                                                              | DevTools → Rendering → Emulate vision deficiencies → Achromatopsia, on the home page and one list page. Body-copy links underlined; navbar/footer links deliberately not. |
 | Register sanity — "deliberate recolour" vs "broken"            | (phase goal)         | Judgement, not measurement.                                                                                                                                            | One sentence from the reviewer. Plain is expected at this stage (type is still gem default); broken is not.                                                            |
+| Keyboard focus ring is visible and clear of the glyphs         | TOKEN-01             | Requires a real keyboard, a real browser and an eye: the served-CSS grep proves the rule is deployed, not that the ring reads as a ring against warm paper. Nothing on this machine renders a page. | Plan 02-05 Task 3 (row `2-05-03`), added after 02-04's sweep. Tab — do not click — through `https://phamhakhanhchi.com/` and `https://phamhakhanhchi.com/cv/`. Check E ring present on navbar and body-copy links; check F outline clears the glyphs and the Vietnamese marks (`ạ`, `ợ`); check G ring reads on the CV buttons. |
 
 **Two things that look manual but are NOT, and must be automated:**
 
