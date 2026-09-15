@@ -71,13 +71,14 @@ Plans:
 **Notes**: GROUND-04 (links underlined) lands here rather than with the art style, because re-pointing `--global-theme-color` to a warm ink accent is what creates the hazard — every warm ink-like accent fails the 3:1-against-body-text test, so the underline must ship in the same commit as the accent. `enable_progressbar: false` and the `footer_fixed` / footer-token decision are supporting work in this phase. TOKEN-04 is here, not in Phase 1, by hard constraint.
 
 Research corrected three premises. (1) There are **30** `--global-*` tokens, not 29 — this document, `STACK.md` and CONTEXT were all wrong; the dark block has 29 because it omits `--global-highlight-color`. (2) `enable_darkmode: false` alone does **not** satisfy criterion 2 — the flag is a Liquid gate that drops the toggle and `theme.js`, but the gem's `html[data-theme="dark"]` CSS block is compiled into `main.css` unconditionally; the fix is to emit the semantic map under the selector list `:root, html[data-theme="dark"]`, which ties (0,1,1) and wins on source order, and which is also the TOKEN-05 hook. (3) Six things tokens cannot reach need hand-written rules: `pre`/`code` colour, `.card`'s hardcoded box-shadow literal, `.navbar { opacity: .95 }`, heading ink, the body-copy underline, and `:focus-visible`. Verification is a shell harness plus a Node contrast calculator; **the Playwright visual suite must not be run or updated** (deleted workflow, `/al-folio` baseurl, no baseline for this site).
-**Plans**: 4 plans
+**Plans**: 5 plans (4 planned + 1 gap closure)
 
 Plans:
 - [x] 02-01-PLAN.md — Wave 0 tooling: `contrast.js`, the phase `verify.sh` with the 30 token names read off the live CSS, and the `CLAUDE.md` fork note (TOKEN-01, TOKEN-03, TOKEN-06)
 - [x] 02-02-PLAN.md — `_sass/_tokens.scss`: primitives + written cap + all 30 `--global-*` under `:root, html[data-theme="dark"]`; wire into `main.scss` (TOKEN-01, TOKEN-02, TOKEN-05, TOKEN-06, GROUND-01)
 - [x] 02-03-PLAN.md — `_sass/_custom.scss`: strip all `opacity` and literals; the six gem overrides; body-copy underline (TOKEN-01, TOKEN-02, TOKEN-03, GROUND-04)
 - [x] 02-04-PLAN.md — Three `_config.yml` flags; one push; live-CDN proof; human seven-page sweep (TOKEN-04, TOKEN-05, GROUND-01, GROUND-04)
+- [ ] 02-05-PLAN.md — Gap closure (02-VERIFICATION.md): safelist the `:focus-visible` ring past PurgeCSS, redeploy, and add `--live` rows grepping the served CSS for all six 02-03 overrides (TOKEN-01, GROUND-04)
 
 ### Phase 3: Typography
 
