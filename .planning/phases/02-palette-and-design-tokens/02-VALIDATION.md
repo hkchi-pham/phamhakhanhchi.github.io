@@ -55,13 +55,13 @@ created: 2026-09-14
 | 2-04-01 | 04   | 4    | TOKEN-04, TOKEN-05         | static grep   | three flags `false`, `max_width` untouched, Prettier + style contract pass, full static block green       | ✅          | ✅ green |
 | 2-04-02 | 04   | 4    | TOKEN-01, GROUND-01        | live          | `bash …/verify.sh --live` — 7 pages 200, served CSS greps, served HTML zero-counts                        | ✅          | ✅ green |
 | 2-04-03 | 04   | 4    | GROUND-01, GROUND-04, TOKEN-04 | **manual** | checkpoint:human-verify — see Manual-Only table                                                          | n/a         | ✅ green |
-| 2-05-01 | 05   | 5    | TOKEN-01                   | static grep   | `bash …/verify.sh` — safelist rows green, 81 static checks                                               | ✅          | ⬜ pending |
-| 2-05-02 | 05   | 5    | TOKEN-01, GROUND-04        | live          | `bash …/verify.sh --live` — 105 checks, served CSS holds all six overrides                               | ✅          | ⬜ pending |
-| 2-05-03 | 05   | 5    | TOKEN-01                   | **manual**    | checkpoint:human-verify — keyboard focus ring visible on two live pages                                  | n/a         | ⬜ pending |
+| 2-05-01 | 05   | 5    | TOKEN-01                   | static grep   | `bash …/verify.sh` — safelist rows green, 81 static checks                                               | ✅          | ✅ green |
+| 2-05-02 | 05   | 5    | TOKEN-01, GROUND-04        | live          | `bash …/verify.sh --live` — 105 checks, served CSS holds all six overrides                               | ✅          | ✅ green |
+| 2-05-03 | 05   | 5    | TOKEN-01                   | **manual**    | checkpoint:human-verify — keyboard focus ring visible on two live pages                                  | n/a         | ✅ green |
 
 _Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky_
 
-**Sampling continuity check:** no three consecutive tasks lack an `<automated>` verify. The only manual task, `2-04-03`, is the last task of the last plan and is preceded by two fully automated tasks.
+**Sampling continuity check:** no three consecutive tasks lack an `<automated>` verify. The manual tasks — `2-04-03` and, added by the gap-closure plan, `2-05-03` — are each the last task of their plan and are each preceded by two fully automated tasks.
 
 ---
 
@@ -108,6 +108,18 @@ The reviewer ran all four checks against the deployed site after plan 02-04 Task
 
 - The flush, shadowless projects `.card` reads as deliberate. The fallback — a `--rule-200` hairline boundary in Phase 4/5 — is **not** needed, and a re-added shadow was never the fix.
 - `--underline-offset: 0.18em` clears `ạ` and `ợ`. It was a computed guess that had never been rendered; it is now a measured-by-eye value. No token change follows.
+
+### Checkpoint verdict — row `2-05-03`, 2026-09-15: **APPROVED**
+
+The reviewer tabbed — keyboard only, no mouse — through `https://phamhakhanhchi.com/` and `https://phamhakhanhchi.com/cv/` after plan 02-05 Task 2's single push (`482c740`, `gh-pages` `2e763c1` -> `54483db`). This checkpoint asked about keyboard focus **only**; 02-04's seven-page sweep was already approved and was deliberately not re-requested.
+
+| Check | Question | Verdict | Notes |
+| --- | --- | --- | --- |
+| E | Is the ring there at all? | APPROVED | The site's own outline appears on navbar links and on body-copy links when focus arrives by keyboard. The rule survived PurgeCSS and is doing visible work, not just present in the stylesheet. |
+| F | Does it sit clear of the glyphs? | APPROVED | The 2px offset holds a visible gap between the outline and the text. No collision with the Vietnamese marks below the baseline (`ạ`, `ợ`) in "Phạm Hà Khánh Chi". |
+| G | Does it read on the CV buttons? | APPROVED | The ring surrounds the whole download/view button, is clearly visible against it, and is not clipped by the button edge. |
+
+**No token change follows.** `--focus-ring-width: 2px` and `--focus-ring-offset: 2px` stand exactly as shipped; none of the three fallbacks the checkpoint offered ("too tight", "too faint", "invisible on the buttons") fired. This closes the last gap `02-VERIFICATION.md` found: 02-03 must-have #18 is now true in production and verified by eye, not only in source.
 
 ---
 
