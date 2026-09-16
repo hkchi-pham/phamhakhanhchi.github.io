@@ -19,9 +19,36 @@
   --deploy-proof: "2026-09-14 phase-02-tokens";
 }
 
-// The about layout wraps the first name in `.font-weight-bold`, which renders
-// "Phạm Hà Khánh Chi" with the family name heavier than the rest. Level it out.
-.post-title .font-weight-bold {
+// ONE NAME, ONE APPEARANCE (TYPE-03). Both of the places this site renders the
+// name wrap the FAMILY name in `.font-weight-bold`, which forces 700 -- matched
+// by the loaded 600 cut -- while the rest of the name inherits the lighter
+// weight of its container. So "Phạm" renders heavier than "Hà Khánh Chi". That
+// is the one-name-two-appearances failure TYPE-03 exists to prevent, expressed
+// in weight instead of in typeface.
+//
+//   .post-title     the home page's <h1>, inside a .font-weight-lighter header
+//   .navbar-brand   the six INNER pages' masthead link, also .font-weight-lighter
+//
+// It reads as a small step today only because Roboto is a variable font and can
+// interpolate; against discrete 400/600 cuts it is a visible jump. Both are
+// levelled here, in one rule rather than two, so the pair cannot drift apart.
+//
+// Correction to 03-CONTEXT, which says "the name appears in two places": true
+// page by page, but the two are NEVER both on screen at once. The navbar brand
+// does not render on the home page at all, and .post-title is the home page's
+// own <h1>. A visitor therefore sees exactly one of them per page, and the job
+// is to make them match ACROSS pages, not within one.
+//
+// The brand's family is declared rather than inherited by luck, so "the name is
+// Literata wherever it appears" is a grep in the served stylesheet instead of an
+// assumption. `font-weight-bold` is already in the PurgeCSS safelist and
+// .navbar-brand is in the built HTML, so both selector nodes survive purging.
+.navbar-brand {
+  font-family: var(--font-serif);
+}
+
+.post-title .font-weight-bold,
+.navbar-brand .font-weight-bold {
   font-weight: inherit;
 }
 
@@ -47,9 +74,22 @@
   margin-bottom: var(--space-4);
 }
 
+// THE REGISTER DIVISION (TYPE-02). Body copy and every heading are the serif;
+// the companion sans is the FRAME around content, never the content itself. It
+// appears on exactly FOUR classes site-wide and nowhere else: .entry-year,
+// .entry-meta and .subject-grade below, plus .nav-link in override 9. A sans
+// leaking into body-adjacent text is the register overshoot TOKEN-06's
+// two-family cap exists to prevent, so treat this list as closed.
+//
+// .entry-status is the deliberate odd one out among the four dimmed classes: it
+// declares NO font-family and so inherits var(--font-serif), keeping its italic
+// in Literata. It is an authorial aside inside an entry, not a label, and an
+// aside is the serif's job. Settled as plan 03-01 decision (A) `status-serif`;
+// the Literata 400 italic cut is requested from css2 for this rule alone.
 .entry-year {
   flex: 0 0 var(--entry-year-col);
   color: var(--ink-500);
+  font-family: var(--font-sans);
 }
 
 .entry-title {
@@ -59,6 +99,7 @@
 
 .entry-meta {
   color: var(--ink-500);
+  font-family: var(--font-sans);
 }
 
 .subject-list {
@@ -80,11 +121,15 @@
 
 .subject-grade {
   color: var(--ink-500);
+  font-family: var(--font-sans);
 }
 
 // Work-in-progress marker. Deliberately quiet: it should read as honest
 // labelling, not as a badge competing with the title. Italic carries the
 // aside; the muted ink keeps it legible rather than faded.
+//
+// No font-family, on purpose -- see the register division note above. This is
+// the one dimmed class that stays in the serif.
 .entry-status {
   display: inline-block;
   margin-top: var(--space-1);
@@ -100,14 +145,16 @@
 }
 
 // ===========================================================================
-// Six gem behaviours no token can reach.
+// Nine gem behaviours no token can reach.
 //
 // Everything above this line is this site's own CSS. Everything below is an
 // OVERRIDE of a rule shipped by al_folio_core or by its prebuilt Tailwind,
 // each one named with its source so a later reader can tell a correction from
 // a design choice. Re-pointing a token cannot fix any of them: three are
 // hardcoded literals in the gem, two are properties no --global-* name
-// controls, and one is a rule the gem never wrote at all.
+// controls, one is a rule the gem never wrote at all, and the last three --
+// 7 to 9, added in Phase 3 -- are defaults in the prebuilt Tailwind's
+// @layer base or in the gem's main.css that no --global-* name exposes.
 //
 // Why none of these needs !important. The gem's prebuilt
 // assets/css/tailwind.css is entirely inside @layer; main.css, which is what
@@ -122,6 +169,14 @@
 //    block renders in the link accent. The accent must mean exactly one
 //    thing: this is interactive. The recess GROUND for these two comes from
 //    --global-code-bg-color, already re-pointed in plan 02-02.
+//
+//    NO FAMILY is declared for pre/code, here or anywhere, and that is a
+//    decision rather than an omission. main.css gives them no font-family at
+//    all, and the gem's only `Iosevka Fixed` declaration targets .typogram,
+//    which no page on this site renders -- an override of it would be purged
+//    as dead source anyway. Code already resolves to the browser's monospace
+//    default, which is the intended result. _tokens.scss's two-family cap
+//    comment records the same decision from the token side.
 pre,
 code {
   color: var(--ink-800);
@@ -212,4 +267,113 @@ h6,
 :focus-visible {
   outline: var(--focus-ring-width) solid var(--ink-900);
   outline-offset: var(--focus-ring-offset);
+}
+
+// 7. THE WHOLE SITE IS THE SERIF (TYPE-02). The gem's prebuilt tailwind.css
+//    ships body{font-family:Roboto,sans-serif; font-size:1rem; font-weight:300;
+//    line-height:1.5} inside @layer base. Three facts about the four lines
+//    below, each of which is a trap:
+//
+//    (a) This wins with no !important and no added specificity, because
+//        main.css is UNLAYERED and loads last, and an unlayered normal
+//        declaration beats every layered one. Same mechanism as overrides 1-6.
+//    (b) That same base layer gives h1..h6 font-family:inherit, so this ONE
+//        declaration is also what makes every heading level serif. "Headings
+//        are serif throughout" is implemented here and only here -- there are
+//        deliberately no six per-heading font-family rules, and adding any
+//        would be duplication, not reinforcement.
+//    (c) font-weight:400 is NOT redundant. The gem asks for 300, and with only
+//        the 400 and 600 cuts loaded, 300 silently resolves to the 400 FACE --
+//        so nothing looks broken. That is exactly why it would go unnoticed if
+//        it propagated into h1/h2, where the locked 600 is the hierarchy lever.
+body {
+  font-family: var(--font-serif);
+  font-size: var(--step-1);
+  font-weight: 400;
+  line-height: var(--leading-body);
+}
+
+// 8. HIERARCHY GETS A WEIGHT LEVER, NOT ONLY A SIZE ONE. The same base layer
+//    ships h1,h2,h3,h4,h5,h6{font-weight:300}, and the size scale carries
+//    nothing about weight, so without the rules below every heading would
+//    render at one weight and the locked 600 would never appear. h1 and h2 take
+//    600; h3 and below take 400. That is the second lever -- alongside Phase
+//    2's heading ink in override 4 -- that Phase 7's greyscale-plus-blur test
+//    reads, and it is why the hierarchy survives when colour and size are both
+//    taken away.
+//
+//    Sizes come straight off the scale: h1 and .post-title --step-5, h2
+//    --step-4, h3 --step-3, h4 --step-2. .entry-title already reads --step-2
+//    further up and is left alone. h1 computes to 44.2px and STAYS 44.2px --
+//    criterion 1's "48px or larger" describes how to INSPECT the name (zoom in,
+//    compare the mark under a with the mark over a), not how large the h1 must
+//    be. Recorded here, in _tokens.scss, in verify.sh's header and in
+//    03-VALIDATION.md.
+//
+//    Rhythm: the gem leaves margin-top:0 with a small margin-bottom on every
+//    level, which at a 30.6px h2 puts the heading flush against the paragraph
+//    above and closer to what it FOLLOWS than to what it INTRODUCES -- the
+//    proximity reads backwards. h2..h4 take a space-scale correction. h1 and
+//    .post-title keep the gem's margins: the page title is a masthead above the
+//    column, not an in-flow heading. .entry-title's own margin shorthand is a
+//    class and outranks the tag rule, so the entry lists keep their spacing.
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: var(--leading-heading);
+}
+
+h1,
+h2 {
+  font-weight: 600;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 400;
+}
+
+h1,
+.post-title {
+  font-size: var(--step-5);
+}
+
+h2 {
+  font-size: var(--step-4);
+}
+
+h3 {
+  font-size: var(--step-3);
+}
+
+h4 {
+  font-size: var(--step-2);
+}
+
+h2,
+h3,
+h4 {
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+// 9. NAV LINKS ARE THE COMPANION SANS. Navigational furniture is a label, not
+//    prose -- the same reasoning override 5 uses to leave nav links
+//    deliberately un-underlined while body-copy links must be underlined. This
+//    is the fourth and last class that takes var(--font-sans); the closed list
+//    is in the register division note above the entry labels.
+//
+//    The gem's main.css (not Tailwind) sets .nav-link{font-weight:bolder}, and
+//    `bolder` against the loaded 400/600 cuts resolves to the real Be Vietnam
+//    Pro 600 face, so it is a genuine cut rather than a synthesised faux-bold.
+//    LEAVE IT ALONE: it is the active-nav marker Phase 2 chose precisely
+//    because it is non-colour and survives greyscale. Only the family changes
+//    here.
+.nav-link {
+  font-family: var(--font-sans);
 }
