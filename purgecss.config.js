@@ -40,5 +40,24 @@ module.exports = {
     // adds an <h5> gets heading ink without a config change.
     "h5",
     "h6",
+    // The prose-measure selector list in _sass/_custom.scss names fourteen
+    // nodes, three of which appear in NO built page on this site: <ol>,
+    // <blockquote> and <h4> (03-RESEARCH Finding 7, a tag census of all seven
+    // deployed pages). PurgeCSS prunes unused nodes out of a selector LIST and
+    // reports nothing, so without these three the measure rule ships with three
+    // of its selectors quietly missing while the source stays correct — the
+    // exact failure that cost this project a day when ":focus-visible" was
+    // stripped. Standing live proof the mechanism is biting right now:
+    // _custom.scss declares .topic-list and the SERVED main.css contains zero
+    // occurrences of it. These entries must land in the same commit as the rule
+    // that names them.
+    //
+    // Related luck worth not relying on: pre,code{color:var(--ink-800)} survives
+    // today only because the words "pre" and "code" happen to occur in page
+    // text and the default extractor matches bare tag selectors against any word
+    // token. That is not a rule. Hence explicit entries here rather than a hope.
+    "ol",
+    "blockquote",
+    "h4",
   ],
 };

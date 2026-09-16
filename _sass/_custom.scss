@@ -144,6 +144,64 @@
   list-style: disc;
 }
 
+// THE PROSE MEASURE (TYPE-04). --measure is 36rem, about 70.6 characters per
+// line at 17px Literata. The PAGE stays 930px -- _config.yml's max_width is
+// unchanged and an unlabelled green harness row watches it -- and it is the
+// PROSE that narrows. The roughly 354px left over is not waste: it is the
+// gutter Phase 4's marginalia and Phase 5's PAGE-06 will occupy. max-width
+// alone, with NO auto margins, so the column stays flush against the page's
+// left edge and the whole gutter ends up on one side.
+//
+// TWO LEVELS, and both are load-bearing:
+//   level 1  the entry pages, /cv/ and /further-reading/, whose prose is a
+//            direct child of <article>;
+//   level 2  the HOME page, whose entire body sits inside <div class="clearfix">
+//            and which a one-level list would miss completely -- silently, with
+//            the source still looking correct.
+//
+// CHILD combinators, not descendant. 03-CONTEXT asks for the measure on prose
+// inside .post article AND for .entry-list, .subject-list, .topic-list, the CV
+// blocks and tables to keep the full page width. Under a DESCENDANT selector
+// those two clauses contradict each other, because h2.entry-group-title and
+// h3.entry-title both sit inside <article>. The child combinators resolve it
+// exactly: section.entry-group > h2, .entry-body > h3, .card-body > p and the
+// subject rows are all nested under a class this list does not name, so none of
+// them is reached.
+//
+// h1.post-title and p.post-description are deliberately ABSENT. They live in
+// <header class="post-header">, a SIBLING of <article>, so the measure cannot
+// reach them and the title keeps the full page width. That is plan 03-01's
+// settled decision (B) title-full -- the gap is the decision, not an
+// oversight, and no header.post-header selector belongs in this list.
+//
+// On /cv/ and /further-reading/ a p.entry-detail IS a direct child of <article>
+// and therefore does pick up the measure. That is correct: it is prose.
+//
+// NOT collapsed into .post article > :is(p, ul, ol, ...). Shorter, and it
+// works in every browser this site supports, but PurgeCSS's selector-node
+// analysis of :is() has never been exercised on this project and its failure
+// mode is silent. The explicit list is known to degrade node by node, which a
+// safelist can correct -- and does: purgecss.config.js safelists ol, blockquote
+// and h4 in this same commit, because no built page on this site contains those
+// three tags and PurgeCSS would otherwise prune them out of the list below and
+// report nothing.
+.post article > p,
+.post article > ul,
+.post article > ol,
+.post article > blockquote,
+.post article > h2,
+.post article > h3,
+.post article > h4,
+.post article > .clearfix > p,
+.post article > .clearfix > ul,
+.post article > .clearfix > ol,
+.post article > .clearfix > blockquote,
+.post article > .clearfix > h2,
+.post article > .clearfix > h3,
+.post article > .clearfix > h4 {
+  max-width: var(--measure);
+}
+
 // ===========================================================================
 // Nine gem behaviours no token can reach.
 //
