@@ -135,12 +135,18 @@ ICONS_CSS_URL="$(grep -o 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-
 ICONS_CSS_URL="${ICONS_CSS_URL/\{\{version\}\}/7.2.0}"
 
 # Expected count of /* vietnamese */ blocks in the fonts response: one per
-# locked cut. FIVE with Literata 400 italic in the request (03-01 checkpoint
-# answer `status-serif`), FOUR without it (`status-sans`, which drops
-# `ital,`/`;1,400` from the URL and saves 26,344 B).
+# locked cut. SETTLED AT FIVE — plan 03-01's checkpoint was answered
+# `status-serif` on 2026-09-16. `.entry-status` stays Literata 400 italic, so
+# the fonts URL KEEPS the italic axis (`Literata:ital,wght@0,400;0,600;1,400`)
+# and the five locked cuts are BVP 400, BVP 600, Literata 400, Literata 600 and
+# Literata 400 italic. The italic cut's 26,344 B are bought knowingly: the
+# phase ships at 141,232 B of the 153,600 B budget — 91.9% used, 12,368 B of
+# headroom — and Phase 4 marginalia is pre-paid rather than re-paid.
 #
-# IF 03-01's CHECKPOINT ANSWERED status-sans, EDIT THIS TO 4 AND SAY SO in the
-# commit — do not leave the row silently wrong, and do not delete it.
+# The rejected alternative (`status-sans`) would have dropped `ital,` and
+# `;1,400` from the URL and made this FOUR. It was NOT chosen. The number below
+# needs no further edit; plans 03-02 and 03-03 build against five. Do not
+# delete this row, and do not renumber it to make a tally look tidier.
 VIET_BLOCKS_EXPECTED=5
 
 # check <label> <shell-expression>
@@ -293,6 +299,14 @@ check "TYPE-04  --step-5 is calc(var(--step-1) * 2.6)  [red until plan 03-02]" \
   'grep -qE -- "--step-5:[[:space:]]*calc\(var\(--step-1\)[[:space:]]*\*[[:space:]]*2\.6\)" "$TOKENS"'
 echo
 
+# Decision B of plan 03-01's checkpoint, settled 2026-09-16 as `title-full`:
+# `h1.post-title` does NOT join the measure. It lives in <header
+# class="post-header">, a SIBLING of <article>, and the measure selector list
+# stays inside `.post article` exactly as 03-CONTEXT scopes it. No
+# `header.post-header` selector joins that list in plan 03-03 — the title keeps
+# the full 930px and reads as a masthead above the column. There is therefore
+# deliberately NO row below grepping for a title-in-measure selector; its
+# absence is the assertion. Phase 6 owns hero composition and may revisit.
 echo "TYPE-04 — the measure and the two leadings"
 check "TYPE-04  --measure: 36rem is declared (576px, ~70.6 CPL at 17px Literata)  [red until plan 03-02]" \
   'grep -qE -- "--measure:[[:space:]]*36rem" "$TOKENS"'
