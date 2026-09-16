@@ -94,8 +94,14 @@ Plans:
 5. Total webfont bytes on first load are under the budget stated in this phase, measured in DevTools against the deployed site.
 
 **If work stops here**: A calm, well-set academic site on warm paper. No texture, no marginalia, no hand-drawn marks — it reads as editorial rather than as a notebook. This is the deliberate deadline fallback: if the art style has to be cut, this state ships without looking unfinished.
-**Notes**: `max_width` (the measure) and the `third_party_libraries.google_fonts.url.fonts` key are `_config.yml` edits in this phase. Typeface selection and the Vietnamese `curl` check can be done during Phase 1 or 2 — see Dependencies and Parallelism.
-**Plans**: TBD
+**Notes**: `max_width` (the measure) and the `third_party_libraries.google_fonts.url.fonts` key are `_config.yml` edits in this phase. Typeface selection and the Vietnamese `curl` check can be done during Phase 1 or 2 — see Dependencies and Parallelism. Research corrected four premises carried in 03-CONTEXT.md: the v1 Fonts API DOES serve vietnamese (the variable is the `User-Agent`, not the API version); the navbar brand does NOT render on the home page, but on the six inner pages it splits the name across two weights — an undocumented TYPE-03 hazard; the stated measure scope and its exclusion clause contradict each other under a descendant selector; and no preconnect/preload lever exists at all. The budget is stated as **153,600 bytes (150 KiB)**, against a measured 141,232 B.
+**Plans**: 4 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Wave 0: `fontbudget.js`, the phase `verify.sh`, the recorded Vietnamese `curl` proof, and the `.entry-status` decision checkpoint (TYPE-01..05)
+- [ ] 03-02-PLAN.md — `_config.yml` css2 fonts URL + dead icon CDNs dropped; `_sass/_tokens.scss` families, scale, measure, leading (TYPE-01, TYPE-02, TYPE-04, TYPE-05)
+- [ ] 03-03-PLAN.md — `_sass/_custom.scss` body/heading/label rules, navbar-brand weight fix, prose measure; `purgecss.config.js` safelist in the same commit (TYPE-02, TYPE-03, TYPE-04)
+- [ ] 03-04-PLAN.md — The phase's single push, `verify.sh --live`, the four-check human checkpoint, requirements close-out (TYPE-01..05)
 
 ### Phase 4: Notebook Art Style
 
