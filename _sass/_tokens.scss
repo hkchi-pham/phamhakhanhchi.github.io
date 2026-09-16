@@ -20,7 +20,11 @@
  *     paper tones ........ 2
  *     ink steps .......... 4  (heading, body, footer-text, muted)
  *     accent colours ..... 1
- *     type families ...... 2  (value set in Phase 3)
+ *     type families ...... 2  (Phase 3: Literata + Be Vietnam Pro)
+ *
+ * Two, not three: code takes the bare `monospace` CSS generic, which is a
+ * keyword rather than a chosen family, so it spends no slot. The reasoning
+ * sits in full above the --font-serif / --font-sans declarations below.
  *
  * Register overshoot is only partly recoverable: a reader who has already
  * formed an impression of a busy, over-decorated page cannot un-form it. The
@@ -75,17 +79,100 @@
      to the cap above, which is the point. */
 
   /* ---------------------------------------------------------------------
-   * TOKEN-02 — the provisional type and space scale.
+   * TYPE-02 — the two families, and why the fallback ORDER is measured.
    *
-   * The NAMES are locked; the VALUES are provisional and Phase 3 re-tunes
-   * them here without rewriting a single rule. The numbers below are the
-   * gem's real shipped sizes, so adopting the scale moves nothing today.
+   * Metrics transcribed from @capsizecss/metrics@3.5.0. That package is NOT
+   * a dependency of this site and must not become one; the figures were read
+   * once and written down here, which is the entire point of a token file.
+   *
+   * Georgia sits about 5% off Literata on x-height where Times New Roman is
+   * about 12% off, so Georgia leads the serif stack on a measurement rather
+   * than on habit or alphabetical order. The fallback is what a reader
+   * actually sees during the display=swap window, so the closer face goes
+   * first — the swap is then a settle, not a jump.
+   *
+   * The sans fallbacks run roughly 9% narrower than Be Vietnam Pro. That is
+   * acceptable HERE and would not be in the serif stack: the sans only ever
+   * carries short labels, years and nav items, never a wrapped paragraph, so
+   * the width difference costs a little tracking and never a reflowed column.
+   *
+   * THE CAP READS 2, NOT 3, AND IT IS HONEST ABOUT IT. No rule anywhere on
+   * this site declares a monospace family. The gem's only Iosevka Fixed
+   * declaration targets .typogram, which no page here renders, and pre/code
+   * receive no font-family at all from main.css — code already falls through
+   * to the system mono today. `monospace` is a CSS generic keyword, not a
+   * chosen family, so it spends no slot. Raising the cap to 3 for a real
+   * webfont mono was considered and rejected: real bytes and a visible cap
+   * edit, for four inline backticks across the whole site. Manufacturing a
+   * dead override so the decision "looks implemented" is rejected too — it
+   * would be purged anyway, since no built page contains .typogram.
    * ------------------------------------------------------------------- */
-  --step-0: 0.85rem; /* meta, status, grade   (gem .entry-status 0.85em) */
-  --step-1: 1rem; /* body                  (gem body 1rem) */
-  --step-2: 1.1rem; /* entry title           (gem .entry-title 1.1rem) */
-  --step-3: 1.5rem; /* section heading       — provisional, Phase 3 re-tunes */
-  --leading-body: 1.5; /* gem body line-height */
+  --font-serif: Literata, Georgia, "Times New Roman", serif;
+  --font-sans: "Be Vietnam Pro", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* ---------------------------------------------------------------------
+   * TOKEN-02 — the type scale, the measure and the two leadings.
+   *
+   * Phase 2 wrote here that the NAMES were locked and only the VALUES were
+   * provisional, for Phase 3 to re-tune without rewriting a single rule.
+   * Phase 3 did exactly that for --step-0..--step-3 — and then DELIBERATELY
+   * ADDED TWO NAMES, --step-4 and --step-5. That widens the locked set, so it
+   * is recorded rather than done quietly: the decisive 2.6 / 1.8 heading
+   * scale this phase adopts needs steps the provisional four did not have,
+   * because the old --step-3 was standing in for every heading level at once.
+   *
+   * WHY calc() AND NOT A LITERAL rem — not a style preference. The phase
+   * criterion reads "H2 is at least 1.5x body size and H3 at least 1.25x".
+   * Written as calc() against --step-1 that ratio is a grep, both in this
+   * file and in the SERVED stylesheet. Written as literal rems it is only
+   * recoverable by dividing two numbers a reader has to trust, and values
+   * like 0.903125rem and 1.434375rem invite a later "tidy-up" to 0.9rem that
+   * silently moves the ratio. This site has no browser-based test framework,
+   * so a greppable ratio is the difference between an automated check and a
+   * manual one.
+   *
+   * --step-5 COMPUTES TO 44.2px (2.6 x 17px), which is BELOW the phase
+   * criterion's "48px or larger". That clause describes how to INSPECT the
+   * name — zoom the deployed title and compare the a-with-dot-below in
+   * "Phạm" against the a-with-grave in "Hà", confirming both Vietnamese
+   * subset files loaded and composed identically — not how large the h1 must
+   * be. Settled in plan 03-01 and recorded in three places on purpose. Do
+   * not size this up to 48px.
+   *
+   * Dart Sass parses custom-property values as unquoted strings and passes
+   * them through verbatim, so the calc() survives compilation. Whether the
+   * compressed output keeps the spaces around `*` cannot be checked without
+   * a local build, which does not exist here — which is why every verify.sh
+   * grep for these is whitespace-tolerant.
+   * ------------------------------------------------------------------- */
+  --step-1: 1.0625rem; /* body — 17px on the 16px root (the gem sets body{font-size:1rem} and never touches html) */
+  --step-0: calc(var(--step-1) * 0.85); /* meta, status, grade */
+  --step-2: calc(var(--step-1) * 1.15); /* .entry-title, h4 */
+  --step-3: calc(var(--step-1) * 1.35); /* h3 — the criterion's floor is 1.25 */
+  --step-4: calc(var(--step-1) * 1.8); /* h2 — the criterion's floor is 1.5 */
+  --step-5: calc(var(--step-1) * 2.6); /* h1, .post-title — 44.2px, and see above */
+
+  --leading-body: 1.6; /* was 1.5 — the gem's number, tuned for Roboto at 16px across a wide column */
+  --leading-heading: 1.2; /* what tailwind's base layer already ships; the token makes it ownable, not different */
+
+  /* THE MEASURE, carrying its arithmetic — the only evidence that the 45-75
+     character window is met by design rather than by luck. Literata's
+     xWidthAvg is 0.480em, so at 17px the column holds
+
+         576 / (0.480 x 17) = ~70.6 characters
+
+     which is inside the window, with the margin one-sided in our favour:
+     ragged-right wrapping makes real lines shorter than the box, never
+     longer. If a deployed measurement ever comes back over 75, the fix is
+     34rem (544px -> ~66.7), one value on one line.
+
+     930px minus 576px leaves ~354px, AND THAT GUTTER IS DELIBERATE. The page
+     width stays at max_width: 930px and the prose is measured instead; Phase
+     4's marginalia and Phase 5's PAGE-06 live in what is left over. This
+     phase creates the gutter and puts nothing in it — so a later tidy-up
+     narrowing max_width to match the measure would look like an improvement
+     and would silently delete a future phase's canvas. */
+  --measure: 36rem; /* 576px */
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
