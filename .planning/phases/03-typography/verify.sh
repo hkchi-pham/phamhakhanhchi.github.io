@@ -73,6 +73,19 @@
 # DO NOT delete a row to get a clean tally. A criterion that is not yet true
 # must be visibly red, not invisible.
 #
+# AS OF 2026-09-16 THERE ARE ZERO LABELS LEFT. Plan 03-04 pushed the phase,
+# `--live` came back 80 checks / 0 failed on its first run, and all 49 labels
+# were stripped in that plan's commit — NOT because the rows were relaxed, but
+# because every one of them is now true against the served asset. No row was
+# deleted, narrowed or weakened in the stripping; `git show` the commit and the
+# diff is 49 label removals and nothing else.
+#
+# The consequence is the point: EXPECTED_RED is back to 0, so from here on ANY
+# red row is a real regression rather than pending work, and the UNLABELLED
+# line below will say so. The mechanism and this comment are deliberately kept
+# for Phase 4 onward, which will write its own red-by-design rows against this
+# same harness shape.
+#
 # And — Phase 2's decision, carried forward and worth restating — a row that
 # is GREEN today and must merely STAY green gets NO label. A label on a green
 # row absorbs a genuine future regression into the expected-red count and
@@ -95,6 +108,12 @@
 # 03-02 lands is a real signal rather than an expected one. No row was dropped
 # or weakened; only the label was made precise. Same principle as Phase 2's
 # "narrow the matcher, never delete the row".
+#
+# That refinement paid: the fonts rows went green at wave 2, three days of plan
+# time before the push, which is exactly the live feedback the relabelling was
+# for. The labels themselves are gone now (see above) — this block is kept as
+# the record of WHY they were assigned the way they were, so Phase 4 does not
+# rediscover the reasoning from scratch.
 # ---------------------------------------------------------------------------
 #
 # Exit: 0 only when zero checks failed.
@@ -234,15 +253,15 @@ echo
 echo "TYPE-01 / TYPE-05 — the fonts request names two families and nothing dead"
 # -F, not -E: '+' is an ERE metacharacter and 'Be+Vietnam+Pro' is a literal
 # plus-encoded family name, not "one or more e".
-check "TYPE-01  $CONFIG requests Be Vietnam Pro from the css2 endpoint  [red until plan 03-02]" \
+check "TYPE-01  $CONFIG requests Be Vietnam Pro from the css2 endpoint" \
   "grep -qF 'css2?family=Be+Vietnam+Pro' \"\$CONFIG\""
-check "TYPE-01  $CONFIG requests Literata in the same css2 URL  [red until plan 03-02]" \
+check "TYPE-01  $CONFIG requests Literata in the same css2 URL" \
   "grep -qF 'family=Literata:' \"\$CONFIG\""
-check "TYPE-05  $CONFIG keeps display=swap  [red until plan 03-02]" \
+check "TYPE-05  $CONFIG keeps display=swap" \
   "grep -qF 'display=swap' \"\$CONFIG\" && [ -n \"\$FONTS_URL\" ]"
-check "TYPE-05  $CONFIG no longer names Material+Icons  [red until plan 03-02]" \
+check "TYPE-05  $CONFIG no longer names Material+Icons" \
   "! grep -qF 'Material+Icons' \"\$CONFIG\""
-check "TYPE-05  $CONFIG no longer declares academicons: or scholar-icons:  [red until plan 03-02]" \
+check "TYPE-05  $CONFIG no longer declares academicons: or scholar-icons:" \
   "! grep -qE '^  (academicons|scholar-icons):' \"\$CONFIG\""
 # Green today and must STAY green: the one envelope in _data/socials.yml is a
 # Font Awesome solid glyph. Replacing it with inline SVG is Phase 6 territory
@@ -260,11 +279,11 @@ check "TYPE-04  $CONFIG max_width is UNCHANGED at 930px (the gutter is deliberat
 echo
 
 echo "TYPE-02 / TOKEN-06 — exactly two type families, and the cap says so"
-check "TYPE-02  $TOKENS declares exactly 2 family tokens (have: $(family_token_count))  [red until plan 03-02]" \
+check "TYPE-02  $TOKENS declares exactly 2 family tokens (have: $(family_token_count))" \
   '[ "$(family_token_count)" = "2" ]'
-check "TYPE-02  $TOKENS declares --font-serif  [red until plan 03-02]" \
+check "TYPE-02  $TOKENS declares --font-serif" \
   'grep -qE "^[[:space:]]*--font-serif:" "$TOKENS"'
-check "TYPE-02  $TOKENS declares --font-sans  [red until plan 03-02]" \
+check "TYPE-02  $TOKENS declares --font-sans" \
   'grep -qE "^[[:space:]]*--font-sans:" "$TOKENS"'
 # Already reads 2 today — the digit was written in Phase 2. Unlabelled, so a
 # later edit to 3 fails loudly as a real regression rather than hiding inside
@@ -274,7 +293,7 @@ check "TOKEN-06 the cap line for type families reads 2" \
 # ...but the parenthetical still defers the value to this phase. 03-02 replaces
 # it with the two family names, which is what makes the cap a record rather
 # than a promise.
-check "TOKEN-06 the cap's type families line no longer defers its value to Phase 3  [red until plan 03-02]" \
+check "TOKEN-06 the cap's type families line no longer defers its value to Phase 3" \
   '! grep -q "value set in Phase 3" "$TOKENS"'
 echo
 
@@ -285,17 +304,17 @@ echo "TYPE-04 — the scale, as calc() so the ratios are greppable not inferred"
 # grep, here and against the SERVED stylesheet below. Every matcher is
 # whitespace-tolerant because main.css compiles compressed and the authored
 # spacing is not what ships.
-check "TYPE-04  --step-1 is the 17px base 1.0625rem  [red until plan 03-02]" \
+check "TYPE-04  --step-1 is the 17px base 1.0625rem" \
   'grep -qE -- "--step-1:[[:space:]]*1\.0625rem" "$TOKENS"'
-check "TYPE-04  --step-0 is calc(var(--step-1) * 0.85)  [red until plan 03-02]" \
+check "TYPE-04  --step-0 is calc(var(--step-1) * 0.85)" \
   'grep -qE -- "--step-0:[[:space:]]*calc\(var\(--step-1\)[[:space:]]*\*[[:space:]]*0\.85\)" "$TOKENS"'
-check "TYPE-04  --step-2 is calc(var(--step-1) * 1.15)  [red until plan 03-02]" \
+check "TYPE-04  --step-2 is calc(var(--step-1) * 1.15)" \
   'grep -qE -- "--step-2:[[:space:]]*calc\(var\(--step-1\)[[:space:]]*\*[[:space:]]*1\.15\)" "$TOKENS"'
-check "TYPE-04  --step-3 is calc(var(--step-1) * 1.35) — floor is 1.25  [red until plan 03-02]" \
+check "TYPE-04  --step-3 is calc(var(--step-1) * 1.35) — floor is 1.25" \
   'grep -qE -- "--step-3:[[:space:]]*calc\(var\(--step-1\)[[:space:]]*\*[[:space:]]*1\.35\)" "$TOKENS"'
-check "TYPE-04  --step-4 is calc(var(--step-1) * 1.8) — floor is 1.5  [red until plan 03-02]" \
+check "TYPE-04  --step-4 is calc(var(--step-1) * 1.8) — floor is 1.5" \
   'grep -qE -- "--step-4:[[:space:]]*calc\(var\(--step-1\)[[:space:]]*\*[[:space:]]*1\.8\)" "$TOKENS"'
-check "TYPE-04  --step-5 is calc(var(--step-1) * 2.6)  [red until plan 03-02]" \
+check "TYPE-04  --step-5 is calc(var(--step-1) * 2.6)" \
   'grep -qE -- "--step-5:[[:space:]]*calc\(var\(--step-1\)[[:space:]]*\*[[:space:]]*2\.6\)" "$TOKENS"'
 echo
 
@@ -308,24 +327,24 @@ echo
 # deliberately NO row below grepping for a title-in-measure selector; its
 # absence is the assertion. Phase 6 owns hero composition and may revisit.
 echo "TYPE-04 — the measure and the two leadings"
-check "TYPE-04  --measure: 36rem is declared (576px, ~70.6 CPL at 17px Literata)  [red until plan 03-02]" \
+check "TYPE-04  --measure: 36rem is declared (576px, ~70.6 CPL at 17px Literata)" \
   'grep -qE -- "--measure:[[:space:]]*36rem" "$TOKENS"'
-check "TYPE-04  --leading-body is 1.6 (was the gem's 1.5, tuned for Roboto)  [red until plan 03-02]" \
+check "TYPE-04  --leading-body is 1.6 (was the gem's 1.5, tuned for Roboto)" \
   'grep -qE -- "--leading-body:[[:space:]]*1\.6" "$TOKENS"'
-check "TYPE-04  --leading-heading: 1.2 is declared  [red until plan 03-02]" \
+check "TYPE-04  --leading-heading: 1.2 is declared" \
   'grep -qE -- "--leading-heading:[[:space:]]*1\.2" "$TOKENS"'
 echo
 
 echo "TYPE-02 / TYPE-03 — the overrides consume the tokens and nothing else"
-check "TYPE-02  $CUSTOM sets a serif body from var(--font-serif)  [red until plan 03-03]" \
+check "TYPE-02  $CUSTOM sets a serif body from var(--font-serif)" \
   'grep -qE -- "font-family:[[:space:]]*var\(--font-serif\)" "$CUSTOM"'
-check "TYPE-02  $CUSTOM points labels at var(--font-sans)  [red until plan 03-03]" \
+check "TYPE-02  $CUSTOM points labels at var(--font-sans)" \
   'grep -qE -- "font-family:[[:space:]]*var\(--font-sans\)" "$CUSTOM"'
-check "TYPE-04  $CUSTOM gives the prose max-width: var(--measure)  [red until plan 03-03]" \
+check "TYPE-04  $CUSTOM gives the prose max-width: var(--measure)" \
   'grep -qE -- "max-width:[[:space:]]*var\(--measure\)" "$CUSTOM"'
-check "TYPE-03  $CUSTOM neutralises .navbar-brand .font-weight-bold  [red until plan 03-03]" \
+check "TYPE-03  $CUSTOM neutralises .navbar-brand .font-weight-bold" \
   'grep -q -- ".navbar-brand .font-weight-bold" "$CUSTOM"'
-check "TYPE-04  $CUSTOM sets h1/h2 to font-weight 600 (tailwind base ships 300)  [red until plan 03-03]" \
+check "TYPE-04  $CUSTOM sets h1/h2 to font-weight 600 (tailwind base ships 300)" \
   'grep -qE -- "font-weight:[[:space:]]*600" "$CUSTOM"'
 # Green today (the file declares no font-family at all) and must STAY green.
 check "Crit-3   $CUSTOM declares no font-family outside the two family tokens" \
@@ -347,11 +366,11 @@ echo "PurgeCSS — the three tags the measure names that no built page contains"
 # the measure rule would ship with three of its fourteen selectors silently
 # removed. Live proof the mechanism is biting right now: _custom.scss declares
 # .topic-list and `grep -c topic-list` against the SERVED main.css returns 0.
-check "Purge    $PURGE safelists \"ol\"  [red until plan 03-03]" \
+check "Purge    $PURGE safelists \"ol\"" \
   "grep -qF -- '\"ol\"' \"\$PURGE\""
-check "Purge    $PURGE safelists \"blockquote\"  [red until plan 03-03]" \
+check "Purge    $PURGE safelists \"blockquote\"" \
   "grep -qF -- '\"blockquote\"' \"\$PURGE\""
-check "Purge    $PURGE safelists \"h4\"  [red until plan 03-03]" \
+check "Purge    $PURGE safelists \"h4\"" \
   "grep -qF -- '\"h4\"' \"\$PURGE\""
 # Green today and must STAY green — these are Phase 2's, and 02-05 exists
 # because the first of them was missing. The leading colon is load-bearing:
@@ -407,15 +426,15 @@ if [ "$LIVE" -eq 1 ]; then
   # These read FONTS_URL out of the LOCAL _config.yml and never touch the
   # deployed site, so they go green when plan 03-02 rewrites that string — no
   # push required. See the labelling note in the header.
-  check "TYPE-01  fonts CSS carries ${VIET_BLOCKS_EXPECTED} /* vietnamese */ blocks, one per locked cut  [red until plan 03-02]" \
+  check "TYPE-01  fonts CSS carries ${VIET_BLOCKS_EXPECTED} /* vietnamese */ blocks, one per locked cut" \
     '[ "$(grep -c "/\* vietnamese \*/" "$FONTS_CSS")" = "$VIET_BLOCKS_EXPECTED" ]'
-  check "TYPE-01  the vietnamese range covers U+1EA0-1EF9 (carries ạ, U+1EA1)  [red until plan 03-02]" \
+  check "TYPE-01  the vietnamese range covers U+1EA0-1EF9 (carries ạ, U+1EA1)" \
     'grep -q "U+1EA0-1EF9" "$FONTS_CSS"'
   # The UA failure signature. If this row is red while the two above are also
   # red, suspect the UA before suspecting the families.
-  check "TYPE-01  fonts CSS serves woff2, not the UA-less truetype fallback  [red until plan 03-02]" \
+  check "TYPE-01  fonts CSS serves woff2, not the UA-less truetype fallback" \
     'grep -q "format(.woff2.)" "$FONTS_CSS" && ! grep -q "format(.truetype.)" "$FONTS_CSS"'
-  check "TYPE-05  webfont payload is within ${FONT_BUDGET_BYTES} B over latin+vietnamese  [red until plan 03-02]" \
+  check "TYPE-05  webfont payload is within ${FONT_BUDGET_BYTES} B over latin+vietnamese" \
     'FONTS_URL="$FONTS_URL" node .planning/tools/fontbudget.js --max "$FONT_BUDGET_BYTES"'
   echo
 
@@ -424,29 +443,29 @@ if [ "$LIVE" -eq 1 ]; then
   # that a rule is live. _custom.scss was correct and production had no focus
   # ring for a full day, because nothing ever fetched the served stylesheet.
   # Every deliberate rule this phase writes earns a row here.
-  check "Live     served main.css declares --font-serif  [red until plan 03-04]" \
+  check "Live     served main.css declares --font-serif" \
     'grep -q -- "--font-serif" "$LIVE_CSS"'
-  check "Live     served main.css declares --font-sans  [red until plan 03-04]" \
+  check "Live     served main.css declares --font-sans" \
     'grep -q -- "--font-sans" "$LIVE_CSS"'
-  check "Live     served main.css: --step-4 is calc(var(--step-1)*1.8)  [red until plan 03-04]" \
+  check "Live     served main.css: --step-4 is calc(var(--step-1)*1.8)" \
     'grep -qE -- "--step-4:[[:space:]]*calc\(var\(--step-1\)[[:space:]]*\*[[:space:]]*1\.8\)" "$LIVE_CSS"'
-  check "Live     served main.css: --step-3 is calc(var(--step-1)*1.35)  [red until plan 03-04]" \
+  check "Live     served main.css: --step-3 is calc(var(--step-1)*1.35)" \
     'grep -qE -- "--step-3:[[:space:]]*calc\(var\(--step-1\)[[:space:]]*\*[[:space:]]*1\.35\)" "$LIVE_CSS"'
-  check "Live     served main.css: --step-5 is calc(var(--step-1)*2.6)  [red until plan 03-04]" \
+  check "Live     served main.css: --step-5 is calc(var(--step-1)*2.6)" \
     'grep -qE -- "--step-5:[[:space:]]*calc\(var\(--step-1\)[[:space:]]*\*[[:space:]]*2\.6\)" "$LIVE_CSS"'
-  check "Live     served main.css: --measure is 36rem  [red until plan 03-04]" \
+  check "Live     served main.css: --measure is 36rem" \
     'grep -qE -- "--measure:[[:space:]]*36rem" "$LIVE_CSS"'
   # The minifier may regroup a selector list, so these tolerate any rule whose
   # selector contains the element rather than demanding an exact grouping.
-  check "Live     served main.css: body takes var(--font-serif)  [red until plan 03-04]" \
+  check "Live     served main.css: body takes var(--font-serif)" \
     'grep -qE -- "body\{[^}]*font-family:[[:space:]]*var\(--font-serif\)" "$LIVE_CSS"'
-  check "Live     served main.css: body takes font-weight 400 (tailwind base ships 300)  [red until plan 03-04]" \
+  check "Live     served main.css: body takes font-weight 400 (tailwind base ships 300)" \
     'grep -qE -- "body\{[^}]*font-weight:[[:space:]]*400" "$LIVE_CSS"'
-  check "Live     served main.css: an h1 rule carries font-weight 600  [red until plan 03-04]" \
+  check "Live     served main.css: an h1 rule carries font-weight 600" \
     'grep -qE -- "[^a-z0-9-]h1[^{]*\{[^}]*font-weight:[[:space:]]*600" "$LIVE_CSS"'
-  check "Live     served main.css: an h2 rule carries font-weight 600  [red until plan 03-04]" \
+  check "Live     served main.css: an h2 rule carries font-weight 600" \
     'grep -qE -- "[^a-z0-9-]h2[^{]*\{[^}]*font-weight:[[:space:]]*600" "$LIVE_CSS"'
-  check "Live     served main.css: an h3 rule carries font-weight 400  [red until plan 03-04]" \
+  check "Live     served main.css: an h3 rule carries font-weight 400" \
     'grep -qE -- "[^a-z0-9-]h3[^{]*\{[^}]*font-weight:[[:space:]]*400" "$LIVE_CSS"'
   echo
 
@@ -457,20 +476,20 @@ if [ "$LIVE" -eq 1 ]; then
   # tell you something is missing; these tell you WHICH selector was pruned,
   # which is the difference between one safelist entry and a hunt.
   for node in "p" "h2" "h3" "h4" "ol" "blockquote"; do
-    check "Live     served main.css keeps .post article>${node} in the measure  [red until plan 03-04]" \
+    check "Live     served main.css keeps .post article>${node} in the measure" \
       "grep -qE -- '\.post article[[:space:]]*>[[:space:]]*${node}[,{[:space:]]' \"\$LIVE_CSS\""
   done
   for node in "p" "h2"; do
-    check "Live     served main.css keeps .post article>.clearfix>${node} (the home page)  [red until plan 03-04]" \
+    check "Live     served main.css keeps .post article>.clearfix>${node} (the home page)" \
       "grep -qE -- '\.post article[[:space:]]*>[[:space:]]*\.clearfix[[:space:]]*>[[:space:]]*${node}[,{[:space:]]' \"\$LIVE_CSS\""
   done
   echo
 
   echo "TYPE-02 / TYPE-03 — the label faces and the unsplit name"
-  check "Live     served main.css: .navbar-brand .font-weight-bold is present (TYPE-03 weight fix)  [red until plan 03-04]" \
+  check "Live     served main.css: .navbar-brand .font-weight-bold is present (TYPE-03 weight fix)" \
     'grep -qE -- "\.navbar-brand[[:space:]]+\.font-weight-bold" "$LIVE_CSS"'
   for cls in "entry-year" "entry-meta" "subject-grade" "nav-link"; do
-    check "Live     served main.css: .${cls} takes var(--font-sans)  [red until plan 03-04]" \
+    check "Live     served main.css: .${cls} takes var(--font-sans)" \
       "grep -qE -- '\.${cls}[^{]*\{[^}]*font-family:[[:space:]]*var\(--font-sans\)' \"\$LIVE_CSS\""
   done
   echo
@@ -485,13 +504,13 @@ if [ "$LIVE" -eq 1 ]; then
   # Roboto and Material Icons. A row that is green for the wrong reason is
   # worse than a red one: it is the false negative the whole harness exists to
   # prevent, and it was observed on this row's first run.
-  check "Live     served HTML carries the css2 fonts URL (&amp;-escaped is correct)  [red until plan 03-04]" \
+  check "Live     served HTML carries the css2 fonts URL (&amp;-escaped is correct)" \
     '[ -n "$FONTS_URL" ] && grep -qF -- "$(printf "%s" "$FONTS_URL" | sed "s/&/\&amp;/g")" "$LIVE_HTML"'
-  check "Live     served HTML names no Material+Icons  [red until plan 03-04]" \
+  check "Live     served HTML names no Material+Icons" \
     '! grep -qF -- "Material+Icons" "$LIVE_HTML"'
-  check "Live     served HTML names no academicons  [red until plan 03-04]" \
+  check "Live     served HTML names no academicons" \
     '! grep -q -- "academicons" "$LIVE_HTML"'
-  check "Live     served HTML names no scholar-icons  [red until plan 03-04]" \
+  check "Live     served HTML names no scholar-icons" \
     '! grep -q -- "scholar-icons" "$LIVE_HTML"'
   # The containment row for plan 03-02's known risk: if the gem's <head>
   # reads the academicons/scholar-icons keys unconditionally, the build may
