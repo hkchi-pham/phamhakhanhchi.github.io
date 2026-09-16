@@ -37,7 +37,26 @@ if (!/^\s*-\s*al_math\s*$/m.test(config)) {
   failures.push("`_config.yml` plugins must include `al_math` when math features are enabled.");
 }
 
-for (const libraryKey of ["fontawesome", "academicons", "scholar-icons"]) {
+// NARROWED FOR THIS SITE — `academicons` and `scholar-icons` removed from the
+// enforced list in Phase 3 (plan 03-02), same reasoning as the two DISABLED
+// blocks further down and recorded here rather than quietly changed.
+//
+// Upstream requires all three icon CDNs because the al-folio DEMO renders
+// `ai-` and `si-` glyphs in its example social links. This site does not:
+// `_data/socials.yml` has only `email` active, and a class census of all seven
+// deployed pages found zero `ai-` and zero `si-` classes. The two blocks were
+// therefore deleted from `_config.yml`, saving 14,063 B and two render-blocking
+// requests for zero visual change (TYPE-05).
+//
+// The matcher is NARROWED, not deleted — the Phase 2 discipline this repo has
+// now applied three times. `fontawesome` stays enforced, SRI hash and all,
+// because the one envelope icon in `_data/socials.yml` is a Font Awesome solid
+// glyph; replacing it with inline SVG is deferred to Phase 6, and until then
+// deleting that block would be a regression rather than a cleanup. The
+// forbidden-glob block below still rejects starter-owned `academicons.woff` /
+// `scholar-icons.woff` artifacts, so icon-runtime OWNERSHIP is unchanged: this
+// site simply does not wire up two runtimes it never renders.
+for (const libraryKey of ["fontawesome"]) {
   if (!new RegExp(`^\\s{2}${escapeRegExp(libraryKey)}:\\s*$`, "m").test(config)) {
     failures.push(`\`_config.yml\` must define \`third_party_libraries.${libraryKey}\` for al_icons runtime wiring.`);
     continue;
