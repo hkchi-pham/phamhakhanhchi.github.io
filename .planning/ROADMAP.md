@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Deployment Guardrails** - Make a stylesheet change able to reach the live site, and the domain able to survive it
 - [x] **Phase 2: Palette and Design Tokens** - Re-point every `--global-*` token so all seven pages land on warm paper in one commit (completed 2026-09-15)
-- [ ] **Phase 3: Typography** - Serif body, companion face, real hierarchy, and a name that renders in one typeface
+- [x] **Phase 3: Typography** - Serif body, companion face, real hierarchy, and a name that renders in one typeface (completed 2026-09-17)
 - [ ] **Phase 4: Notebook Art Style** - Paper texture and a small, defended vocabulary of notebook marks
 - [ ] **Phase 5: Shared Page Components** - Style the one entry vocabulary the four list pages already share
 - [ ] **Phase 6: Home Page Presence** - Put the portrait and the voice on the landing page
@@ -98,10 +98,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Wave 0: `fontbudget.js`, the phase `verify.sh`, the recorded Vietnamese `curl` proof, and the `.entry-status` decision checkpoint (TYPE-01..05)
-- [ ] 03-02-PLAN.md — `_config.yml` css2 fonts URL + dead icon CDNs dropped; `_sass/_tokens.scss` families, scale, measure, leading (TYPE-01, TYPE-02, TYPE-04, TYPE-05)
-- [ ] 03-03-PLAN.md — `_sass/_custom.scss` body/heading/label rules, navbar-brand weight fix, prose measure; `purgecss.config.js` safelist in the same commit (TYPE-02, TYPE-03, TYPE-04)
-- [ ] 03-04-PLAN.md — The phase's single push, `verify.sh --live`, the four-check human checkpoint, requirements close-out (TYPE-01..05)
+- [x] 03-01-PLAN.md — Wave 0: `fontbudget.js`, the phase `verify.sh`, the recorded Vietnamese `curl` proof, and the `.entry-status` decision checkpoint (TYPE-01..05)
+- [x] 03-02-PLAN.md — `_config.yml` css2 fonts URL + dead icon CDNs dropped; `_sass/_tokens.scss` families, scale, measure, leading (TYPE-01, TYPE-02, TYPE-04, TYPE-05)
+- [x] 03-03-PLAN.md — `_sass/_custom.scss` body/heading/label rules, navbar-brand weight fix, prose measure; `purgecss.config.js` safelist in the same commit (TYPE-02, TYPE-03, TYPE-04)
+- [x] 03-04-PLAN.md — The phase's single push, `verify.sh --live`, the four-check human checkpoint, requirements close-out (TYPE-01..05)
 
 ### Phase 4: Notebook Art Style
 
@@ -222,7 +222,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | ---------------------------------------------------- | -------------- | ----------- | --------- |
 | 1. Deployment Guardrails                             | 5/5            | Complete    | 2026-09-13 |
 | 2. Palette and Design Tokens                         | 5/5            | Complete    | 2026-09-15 |
-| 3. Typography                                        | 3/4            | In Progress | -         |
+| 3. Typography                                        | 4/4            | Complete    | 2026-09-17 |
 | 4. Notebook Art Style                                | 0/TBD          | Not started | -         |
 | 5. Shared Page Components                            | 0/TBD          | Not started | -         |
 | 6. Home Page Presence                                | 0/TBD          | Not started | -         |
