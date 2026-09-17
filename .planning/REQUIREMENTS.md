@@ -28,11 +28,12 @@ Nothing else in this milestone is safely recoverable without these. They come fi
 
 ### Typography
 
-- [ ] **TYPE-01**: The body serif has a verified Vietnamese unicode-range subset.
-- [ ] **TYPE-02**: A companion face carries labels, metadata and code.
-- [ ] **TYPE-03**: "Phạm Hà Khánh Chi" renders entirely in one typeface. `ạ` (U+1EA1) lives only in the `vietnamese` subset while `à` and `á` are latin, so a font without Vietnamese coverage breaks exactly one glyph in the family name, in the largest heading on the site.
-- [ ] **TYPE-04**: Heading hierarchy is distinguishable at a glance, and the measure is set deliberately rather than inherited.
-- [ ] **TYPE-05**: Total webfont payload stays within a stated budget.
+- [x] **TYPE-01**: The body serif has a verified Vietnamese unicode-range subset.
+- [x] **TYPE-02**: A companion face carries labels, metadata and code.
+  - _Annotation added 2026-09-17 at phase close; the requirement text above is preserved verbatim._ The "and code" clause is discharged **by a decision not to act on it**, not by a rule. 03-CONTEXT settled that code takes the bare `monospace` generic and the gem's dead `Iosevka Fixed` name is dropped: the served `main.css` carries no `@font-face`, no page on this site renders a code block or inline code today, and the gem's only `Iosevka Fixed` declaration targets `.typogram`, which no page renders. Putting Be Vietnam Pro on `pre`/`code` would have been a dead rule written to make a checkbox look implemented, and a sans companion on code is wrong anyway. The companion face does carry labels and metadata, on a closed list of four classes (`.entry-year`, `.entry-meta`, `.subject-grade`, `.nav-link`). See `03-03-SUMMARY.md` § "The monospace rule that was not written", recorded in three agreeing places: that summary, `_tokens.scss`'s two-family cap comment, and a comment on override 1 in `_custom.scss`.
+- [x] **TYPE-03**: "Phạm Hà Khánh Chi" renders entirely in one typeface. `ạ` (U+1EA1) lives only in the `vietnamese` subset while `à` and `á` are latin, so a font without Vietnamese coverage breaks exactly one glyph in the family name, in the largest heading on the site.
+- [x] **TYPE-04**: Heading hierarchy is distinguishable at a glance, and the measure is set deliberately rather than inherited.
+- [x] **TYPE-05**: Total webfont payload stays within a stated budget.
 
 ### Ground and Art Style
 
@@ -111,11 +112,11 @@ Populated during roadmap creation (2026-09-13). Phase definitions live in `.plan
 | TOKEN-04 | Phase 2 | Complete |
 | TOKEN-05 | Phase 2 | Complete |
 | TOKEN-06 | Phase 2 | Complete |
-| TYPE-01 | Phase 3 | Pending |
-| TYPE-02 | Phase 3 | Pending |
-| TYPE-03 | Phase 3 | Pending |
-| TYPE-04 | Phase 3 | Pending |
-| TYPE-05 | Phase 3 | Pending |
+| TYPE-01 | Phase 3 | Complete |
+| TYPE-02 | Phase 3 | Complete |
+| TYPE-03 | Phase 3 | Complete |
+| TYPE-04 | Phase 3 | Complete |
+| TYPE-05 | Phase 3 | Complete |
 | GROUND-01 | Phase 2 | Complete |
 | GROUND-02 | Phase 4 | Pending |
 | GROUND-03 | Phase 4 | Pending |

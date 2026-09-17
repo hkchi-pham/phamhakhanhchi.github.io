@@ -1,11 +1,11 @@
 ---
 phase: 3
 slug: typography
-status: approved
+status: complete
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-09-16
-updated: 2026-09-16
+updated: 2026-09-17
 ---
 
 # Phase 3 — Validation Strategy
@@ -68,18 +68,26 @@ count and hides it). Never delete a row to clean the tally.
 | 3-01-01 | 01   | 1    | TYPE-05                                         | tool self-test + network measurement | `node .planning/tools/fontbudget.js --selftest` then `FONTS_URL="<css2 url>" node .planning/tools/fontbudget.js --max 153600` | ✅          | ✅ green    |
 | 3-01-02 | 01   | 1    | TYPE-01 · TYPE-02 · TYPE-03 · TYPE-04 · TYPE-05 | harness + recorded `curl` proof | `bash .planning/phases/03-typography/verify.sh` — runs to a tally with `UNLABELLED` = 0                                | ✅          | ✅ green    |
 | 3-01-03 | 01   | 1    | TYPE-02 · TYPE-05                               | **decision (manual)** | none — a textual contradiction in CONTEXT.md, resolvable only by the site's owner. ANSWERED 2026-09-16: `status-serif` + `title-full` (see `03-01-SUMMARY.md`) | n/a         | ✅ green    |
-| 3-02-01 | 02   | 2    | TYPE-01 · TYPE-05                               | static grep        | `grep -qF 'css2?family=Be+Vietnam+Pro' _config.yml && ! grep -qF 'Material+Icons' _config.yml && ! grep -qE '^  (academicons\|scholar-icons):' _config.yml` | ✅          | ❌ red      |
-| 3-02-02 | 02   | 2    | TYPE-02 · TYPE-04                               | static grep        | the 12 `--step-*` / `--font-*` / `--measure` / `--leading-*` rows of `verify.sh`                                      | ✅          | ❌ red      |
-| 3-03-01 | 03   | 3    | TYPE-02 · TYPE-03                               | static grep        | the 5 `_custom.scss` rows of `verify.sh` (serif body, sans labels, h1/h2 at 600, `.navbar-brand .font-weight-bold`)   | ✅          | ❌ red      |
-| 3-03-02 | 03   | 3    | TYPE-04                                         | static grep        | `max-width: var(--measure)` row plus the 3 `purgecss.config.js` safelist rows (`"ol"`, `"blockquote"`, `"h4"`)        | ✅          | ❌ red      |
-| 3-04-01 | 04   | 4    | TYPE-01 · TYPE-02 · TYPE-03 · TYPE-04 · TYPE-05 | live, served-asset | `bash .planning/phases/03-typography/verify.sh --live` — 42 network rows, of which 8 are the fragile measure nodes    | ✅          | ❌ red      |
-| 3-04-02 | 04   | 4    | TYPE-03 · TYPE-04                               | **human-verify (manual)** | none — see Manual-Only Verifications below; all four rows land in this one batched checkpoint                  | n/a         | ⬜ pending  |
-| 3-04-03 | 04   | 4    | TYPE-01 · TYPE-02 · TYPE-03 · TYPE-04 · TYPE-05 | live, served-asset | `bash .planning/phases/03-typography/verify.sh --live` → 0 failed, 0 red-by-design, every `[red until plan 03-NN]` label stripped | ✅          | ❌ red      |
+| 3-02-01 | 02   | 2    | TYPE-01 · TYPE-05                               | static grep        | `grep -qF 'css2?family=Be+Vietnam+Pro' _config.yml && ! grep -qF 'Material+Icons' _config.yml && ! grep -qE '^  (academicons\|scholar-icons):' _config.yml` | ✅          | ✅ green    |
+| 3-02-02 | 02   | 2    | TYPE-02 · TYPE-04                               | static grep        | the 12 `--step-*` / `--font-*` / `--measure` / `--leading-*` rows of `verify.sh`                                      | ✅          | ✅ green    |
+| 3-03-01 | 03   | 3    | TYPE-02 · TYPE-03                               | static grep        | the 5 `_custom.scss` rows of `verify.sh` (serif body, sans labels, h1/h2 at 600, `.navbar-brand .font-weight-bold`)   | ✅          | ✅ green    |
+| 3-03-02 | 03   | 3    | TYPE-04                                         | static grep        | `max-width: var(--measure)` row plus the 3 `purgecss.config.js` safelist rows (`"ol"`, `"blockquote"`, `"h4"`)        | ✅          | ✅ green    |
+| 3-04-01 | 04   | 4    | TYPE-01 · TYPE-02 · TYPE-03 · TYPE-04 · TYPE-05 | live, served-asset | `bash .planning/phases/03-typography/verify.sh --live` — 42 network rows, of which 8 are the fragile measure nodes    | ✅          | ✅ green    |
+| 3-04-02 | 04   | 4    | TYPE-03 · TYPE-04                               | **human-verify (manual)** | none — see Manual-Only Verifications below; all four rows land in this one batched checkpoint                  | n/a         | ✅ green    |
+| 3-04-03 | 04   | 4    | TYPE-01 · TYPE-02 · TYPE-03 · TYPE-04 · TYPE-05 | live, served-asset | `bash .planning/phases/03-typography/verify.sh --live` → 0 failed, 0 red-by-design, every `[red until plan 03-NN]` label stripped | ✅          | ✅ green    |
 
 _Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky_
 
 **Red is the expected state for rows 3-02-01 onward on 2026-09-16.** They are written
 before the work, which is the point.
+
+> **Annotation, 2026-09-17 (plan 03-04).** The sentence above is left byte-for-byte as it
+> was written, per the SAFE-04 convention — a validation record describes what was true on
+> the day it was written, and is annotated rather than edited. As of the phase's single
+> deploy (`b5dcdea`, `gh-pages` `54483db` → `a5553c1`) every row above is green:
+> `verify.sh --live` reports **80 checks, 0 failed** and `verify.sh` static reports
+> **38 checks, 0 failed**, with all 49 `[red until plan 03-NN]` labels stripped in `ed66ce3`
+> and `EXPECTED_RED` back to 0. A red row from here on is a real regression.
 
 ---
 
@@ -112,6 +120,52 @@ else this phase claims has a row in `verify.sh`.
 | `--underline-offset` vs Literata's descenders | GROUND-04 (Phase 2), re-opened by TYPE-02 | `0.18em` was tuned and human-approved in Phase 2 against **Roboto**. Literata's descenders are ~26% deeper relative to em (−308/1000 vs −500/2048), so a collision is more likely than not — but whether it collides is a browser observation, not a computation. | Find a body-copy link containing `ạ` or `ợ` on `/` or `/research/`. Zoom to 200%. Does the underline touch or cut the mark? Report "clears" or "collides". A collision is a one-line token change in `_sass/_tokens.scss`, applied in plan 03-04 task 3. **Do not re-tune it blind in 03-02.**                                                        |
 | The fallback-swap glance                   | TYPE-01 · TYPE-05 | `display=swap` guarantees text is visible during the swap window; what that window LOOKS like cannot be fetched. Whether Georgia carries `ạ` on the user's actual OS is a per-machine fact.                                                    | Network → throttle to Slow 3G, hard-reload. During the second or two before Literata arrives: does `ạ` render as a letter rather than a tofu box, and does the page RELAYOUT or merely settle? Georgia was chosen over Times New Roman because it is −5% on x-height against Literata rather than −12%, so a small settle is expected and acceptable. |
 
+### Checkpoint verdict — row `3-04-02`, 2026-09-17: **APPROVED**
+
+The reviewer answered plan 03-04's batched `checkpoint:human-verify` after Task 1's single
+push (`b5dcdea`, `gh-pages` `54483db` → `a5553c1`, served `main.css` 27,285 B → 28,546 B).
+The reply was the single word **"approved"**, given as the verdict on all four checks. This
+checkpoint asked about what Phase 3 changed **only**; Phase 2's seven-page palette sweep
+(row `2-04-03`) and keyboard-focus checks (row `2-05-03`) were already approved and were
+deliberately not re-requested.
+
+| Check | Question                                                   | Requirement | Verdict                                                | Notes |
+| ----- | ---------------------------------------------------------- | ----------- | ------------------------------------------------------ | ----- |
+| A | The name in one typeface (`ạ` vs `à`), and the navbar brand at one weight | TYPE-03 | **APPROVED** (user sign-off) | A yes/no question, cleanly answered. Both Literata subset files — latin for `à`, vietnamese for `ạ` — composed as one face, and the `.navbar-brand .font-weight-bold { font-weight: inherit }` fix from 03-03 holds across pages. No defect reported, so neither of the checkpoint's diagnoses fires: no fallback substitution, no purged `.navbar-brand` override. |
+| B | Characters per line inside the measure, and whether the right gutter reads as deliberate | TYPE-04 | **approved (user sign-off; no numeric reading supplied)** | The reviewer approved the check but **did not report the `cpl` number** the `Range.getClientRects()` snippet returns. No figure is recorded here, because none was observed — the predicted 66–71 against the 45–75 window is a computation from `--measure: 36rem`, not a measurement, and writing it in as though it were read off the page would be a fabrication. **Phase 8's QA audit should re-run the snippet and record the actual number.** The ~354px right gutter was accepted as deliberate; `--measure` did not move. |
+| C | `--underline-offset: 0.18em` against Literata's deeper descenders | GROUND-04 (Phase 2), re-opened by TYPE-02 | **approved (user sign-off; no numeric reading supplied)** | The reviewer approved the check but **did not return the literal word "clears"** the resume-signal asked for, and supplied no `offset` reading. Recorded as approved on the reviewer's authority; no observation is recorded as though it had been made. **`--underline-offset` therefore stays at `0.18em` and no token moved — no second push.** See the scope discrepancy recorded below, which this approval does **not** close. |
+| D | The fallback during the swap window — `ạ` as a letter not tofu, settle not reflow | TYPE-01 · TYPE-05 | **APPROVED** (user sign-off) | A yes/no question, cleanly answered. Georgia carries `ạ` on the reviewer's machine and the swap settles rather than reflowing, which is the outcome the −5% x-height choice over Times New Roman was made to buy. |
+
+**No token moved.** `--underline-offset: 0.18em` and `--measure: 36rem` stand exactly as
+plan 03-02 shipped them, recorded here the way row `2-05-03` recorded its approved values.
+Neither of the checkpoint's two contingencies fired (C "collides" → `0.24em`; B `cpl > 75` →
+`--measure: 34rem`), so plan 03-04 Task 3 changed no source file and the phase closed on one
+deploy.
+
+#### Open discrepancy carried out of check C — the underline provenance does not match the rule's scope
+
+Approving C does **not** close this, and it is recorded here so a later phase inherits it
+rather than re-discovering it:
+
+- The underline rule is scoped to **`.post article a`** (`_sass/_custom.scss:302`). Across
+  all seven deployed pages there are **six** such links, and **none of them contains a
+  Vietnamese below-baseline mark.**
+- The only `ạ` inside a link on this site is the **navbar brand**, which sits outside
+  `.post` and carries **no underline at all** — deliberately, per 02-03's "navigational
+  furniture stays bare" decision.
+- Meanwhile `_sass/_tokens.scss:190` justifies the value in these words:
+  `--underline-offset: 0.18em; /* clears the Vietnamese below-baseline marks in "Phạm Hà Khánh Chi": ạ, ợ */`
+  — a provenance that describes a case **the rule does not actually cover**.
+
+So the token's stated reason and the token's actual reach have never agreed, on Roboto or on
+Literata. The value is not wrong; its recorded justification is unfalsifiable as written,
+which means neither Phase 2's approval nor Phase 3's re-check ever tested the thing the
+comment claims. **The comment was deliberately NOT edited** — papering over the gap would
+destroy the finding, and this project's convention (SAFE-04) is to annotate rather than
+silently rewrite. Natural owners: **Phase 4 (marginalia)**, which is the next phase to touch
+link treatment and may widen the rule's scope, or **Phase 8 (QA audit)**, which can retire
+the claim or produce a link that actually exercises it.
+
 ---
 
 ## Validation Sign-Off
@@ -130,3 +184,19 @@ else this phase claims has a row in `verify.sh`.
 - [x] `nyquist_compliant: true` set in frontmatter.
 
 **Approval:** approved 2026-09-16
+
+### Phase close-out, 2026-09-17
+
+- [x] Every automated row green: `verify.sh` **38 checks, 0 failed**; `verify.sh --live`
+      **80 checks, 0 failed**, both against the deployed site, not against `_sass/`.
+- [x] All 49 `[red until plan 03-NN]` labels stripped (`ed66ce3`); `EXPECTED_RED` is 0 and
+      the labelling mechanism plus its header comment survive for later phases. No row was
+      deleted, weakened or renumbered at any point in this phase.
+- [x] All four manual rows (A, B, C, D) answered and dated above, on the reviewer's
+      authority, with **no numeric reading back-filled for B or C**.
+- [x] TYPE-01 … TYPE-05 marked Complete in `.planning/REQUIREMENTS.md` — here and only
+      here, at the last plan that touches them, per the 02-04 precedent.
+- [x] One open discrepancy carried forward rather than closed: the `--underline-offset`
+      provenance (see check C above). It is **not** a Phase 3 defect and blocks nothing.
+
+**Status:** complete 2026-09-17
