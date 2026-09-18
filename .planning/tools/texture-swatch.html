@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Phase 4 — paper texture alpha swatch</title>
+
+    <!--
+      THROWAWAY PHASE TOOLING. Plan 04-01, task 2.
+
+      Purpose: the one perceptual decision in Phase 4 — the rect `opacity` on the
+      feTurbulence tile — cannot be made from a description. This page prints four
+      candidates against a flat control so the choice is made by eye, in a browser,
+      BEFORE the phase spends its single deploy.
+
+      Nothing depends on this file. It lives under .planning/tools/ beside contrast.js
+      and fontbudget.js: Prettier-ignored, on deploy.yml's paths-ignore denylist, and
+      never built by Jekyll. Plan 04-02's checkpoint records which alpha won; after
+      that this file gates nothing and may be deleted at any time.
+
+      No JS, no slider, no colour picker. The decision is a choice among four printed
+      candidates, not a dial.
+
+      ENCODING, LOAD-BEARING: inside a data URI `#` MUST be `%23` and `%` MUST be
+      `%25`. Get either wrong and the URI breaks SILENTLY — no console error, no
+      fallback; the panel simply renders flat, which reads as "the texture does not
+      work" rather than "the URI is malformed".
+
+      ID COLLISION, LOAD-BEARING: five SVGs in one document may not share `id='t'`.
+      A browser resolves `url(#t)` to the first match in the document, so every panel
+      would draw the SAME filter. Each tile below carries its own id.
+    -->
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&family=Literata:ital,wght@0,400;0,600;1,400&display=swap"
+    />
+
+    <style>
+      /* ---------------------------------------------------------------- *
+       * The site's real values, transcribed from _sass/_tokens.scss.
+       * Do not "improve" them here — the point is to judge the grain
+       * against the type that will actually sit on it.
+       * ---------------------------------------------------------------- */
+
+      html {
+        background: #e8e0d0;
+      }
+
+      body {
+        margin: 0;
+        padding: 0 0 4rem;
+        font-family: "Be Vietnam Pro", system-ui, sans-serif;
+        color: #2b2621;
+      }
+
+      .masthead {
+        background: #ffffff;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #9c8b6e;
+      }
+
+      .masthead h1 {
+        font-family: "Be Vietnam Pro", system-ui, sans-serif;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+      }
+
+      .masthead p,
+      .masthead li {
+        font-size: 0.9375rem;
+        line-height: 1.5;
+        max-width: 46rem;
+        margin: 0.25rem 0;
+      }
+
+      .masthead ol {
+        max-width: 46rem;
+        padding-left: 1.25rem;
+      }
+
+      .label {
+        font-family: "Be Vietnam Pro", system-ui, sans-serif;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #5c5349;
+        padding: 0.75rem 2rem 0;
+        margin: 0;
+        background: #ffffff;
+      }
+
+      .label small {
+        display: block;
+        font-weight: 400;
+        text-transform: none;
+        letter-spacing: 0;
+        padding-bottom: 0.75rem;
+      }
+
+      /* Every panel: the flat ground, then the tile. At least 400px tall so the
+         grain is judged at AREA, not in a chip. */
+      .panel {
+        min-height: 400px;
+        padding: 2rem;
+        background-color: #faf6ee;
+        background-repeat: repeat;
+      }
+
+      /* Real body copy at the site's actual settings. */
+      .panel p {
+        font-family: Literata, Georgia, serif;
+        font-size: 17px;
+        line-height: 1.6;
+        color: #2b2621;
+        max-width: 36rem;
+        margin: 0 0 1rem;
+      }
+
+      /* --step-4: 1.8 x 17px = 30.6px, Literata 600, heading ink. */
+      .panel h2 {
+        font-family: Literata, Georgia, serif;
+        font-size: 30.6px;
+        font-weight: 600;
+        line-height: 1.2;
+        color: #1a1613;
+        max-width: 36rem;
+        margin: 0 0 1rem;
+      }
+
+      /* CONTEXT locks the texture as IDENTICAL on a 390px phone: no breakpoint,
+         no reduced variant. This panel is the phone width, printed first. */
+      .narrow {
+        width: 390px;
+        max-width: 100%;
+        box-sizing: border-box;
+        border-right: 1px dashed #9c8b6e;
+      }
+
+      .narrow p,
+      .narrow h2 {
+        max-width: none;
+      }
+
+      /* ---------------------------------------------------------------- *
+       * The five tiles. Identical 200x200 feTurbulence SVG in every case:
+       * type='fractalNoise', baseFrequency='0.9', numOctaves='2',
+       * stitchTiles='stitch', filter region PINNED to x='0' y='0'
+       * width='100%' height='100%' (without the pin the browser stitches a
+       * 240x240 region against a 200x200 image and the tile SEAMS).
+       *
+       * Only two things differ between them: the filter id and the rect opacity.
+       * ---------------------------------------------------------------- */
+
+      /* alpha 0.05, phone width — the mid candidate, shown first at 390px */
+      .p50m {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='t50m' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23t50m)' opacity='0.05'/%3E%3C/svg%3E");
+      }
+
+      /* the FLAT CONTROL carries no background-image at all — .p00 is
+         deliberately empty so the control is the absence of a tile, not a
+         near-zero alpha pretending to be one. */
+
+      /* alpha 0.035 */
+      .p35 {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='t35' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23t35)' opacity='0.035'/%3E%3C/svg%3E");
+      }
+
+      /* alpha 0.05 */
+      .p50 {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='t50' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23t50)' opacity='0.05'/%3E%3C/svg%3E");
+      }
+
+      /* alpha 0.06 */
+      .p60 {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='t60' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23t60)' opacity='0.06'/%3E%3C/svg%3E");
+      }
+
+      /* alpha 0.07 */
+      .p70 {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='t70' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23t70)' opacity='0.07'/%3E%3C/svg%3E");
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="masthead">
+      <h1>Phase 4 — paper texture: which alpha?</h1>
+      <p>
+        Five panels below. One flat control, then the same 200&times;200 <code>feTurbulence</code> tile at four rect opacities. Everything else is
+        identical: same ground <code>#faf6ee</code>, same 17px Literata body copy, same 30.6px Literata 600 heading.
+      </p>
+      <p><strong>What to look for, in this order:</strong></p>
+      <ol>
+        <li>
+          <strong>Is the grain visible at arm's length?</strong> Sit back from the screen. If a panel is indistinguishable from the flat control at
+          normal reading distance, its alpha is too low to be worth any bytes at all.
+        </li>
+        <li>
+          <strong>Is it invisible enough that it is never noticed as a <em>pattern</em>?</strong> Read the paragraph. If your eye leaves the words and
+          goes to the background, the alpha is too high. "Barely perceptible fine even tooth" is the lock, not "visible paper".
+        </li>
+        <li>
+          <strong>Are there seams on a 200px grid at 100% zoom?</strong> Look for faint horizontal or vertical lines every 200px. If you see them, the
+          <em>filter region</em> is wrong, not the alpha — check that the tile carries <code>x='0' y='0' width='100%' height='100%'</code> on the
+          <code>&lt;filter&gt;</code>. Do not fix a seam by lowering the alpha.
+        </li>
+        <li>
+          <strong>Does the 17px Literata stay crisp over it?</strong> Look at the thin strokes and at the Vietnamese marks &mdash; the dot under
+          <em>&#7841;</em>, the horn on <em>&#7907;</em>. Grain that muddies a diacritic costs more than it buys.
+        </li>
+      </ol>
+      <p>
+        The first panel is <strong>390px wide</strong>. CONTEXT locks the texture as identical on a 390px phone with no breakpoint and no reduced
+        variant, so it has to be judged at that width too. Resize the window to 390px, or use device emulation, and re-run all four questions.
+      </p>
+    </div>
+
+    <p class="label">
+      &alpha; 0.05 &mdash; at 390px (phone width)
+      <small>The mid candidate at the narrow width. Same tile, same alpha, no media query — this is what the phone gets.</small>
+    </p>
+    <div class="panel narrow p50m">
+      <h2>Ph&#7841;m H&#224; Kh&#225;nh Chi</h2>
+      <p>
+        At 390px the ground is a narrow column and the grain has less area to establish itself in. Read this paragraph the way you would read a page on
+        a phone held at arm's length: the texture should be there when you look for it and gone when you do not.
+      </p>
+      <p>
+        If the tile reads differently here than it does at desktop width, the alpha is wrong &mdash; there is no phone variant to fall back on, and
+        none is going to be added.
+      </p>
+    </div>
+
+    <p class="label">
+      Flat control &mdash; no texture
+      <small>The reference. Every judgement below is "compared with this".</small>
+    </p>
+    <div class="panel p00">
+      <h2>A control, with nothing on it</h2>
+      <p>
+        This is the ground exactly as Phase 2 shipped it: <code>#faf6ee</code>, flat, no image. It is also the phase's named fallback &mdash; if the
+        tile does not render faithfully on iOS Safari, one <code>background-image</code> declaration is deleted and the site looks like this.
+      </p>
+      <p>
+        Read the paragraph here first and form an impression of the page's weight. Then read the same paragraph on each textured panel. The question
+        is never "is this nice"; it is "did the texture change what the type does".
+      </p>
+      <p>
+        Vietnamese marks for reference: Ph&#7841;m H&#224; Kh&#225;nh Chi &mdash; c&#417; h&#7897;i, nghi&#234;n c&#7913;u, &#273;&#7841;i h&#7885;c,
+        t&#432;&#417;ng lai.
+      </p>
+    </div>
+
+    <p class="label">
+      &alpha; 0.035 &mdash; the quiet candidate
+      <small>rect opacity='0.035'. Expect to have to look for it.</small>
+    </p>
+    <div class="panel p35">
+      <h2>A paper with almost no tooth</h2>
+      <p>
+        The lowest candidate. If this is indistinguishable from the control at arm's length, it is not worth shipping: the tile costs about 414 bytes
+        and a decode, and a texture nobody can perceive buys nothing but a claim in a document.
+      </p>
+      <p>
+        The failure to watch for at this end is the opposite of the obvious one. Too little grain does not look bad &mdash; it looks like the flat
+        control, which means the phase quietly did not happen.
+      </p>
+      <p>
+        Vietnamese marks for reference: Ph&#7841;m H&#224; Kh&#225;nh Chi &mdash; c&#417; h&#7897;i, nghi&#234;n c&#7913;u, &#273;&#7841;i h&#7885;c,
+        t&#432;&#417;ng lai.
+      </p>
+    </div>
+
+    <p class="label">
+      &alpha; 0.05 &mdash; the research default
+      <small>rect opacity='0.05'. This is the value 04-RESEARCH prints in the token; it is a starting point, not a verdict.</small>
+    </p>
+    <div class="panel p50">
+      <h2>A paper with a fine even tooth</h2>
+      <p>
+        The value the research listing carries. It is here as a candidate on exactly the same footing as the other three &mdash; the reason this page
+        exists is that 0.05 was chosen from a description rather than from a screen, and a description cannot settle a perceptual question.
+      </p>
+      <p>
+        Note what the grain does to the 17px body copy specifically. Literata's strokes are finer than the old Roboto's at the same size, so the type
+        has less mass to hold its own against a busy ground.
+      </p>
+      <p>
+        Vietnamese marks for reference: Ph&#7841;m H&#224; Kh&#225;nh Chi &mdash; c&#417; h&#7897;i, nghi&#234;n c&#7913;u, &#273;&#7841;i h&#7885;c,
+        t&#432;&#417;ng lai.
+      </p>
+    </div>
+
+    <p class="label">
+      &alpha; 0.06 &mdash; one step up
+      <small>rect opacity='0.06'. The smallest step that is reliably distinguishable from 0.05.</small>
+    </p>
+    <div class="panel p60">
+      <h2>A paper you can just about feel</h2>
+      <p>
+        If 0.05 reads as nearly-nothing on your display, this is the next stop. A 20% increase in alpha is a much smaller increase in perceived grain
+        than the arithmetic suggests, which is why the candidates are not evenly spaced.
+      </p>
+      <p>
+        Watch the heading as well as the body copy. A 30.6px Literata 600 has enough mass that it will look fine long after the 17px paragraph has
+        started to struggle &mdash; judge on the paragraph.
+      </p>
+      <p>
+        Vietnamese marks for reference: Ph&#7841;m H&#224; Kh&#225;nh Chi &mdash; c&#417; h&#7897;i, nghi&#234;n c&#7913;u, &#273;&#7841;i h&#7885;c,
+        t&#432;&#417;ng lai.
+      </p>
+    </div>
+
+    <p class="label">
+      &alpha; 0.07 &mdash; the loud candidate
+      <small>rect opacity='0.07'. If this one reads as "textured paper", it has already overshot.</small>
+    </p>
+    <div class="panel p70">
+      <h2>A paper that announces itself</h2>
+      <p>
+        The upper bound. This is included so the overshoot is visible rather than theoretical: PITFALLS calls register overshoot only partly
+        recoverable, because a reader who has formed an impression of a busy page cannot un-form it.
+      </p>
+      <p>
+        If you find this one attractive, look again with the paragraph rather than the panel. The test is not whether the texture is pleasant on an
+        empty field; it is whether it is still unnoticed behind 17px of body copy.
+      </p>
+      <p>
+        Vietnamese marks for reference: Ph&#7841;m H&#224; Kh&#225;nh Chi &mdash; c&#417; h&#7897;i, nghi&#234;n c&#7913;u, &#273;&#7841;i h&#7885;c,
+        t&#432;&#417;ng lai.
+      </p>
+    </div>
+
+    <p class="label">
+      After choosing
+      <small
+        >Plan 04-02's checkpoint records the winning alpha and transcribes it into `--paper-texture` in `_sass/_tokens.scss`, together with the
+        worst-case composited ground hex that `--rule-500` is then re-measured against. Nothing may depend on this file after that.</small
+      >
+    </p>
+  </body>
+</html>
