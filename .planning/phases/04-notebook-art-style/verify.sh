@@ -276,22 +276,22 @@ echo
 
 echo "GROUND-03 — four marks, four defences, one blocklist, one cap"
 # 10-13 — the vocabulary document. These four went green when plan 04-01's
-# task 3 wrote the file; their [red until plan 04-01] labels were stripped in
+# task 3 wrote the file; their labels were stripped in
 # that same commit, per note (a).
-check "GROUND-03 [red until plan 04-01] $MARKS exists" \
+check "GROUND-03 $MARKS exists" \
   '[ -f "$MARKS" ]'
 for mark in "section rule" "margin note" "annotation bracket" "link underline"; do
-  check "GROUND-03 [red until plan 04-01] $MARKS names the mark: ${mark}" \
+  check "GROUND-03 $MARKS names the mark: ${mark}" \
     "grep -qi -- '${mark}' \"\$MARKS\""
 done
 # 12 — EXACTLY four. Not "at least": the cap is the mechanism, and a fifth
 # defence sentence means a fifth mark arrived without the cap being edited.
-check "GROUND-03 [red until plan 04-01] $MARKS carries EXACTLY 4 lines starting 'Defence:' (have: $(grep -c '^Defence:' "$MARKS" 2>/dev/null || echo 0))" \
+check "GROUND-03 $MARKS carries EXACTLY 4 lines starting 'Defence:' (have: $(grep -c '^Defence:' "$MARKS" 2>/dev/null || echo 0))" \
   '[ "$(grep -c "^Defence:" "$MARKS")" = "4" ]'
 # 13 — the blocklist lives in the SAME document as the allowed list, because
 # criterion 5 IS that list.
 for term in coffee tape paperclip pushpin torn spiral ruled highlighter crosshatch aged; do
-  check "GROUND-03 [red until plan 04-01] $MARKS blocklists: ${term}" \
+  check "GROUND-03 $MARKS blocklists: ${term}" \
     "grep -qi -- '${term}' \"\$MARKS\""
 done
 # 14 — the cap as a NUMBER in the token file, beside the TOKEN-06 caps, so a

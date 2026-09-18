@@ -3,7 +3,7 @@ phase: 4
 slug: notebook-art-style
 status: draft
 nyquist_compliant: false
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-09-18
 ---
 
@@ -76,9 +76,12 @@ _Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky_
 
 - [x] `.planning/phases/04-notebook-art-style/verify.sh` — the whole harness; copy the Phase 3 shape, keep the red-by-design header comment
       _(plan 04-01 task 1: 53 static rows, 33 red-by-design, 0 unlabelled. `--live` adds 20 more.)_
-- [ ] A static texture swatch for choosing the rect `opacity` (α) in a browser (Pitfall 7) — throwaway, under `.planning/tools/`
-- [ ] `docs/NOTEBOOK-MARKS.md` — the criterion-2 artefact itself; it is a deliverable **and** the thing several rows grep
-- [ ] A named human checkpoint asking the site owner for 1–2 real notes on **specifically named** research entries (CONTEXT requires the ask be specific)
+- [x] A static texture swatch for choosing the rect `opacity` (α) in a browser (Pitfall 7) — throwaway, under `.planning/tools/`
+      _(plan 04-01 task 2: `.planning/tools/texture-swatch.html` — flat control + α 0.035 / 0.05 / 0.06 / 0.07, five distinct filter ids, one 390px panel.)_
+- [x] `docs/NOTEBOOK-MARKS.md` — the criterion-2 artefact itself; it is a deliverable **and** the thing several rows grep
+      _(plan 04-01 task 3: four marks, exactly four `Defence:` lines, the blocklist, the three recorded non-decisions, the two fallbacks. Harness rows 10–13 are green and their labels are stripped.)_
+- [x] A named human checkpoint asking the site owner for 1–2 real notes on **specifically named** research entries (CONTEXT requires the ask be specific)
+      _(plan 04-02 task 1, option C: a blocking `checkpoint:decision` that quotes each entry’s current `title`, `status` and `detail` back to the owner.)_
 - [x] No framework install, no npm script, no `package.json` change
       _(plan 04-01: `package.json` untouched; the harness is a flat shell list, the swatch is a static HTML file.)_
 
