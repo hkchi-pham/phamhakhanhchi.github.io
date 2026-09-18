@@ -117,7 +117,15 @@ Plans:
 5. Nothing from the notebook-cliché blocklist ships — no coffee rings, tape, paperclips, torn edges, spiral binding, ruled lines behind body text, or rotated text blocks.
 
 **If work stops here**: The site reads as a research notebook at the level of ground, rhythm and voice. The four data-driven list pages still use flat entry styling, but they inherit the ground, type and colour, so they look plain rather than broken.
-**Plans**: TBD
+**Notes**: Research corrected three premises carried in 04-CONTEXT.md, and the plans follow the research. (1) The footer has **no background rule at all** — `var(--global-footer-bg-color)` has zero consumers in the served `main.css` — so it already shows the body ground and inherits the texture for free; no footer rule is written. (2) **No page on this site renders `<pre>` or `<code>`**, so a texture rule there would be dead source (Phase 3's precedent). (3) The ~354px gutter is a **prose** gutter and does not reach `.entry-list` on Research; the note column has to be **created** inside `li.entry` (a `--note-col` token plus `flex-wrap`), not occupied. One further measured finding contradicts a locked CONTEXT decision and is raised explicitly at a blocking checkpoint rather than resolved silently: `--rule-500` (`#9c8b6e`) measures **3.00:1 against the mean textured ground and 2.76:1 against the darkest noise pixel**, below WCAG 1.4.11's 3:1 floor, and it is **already live** on `.subject`. The section rule is scoped to `.entry-group-title` only (three pages), with `h2` deliberately left to Phase 6. Named fallbacks decided in advance: if the marks over-decorate, drop the marks and keep ground and type; if iOS Safari renders the tile poorly, drop to the flat ground rather than reaching for a raster tile.
+**Plans**: 4 plans
+
+Plans:
+
+- [ ] 04-01-PLAN.md — Wave 0: the phase `verify.sh`, the browser texture swatch that turns "barely perceptible" into an alpha, and `docs/NOTEBOOK-MARKS.md` (the criterion-2 artefact) (GROUND-02, GROUND-03, GROUND-05)
+- [ ] 04-02-PLAN.md — The blocking three-answer checkpoint (alpha, `--rule-500` fix-or-defer, the site owner's own notes on two named research entries), then every Tier 1 declaration in `_sass/_tokens.scss` (GROUND-02, GROUND-03)
+- [ ] 04-03-PLAN.md — The consumers: three texture rules, the four mark rules, the `<aside class="entry-note">` markup and its `note:` data, with the `purgecss.config.js` safelist entry in the same commit (GROUND-02, GROUND-03, GROUND-05)
+- [ ] 04-04-PLAN.md — The phase's single push, `verify.sh --live` against the served assets, the batched six-check human checkpoint, requirements close-out (GROUND-02, GROUND-03, GROUND-05)
 
 ### Phase 5: Shared Page Components
 
