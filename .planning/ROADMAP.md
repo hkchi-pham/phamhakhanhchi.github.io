@@ -122,7 +122,7 @@ Plans:
 
 Plans:
 
-- [ ] 04-01-PLAN.md — Wave 0: the phase `verify.sh`, the browser texture swatch that turns "barely perceptible" into an alpha, and `docs/NOTEBOOK-MARKS.md` (the criterion-2 artefact) (GROUND-02, GROUND-03, GROUND-05)
+- [x] 04-01-PLAN.md — Wave 0: the phase `verify.sh`, the browser texture swatch that turns "barely perceptible" into an alpha, and `docs/NOTEBOOK-MARKS.md` (the criterion-2 artefact) (GROUND-02, GROUND-03, GROUND-05)
 - [ ] 04-02-PLAN.md — The blocking three-answer checkpoint (alpha, `--rule-500` fix-or-defer, the site owner's own notes on two named research entries), then every Tier 1 declaration in `_sass/_tokens.scss` (GROUND-02, GROUND-03)
 - [ ] 04-03-PLAN.md — The consumers: three texture rules, the four mark rules, the `<aside class="entry-note">` markup and its `note:` data, with the `purgecss.config.js` safelist entry in the same commit (GROUND-02, GROUND-03, GROUND-05)
 - [ ] 04-04-PLAN.md — The phase's single push, `verify.sh --live` against the served assets, the batched six-check human checkpoint, requirements close-out (GROUND-02, GROUND-03, GROUND-05)
@@ -231,7 +231,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 1. Deployment Guardrails                             | 5/5            | Complete    | 2026-09-13 |
 | 2. Palette and Design Tokens                         | 5/5            | Complete    | 2026-09-15 |
 | 3. Typography                                        | 4/4            | Complete    | 2026-09-17 |
-| 4. Notebook Art Style                                | 0/TBD          | Not started | -         |
+| 4. Notebook Art Style                                | 1/4            | In Progress | -         |
 | 5. Shared Page Components                            | 0/TBD          | Not started | -         |
 | 6. Home Page Presence                                | 0/TBD          | Not started | -         |
 | 7. Mobile, Print and Scannability                    | 0/TBD          | Not started | -         |
