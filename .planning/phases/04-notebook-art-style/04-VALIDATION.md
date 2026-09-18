@@ -74,11 +74,13 @@ _Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky_
 
 ## Wave 0 Requirements
 
-- [ ] `.planning/phases/04-notebook-art-style/verify.sh` — the whole harness; copy the Phase 3 shape, keep the red-by-design header comment
+- [x] `.planning/phases/04-notebook-art-style/verify.sh` — the whole harness; copy the Phase 3 shape, keep the red-by-design header comment
+      _(plan 04-01 task 1: 53 static rows, 33 red-by-design, 0 unlabelled. `--live` adds 20 more.)_
 - [ ] A static texture swatch for choosing the rect `opacity` (α) in a browser (Pitfall 7) — throwaway, under `.planning/tools/`
 - [ ] `docs/NOTEBOOK-MARKS.md` — the criterion-2 artefact itself; it is a deliverable **and** the thing several rows grep
 - [ ] A named human checkpoint asking the site owner for 1–2 real notes on **specifically named** research entries (CONTEXT requires the ask be specific)
-- [ ] No framework install, no npm script, no `package.json` change
+- [x] No framework install, no npm script, no `package.json` change
+      _(plan 04-01: `package.json` untouched; the harness is a flat shell list, the swatch is a static HTML file.)_
 
 ---
 
