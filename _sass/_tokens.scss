@@ -79,6 +79,73 @@
      to the cap above, which is the point. */
 
   /* ---------------------------------------------------------------------
+   * GROUND-02 — THE PAPER GRAIN. One inline SVG data URI; zero network
+   * requests, and it spends no slot in the cap above because it is not a
+   * colour and not a family.
+   *
+   * A DATA URI IS ONE OPAQUE STRING to the CSS engine. baseFrequency,
+   * numOctaves and the rect opacity CANNOT be var() references — the whole
+   * URL is a single token, so the only place these numbers can live is right
+   * here, in prose. Do not try to assemble the URL from parts.
+   *
+   *   200x200 tile ....... the filter is evaluated ONCE over 40,000 px and the
+   *                        result is then tiled, which is 25-75x less work
+   *                        than filtering a full viewport on a dpr-3 phone.
+   *   fractalNoise ....... `turbulence` gives ripples; `fractalNoise` gives
+   *                        tooth. CONTEXT locks "a fine, even tooth".
+   *   baseFrequency 0.9 .. lower reads coarse and fibrous — a different
+   *                        material, and a louder one.
+   *   numOctaves 2 ....... 3 or more clusters the noise into blotching, which
+   *                        is on the blocklist in docs/NOTEBOOK-MARKS.md. The
+   *                        blocklist cap is 3; this never goes above 2.
+   *   saturate 0 ......... feTurbulence emits INDEPENDENT R/G/B noise. Without
+   *                        the feColorMatrix the grain carries colour speckle
+   *                        rather than reading as paper.
+   *   opacity 0.06 ....... THE ALPHA. Chosen by eye on 2026-09-23, at plan
+   *                        04-02's blocking checkpoint, from
+   *                        .planning/tools/texture-swatch.html — a flat
+   *                        control plus 0.035 / 0.05 / 0.06 / 0.07, each
+   *                        behind real 17px Literata, with a 390px panel.
+   *                        Perceptual, so a human looked at it BEFORE the
+   *                        phase spent its single deploy. Not a default.
+   *   region PINNED ...... <filter> DEFAULTS to x='-10%' y='-10%' width='120%'
+   *                        height='120%', so stitchTiles would stitch a
+   *                        240x240 region against a 200x200 image and seam
+   *                        every 200px. The pinned x='0' y='0' width='100%25'
+   *                        height='100%25' is what makes the grain seamless.
+   *   %23 and %25 ........ '#' is the URI fragment delimiter and '%' starts an
+   *                        escape. Get either wrong and the image simply does
+   *                        not render: no console error, no fallback, no CI
+   *                        failure. The page looks EXACTLY as it did before,
+   *                        which reads as "the deploy did not ship" and sends
+   *                        you hunting in the wrong place.
+   *   414 B .............. the url(...) string as `wc -c` reports it, against
+   *                        the 2,048 B budget — 20% of it. The measuring
+   *                        command lives in 04-02-PLAN and is deliberately NOT
+   *                        quoted here: written out, it would match ITSELF,
+   *                        and verify.sh's byte-budget row takes the FIRST
+   *                        match in this file. It would then measure a comment
+   *                        and pass no matter what the real URI weighed.
+   *
+   * THE GRAIN DARKENS EVERY GROUND RATIO IN THIS FILE. Black at opacity a over
+   * --paper-100 #faf6ee (250, 246, 238) is round(channel * (1 - a)) per
+   * channel; the worst case uses a, the mean uses a/2:
+   *
+   *   worst-case composited ground: #ebe7e0   (black at alpha over --paper-100)
+   *   mean composited ground:       #f3efe7   (black at alpha/2)
+   *
+   * Both were RE-DERIVED at 0.06, not copied from 04-RESEARCH's 0.05 figures.
+   * verify.sh seds the worst-case hex out of the line above and feeds it to
+   * contrast.js, so if the alpha ever moves, these two lines move with it or
+   * the check goes on silently measuring the old ground.
+   *
+   * Measured on #ebe7e0: --ink-900 13.89:1, --ink-800 12.15:1, --ink-700
+   * 9.63:1, --ink-500 6.11:1, --accent-600 5.44:1 — every one still AA.
+   * --rule-500 was the ONLY token the grain broke; see its line above.
+   * ------------------------------------------------------------------- */
+  --paper-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='t' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23t)' opacity='0.06'/%3E%3C/svg%3E");
+
+  /* ---------------------------------------------------------------------
    * TYPE-02 — the two families, and why the fallback ORDER is measured.
    *
    * Metrics transcribed from @capsizecss/metrics@3.5.0. That package is NOT
