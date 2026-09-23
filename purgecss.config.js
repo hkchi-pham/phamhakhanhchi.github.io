@@ -59,5 +59,21 @@ module.exports = {
     "ol",
     "blockquote",
     "h4",
+    // The two-state margin note (MARK 2 in docs/NOTEBOOK-MARKS.md). All three
+    // nodes appear in the built HTML only when a _data/research.yml entry
+    // actually carries a note, so a data file with every note: emptied would
+    // strip the rule, its bracket and its open state from production while the
+    // source stayed correct — the .topic-list failure, which is live right now.
+    // These land in the same commit as the rules that name them.
+    //
+    // "entry-note" alone is NOT enough, and that is the whole reason there are
+    // three entries here rather than one: PurgeCSS matches SELECTOR NODES, and
+    // "entry-note-summary" is a different node, not a substring match of
+    // "entry-note". The pseudo-element and the attribute selector do NOT need
+    // their own entries — .entry-note::before and .entry-note[open] both carry
+    // the .entry-note class node.
+    "entry-note",
+    "entry-note-summary",
+    "entry-note-full",
   ],
 };

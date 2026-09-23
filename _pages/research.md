@@ -38,6 +38,15 @@ nav_order: 2
           </ul>
           {% endif %}
         </div>
+        {% comment %}MARK 2, the two-state margin note (docs/NOTEBOOK-MARKS.md). It is a SIBLING of .entry-body and never nested inside it: with the stylesheet off, li.entry is ordinary block flow and its children stack in reading order — year, entry, note — so the note reads as a sentence immediately after the item it annotates. That placement is the whole of the stylesheet-off guarantee; nesting it would destroy GROUND-05 while leaving every CSS check green. Native <details>, no JavaScript, so both states are in the DOM for a screen reader. Nothing here is hidden from assistive technology and nothing is pushed off-screen, because there is nothing to hide — and this sentence deliberately does not spell either mechanism, since the phase harness greps this file for them and a comment that names them turns a green negative assertion red. Third time on this project; do not paste them back in.{% endcomment %}
+        {% if e.note %}{% if e.note_full %}
+        <details class="entry-note">
+          <summary class="entry-note-summary">{{ e.note }}</summary>
+          <div class="entry-note-full">{{ e.note_full | markdownify }}</div>
+        </details>
+        {% else %}
+        <p class="entry-note">{{ e.note }}</p>
+        {% endif %}{% endif %}
       </li>
       {% endfor %}
     </ul>

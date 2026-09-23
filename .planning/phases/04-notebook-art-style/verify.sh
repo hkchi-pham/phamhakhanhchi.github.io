@@ -104,6 +104,32 @@
 # 04-02 writes the token and genuinely green afterwards. Strictly stronger,
 # same criterion, no row removed.
 #
+# (f) THE MARGIN-NOTE ROWS WERE RE-POINTED IN PLAN 04-03, NOT DELETED.
+#
+# 04-02's checkpoint (answer C) turned the margin note into a TWO-STATE mark:
+# a native <details>/<summary> with the owner's summary sentence collapsed and
+# the owner's full prose expanded, no JavaScript. It is still ONE mark and the
+# cap is still 4. Four rows described the superseded <aside> markup and were
+# deliberately left alone by 04-02, because the plan that owns the markup owns
+# the matcher. They were re-pointed here, in the same commit as the markup:
+#
+#   - static and live: <aside class="entry-note"> -> <details class="entry-note">
+#   - static and live: aside_after_entry_body -> note_after_entry_body, whose
+#     ordering logic was ALSO repaired (it could not pass on a page with more
+#     than one entry — see the helper's own comment)
+#
+# A FIFTH row, `.entry-note::before` carrying an empty content string, was
+# named as stale in 04-VALIDATION.md and is NOT stale: it asserts something
+# about _custom.scss, not about the markup, and 04-03 deliberately kept the
+# bracket on .entry-note rather than moving it to the summary, so the mark
+# reads in both states and this row keeps working verbatim. It is load-bearing
+# for GROUND-05 and is left exactly as plan 04-01 wrote it.
+#
+# Rows were ADDED for what the second state introduced — the <summary>, the
+# note_full block scalar, the two new safelisted class nodes, the open-state
+# rule and the expanded body's presence in the delivered DOM. Per note (a),
+# the ones that are green the day they were written carry no label.
+#
 # ---------------------------------------------------------------------------
 #
 # Exit: 0 only when zero checks failed.
@@ -212,13 +238,71 @@ rule_on_ground_clears_3() {
   awk -v v="$r" 'BEGIN { exit (v >= 3.0) ? 0 : 1 }'
 }
 
-# The aside must come AFTER the element it annotates, in source order — that is
+# The note must come AFTER the element it annotates, in source order — that is
 # what makes GROUND-05 and criterion 3 true by construction rather than by
-# inspection. Compares line numbers within one file.
-aside_after_entry_body() {
+# inspection.
+#
+# RE-POINTED TWICE in plan 04-03, and neither change weakens it. See note (f).
+#
+#   (1) The mark is a <details class="entry-note">, not an <aside>. The matcher
+#       never named the tag, so that part of the row survived the two-state
+#       decision untouched; only the label and this function's name changed.
+#   (2) The line-number comparison it used was WRONG on any document with more
+#       than one entry, and would have been wrong for the <aside> too. It took
+#       the LAST entry-body line and the FIRST entry-note line, so on the
+#       served Research HTML — five entries, and the last three carry no note
+#       — the last body always follows the first note and the row failed on
+#       correct markup. It also assumed one tag per line, which no minifier
+#       guarantees.
+#
+# What it asserts now is independent of line structure: read the class
+# attributes in document order and require that at least one entry-note
+# exists and that NO entry-note appears before an entry-body has been seen.
+# The trailing quote in the pattern pins the match to the exact class value,
+# so entry-note-summary and entry-note-full — which are INSIDE the note — do
+# not match.
+#
+# It deliberately does NOT pair each note with its own body. The Liquid source
+# carries BOTH branches of the two-state contract (a <details> when the entry
+# has note_full, a <p> when it has only note), so one entry-body is followed
+# by two entry-note occurrences in the source and only one of them can ever
+# render. Demanding a body per note would fail on correct source.
+#
+# The blind spot this leaves — a note NESTED inside .entry-body would also
+# read as "after" — is covered separately and structurally by
+# note_is_sibling_not_nested below, against the file an author actually edits.
+note_after_entry_body() {
   local f="$1"
   [ -f "$f" ] || return 1
-  awk '/entry-body/ { b = NR } /entry-note/ { if (!n) n = NR } END { exit (b && n && n > b) ? 0 : 1 }' "$f"
+  grep -oE 'entry-body"|entry-note"' "$f" | awk '
+    /entry-body/ { body = 1 }
+    /entry-note/ {
+      if (!body) bad = 1
+      seen = 1
+    }
+    END { exit (seen && !bad) ? 0 : 1 }'
+}
+
+# SIBLING, NOT NESTED — the assertion the ordering row cannot make.
+#
+# "After .entry-body" is satisfied by a note nested INSIDE .entry-body, which
+# is the one way to destroy GROUND-05 while leaving every CSS row green: the
+# stylesheet-off page would then read the note inside the entry rather than
+# after it, and MARK 2's breakout would have no flex line to break out to.
+#
+# Checked against the Liquid SOURCE rather than the served HTML on purpose.
+# It is a line-structured file that Prettier keeps stable and it is where the
+# mistake would be made; the served HTML gives no cheap way to tell which
+# </div> closed what.
+note_is_sibling_not_nested() {
+  local f="$1"
+  [ -f "$f" ] || return 1
+  awk '
+    /class="entry-body"/ { if (!b) b = NR }
+    /^[[:space:]]*<\/div>[[:space:]]*$/ { if (b && !c) c = NR }
+    /class="entry-note"/ { if (!n) n = NR }
+    END { exit (b && c && n && b < c && c < n) ? 0 : 1 }
+  ' "$f"
 }
 
 # git ls-files + grep -c: grep prints 0 and EXITS 1 on no match, so a bare
@@ -330,17 +414,37 @@ check "GROUND-05 no pseudo-element carries announceable text (empty content only
 # 20
 check "GROUND-05 .entry-note::before exists and uses an EMPTY content string" \
   'grep -qE "\.entry-note::before" "$CUSTOM" && awk "/\.entry-note::before[^{]*\{/,/\}/" "$CUSTOM" | grep -qE "content:[[:space:]]*\"\""'
-# 21 — real markup in reading order. The <aside> must be a SIBLING of
+# 21 — real markup in reading order. The note must be a SIBLING of
 # .entry-body and appear after it, so an unstyled page reads the note inline
-# and in order.
-check "GROUND-05 [red until plan 04-03] $PAGE carries <aside class=\"entry-note\">" \
-  'grep -qF "<aside class=\"entry-note\">" "$PAGE"'
-check "GROUND-05 [red until plan 04-03] in $PAGE the aside appears AFTER the .entry-body it annotates" \
-  'aside_after_entry_body "$PAGE"'
+# and in order. RE-POINTED from <aside> to <details> in plan 04-03 — see note
+# (f) and the note_after_entry_body helper.
+check "GROUND-05 $PAGE carries <details class=\"entry-note\">" \
+  'grep -qF "<details class=\"entry-note\">" "$PAGE"'
+check "GROUND-05 in $PAGE the note appears AFTER the .entry-body it annotates" \
+  'note_after_entry_body "$PAGE"'
+# 21a — and after the </div> that CLOSES it, i.e. a sibling and not a child.
+# Added in plan 04-03: the ordering row alone cannot tell the two apart, and
+# nesting is the failure that would leave every CSS row green.
+check "GROUND-05 in $PAGE the note is a SIBLING of .entry-body, not nested inside it" \
+  'note_is_sibling_not_nested "$PAGE"'
+# 21b — the COLLAPSED state is a real <summary>, which is what makes the mark
+# operable with no JavaScript. A <details> whose first child is not a summary
+# renders a UA-supplied "Details" label instead of the owner's sentence.
+check "GROUND-05 $PAGE renders the collapsed state as <summary class=\"entry-note-summary\">" \
+  'grep -qF "<summary class=\"entry-note-summary\">" "$PAGE"'
+# 21c — no JavaScript, stated as an assertion rather than as an intention.
+# A scripted toggle is how the expanded text ends up out of the DOM.
+check "GROUND-05 $PAGE adds no script and no aria-hidden for the note" \
+  '! grep -qiE "<script|aria-hidden|sr-only|visually-hidden" "$PAGE"'
 # 22 — the phase cannot close on placeholder prose. CONTEXT: the site owner
 # authors 1-2 REAL notes.
-check "GROUND-05 [red until plan 04-03] $DATA carries at least one NON-EMPTY note: value" \
+check "GROUND-05 $DATA carries at least one NON-EMPTY note: value" \
   'grep -qE "^[[:space:]]+note:[[:space:]]*[^[:space:]#]" "$DATA"'
+# 22b — the expanded half of the two-state mark. `note_full:` opens a block
+# scalar, so the value is on the FOLLOWING lines and the row asserts the key
+# plus a scalar indicator, not a value on the same line.
+check "GROUND-05 $DATA carries at least one note_full: block scalar" \
+  'grep -qE "^[[:space:]]+note_full:[[:space:]]*[|>]" "$DATA"'
 echo
 
 echo "Regression — this phase must not turn a surviving gate red on its way in"
@@ -377,8 +481,16 @@ done
 # SAME commit as the rule that names it. Standing live proof the mechanism
 # bites: _custom.scss declares .topic-list and the served main.css contains
 # zero occurrences of it.
-check "Purge     [red until plan 04-03] $PURGE safelists \"entry-note\"" \
-  "grep -qF -- '\"entry-note\"' \"\$PURGE\""
+#
+# THREE nodes, not one. The two-state mark added .entry-note-summary and
+# .entry-note-full, and PurgeCSS matches selector NODES — "entry-note" is not
+# a substring match that covers the other two. .entry-note::before and
+# .entry-note[open] need no entry of their own: both carry the .entry-note
+# class node. Rows added in plan 04-03 alongside the rules that name them.
+for node in entry-note entry-note-summary entry-note-full; do
+  check "Purge     $PURGE safelists \"${node}\"" \
+    "grep -qF -- '\"${node}\"' \"\$PURGE\""
+done
 # 30 — this phase changes NONE of these. A change to any is a real regression,
 # not pending work, so none carries a label. max_width's leftover ~354px is
 # the gutter the margin note occupies; narrowing it would silently delete this
@@ -450,10 +562,33 @@ if [ "$LIVE" -eq 1 ]; then
   check "Live      [red until plan 04-04] served main.css has no background-attachment:fixed" \
     '! grep -qE -- "background-attachment:[[:space:]]*fixed" "$LIVE_CSS"'
   # 47-48 — GROUND-05 against the DEPLOYED markup, not the Liquid source.
-  check "Live      [red until plan 04-04] served Research HTML carries <aside class=\"entry-note\">" \
-    'grep -qF "<aside class=\"entry-note\">" "$LIVE_HTML_RESEARCH"'
-  check "Live      [red until plan 04-04] served Research HTML: the aside appears AFTER its .entry-body" \
-    'aside_after_entry_body "$LIVE_HTML_RESEARCH"'
+  # RE-POINTED from <aside> to <details> in plan 04-03; row 48's helper was
+  # additionally repaired, because as written it could not pass on a page with
+  # more than one entry. See note (f).
+  check "Live      [red until plan 04-04] served Research HTML carries <details class=\"entry-note\">" \
+    'grep -qF "<details class=\"entry-note\">" "$LIVE_HTML_RESEARCH"'
+  check "Live      [red until plan 04-04] served Research HTML: the note appears AFTER its .entry-body" \
+    'note_after_entry_body "$LIVE_HTML_RESEARCH"'
+  # 48b — the expanded body is in the DELIVERED DOM, not fetched on demand.
+  # That is the whole accessibility argument for <details> over a script, so
+  # it earns a row against the served page rather than against the data file.
+  check "Live      [red until plan 04-04] served Research HTML carries the EXPANDED note body in the DOM" \
+    'grep -qF "entry-note-full" "$LIVE_HTML_RESEARCH" && grep -qiF "attention heatmaps" "$LIVE_HTML_RESEARCH"'
+  # 48c — no script was smuggled in to drive the toggle.
+  check "Live      [red until plan 04-04] served Research HTML drives the note with NO inline script" \
+    '! grep -qiE "entry-note[^<]*</script|toggleNote|entry-note.*addEventListener" "$LIVE_HTML_RESEARCH"'
+  # 48d-48e — the two class nodes the safelist was extended for. .topic-list is
+  # the standing proof that a correct rule can be absent from production, and
+  # neither of these appears in the built HTML unless an entry carries a note.
+  check "Live      [red until plan 04-04] served main.css contains .entry-note-summary (PurgeCSS survival)" \
+    'grep -q -- "\.entry-note-summary" "$LIVE_CSS"'
+  check "Live      [red until plan 04-04] served main.css contains .entry-note-full (PurgeCSS survival)" \
+    'grep -q -- "\.entry-note-full" "$LIVE_CSS"'
+  # 48f — the OPEN state is the half of MARK 2 that a static grep of the page
+  # cannot see, and an attribute selector is a node type PurgeCSS has never
+  # been exercised on here.
+  check "Live      [red until plan 04-04] served main.css keeps the open-state breakout rule" \
+    'grep -qE -- "\.entry-note\[open\]" "$LIVE_CSS"'
   # 49 — the zero-request promise, checked against what actually shipped.
   check "Live      [red until plan 04-04] neither served CSS nor served HTML requests a texture image file" \
     '! grep -qiE "assets/img/[^\")]*tex" "$LIVE_CSS" && ! grep -qiE "assets/img/[^\"]*tex" "$LIVE_HTML_RESEARCH"'

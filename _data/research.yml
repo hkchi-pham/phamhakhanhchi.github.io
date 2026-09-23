@@ -1,8 +1,22 @@
 # Content for the "Research & Learning" tab (_pages/research.md).
 #
 # Entries render in the order they appear here, so keep each list newest-first.
-# Fields: year, title, role, provider, venue, status, detail, topics, url.
+# Fields: year, title, role, provider, venue, status, detail, topics, url,
+# note, note_full.
 # All optional except title — leave out what does not apply.
+#
+# note / note_full are the two-state margin note (docs/NOTEBOOK-MARKS.md,
+# MARK 2). `note` is the collapsed summary — one or two sentences, because the
+# column it sits in is about 27 characters wide. `note_full` is the expanded
+# body and takes a block scalar, since it holds multi-paragraph prose that is
+# rendered as Markdown. An entry with `note` and no `note_full` renders a
+# plain, non-collapsing note; an entry with neither renders no mark at all.
+#
+# These are the site owner's own words. A note containing invented text is
+# worse than no note, because it teaches the reader that the marginalia is set
+# dressing. The prose below is recorded verbatim in
+# .planning/phases/04-notebook-art-style/04-VALIDATION.md, with a ledger of
+# every typo corrected in it — do not paraphrase or tidy it here.
 
 # Research work: papers, lab work, supervised projects.
 research:
@@ -11,6 +25,16 @@ research:
     role: Lead author
     status: In progress — writing
     detail:
+    # Kind: the open question.
+    note: "Started from a heatmap, not a hypothesis. What drives sink behaviour — not just where it occurs — is the part still being worked out."
+    note_full: |
+      This research detailed my journey of studying attention sinks. I went from observing the phenomenon to investigating the mechanisms underlying it, beginning from the observation of attention heatmaps to a series of targeted experiments.
+
+      I first reproduced and characterised the properties of attention sinks, establishing the phenomenon across different inputs, heads, positions, and languages. From there the research shifted towards understanding what drives and governs sink behaviour rather than simply describing where it occurs.
+
+      The main investigation focused on three directions. First, through query-side causal intervention, I examined how differences in the query pathway can determine head-specific sink behaviour, particularly within shared KV groups. Second, I investigated the sink's layer-wise dynamics, examining how its representation and behaviour evolve across transformer layers rather than treating them as a static property. Finally, I explored the regime-dependent function of attention sinks, asking whether their role changes depending on the computational regime and context in which they emerge.
+
+      The document therefore records not only the findings themselves, but the progression of my research from visual observation and characterisation towards causal and dynamic explanations of attention sink behaviour.
     url: # TODO — link once the paper is posted
 
   - year: 2026
@@ -18,6 +42,14 @@ research:
     role: Lead author
     status: In progress — not yet submitted
     detail: Comparing content-based, popularity-based and collaborative filtering approaches.
+    # Kind: the surprising result.
+    note: "None of the three real algorithms could form an echo chamber. I had to build a fourth to get the effect — and genres narrowed while distinct titles went up."
+    note_full: |
+      Investigated whether recommender algorithms (content-based, collaborative filtering, popularity-based) create "echo chambers" by increasingly reducing the variety of genres a user sees.
+
+      I built a simulation of 100 users interacting with a MovieLens-based recommender system across 100 rounds, where each round consisted of generating recommendations, simulating a user click based on a genre-preference model, and feeding that behaviour back into the system. Genre diversity and Shannon entropy of each recommender system were tracked over time as the metrics of exposure narrowing, alongside a random-recommendation baseline to distinguish genuine algorithmic effects from noise.
+
+      The three original algorithms proved structurally incapable of forming an echo chamber, since none had the two necessary properties: reading a user's evolving preferences and updating recommendations based on their behaviour. I designed and implemented a fourth, adaptive content-based algorithm specifically to test this hypothesis. This showed a genuine, statistically robust effect: the algorithm's inferred model of user preference measurably diverged from users' true taste over time, with genre-level diversity narrowing significantly compared to a matched non-adaptive control. Interestingly, this narrowing occurred at the genre level while the number of distinct individual titles recommended actually increased, and the effect saturated within roughly 30 interactions rather than compounding indefinitely.
     url:
 
 # Formal courses taken outside (or beyond) the standard curriculum.
