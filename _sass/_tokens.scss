@@ -305,6 +305,34 @@
      verdicts, section C. */
   --note-col: 13rem; /* 208px — the created margin-note column in .entry */
 
+  /* WHERE THE ENTRY ROW WRAPS, expressed as the body column's flex BASIS.
+     Added in plan 04-03, which found that the flex row it inherited could
+     not put the note beside the entry at any width.
+
+     A wrapping flex container decides its line breaks from each item's
+     hypothetical main size, which for a `flex-basis: auto` item is its
+     MAX-CONTENT width. `.entry-body`'s max-content is the entry title on one
+     unwrapped line, and this site's real titles are 80–100 characters, so
+     `80 + (that) + 208` exceeds 900px and the note wraps to its own line on a
+     full-width desktop. The note would then never sit beside the entry it
+     annotates — the one thing a margin note has to do. `flex-basis: 0` fails
+     at the other end: the line then always fits, so at 390px the note keeps
+     its 208px and squeezes the body to ~24px.
+
+     A fixed basis fixes both, and it changes NOTHING about the wide layout:
+     the body still grows into all the free space, so 04-03's `.entry` is
+     still `80 + 24 + 564 + 24 + 208 = 900`. The basis only decides where the
+     line breaks:
+
+         wraps when the content box is narrower than
+         80 + 400 + 208 + (2 × 24) = 736px, i.e. below a ~766px viewport
+
+     which lands on the ~768px collapse Phase 5 was going to formalise, with
+     NO media query — so Phase 5 can formalise it on top of this rather than
+     against it. 25rem is 400px on the 16px root. Re-tune this number to move
+     the breakpoint; it is the only thing it controls. */
+  --entry-body-basis: 25rem; /* 400px — the flex basis that decides where .entry wraps */
+
   --subject-row-max: 26rem; /* .subject row measure */
   --rule-hairline: 1px; /* stroke width for a hairline rule; the colour is --rule-200 or --rule-500 */
   --underline-thickness: 1px; /* GROUND-04: body-copy links are underlined */

@@ -319,7 +319,7 @@ check "GROUND-03 --rule-500 clears 3.0 on the COMPOSITED ground (rule $(rule_500
   'rule_on_ground_clears_3'
 # 18 — the section rule itself, the same border idiom already shipped on
 # .subject: repetition reads as a system.
-check "GROUND-03 [red until plan 04-03] $CUSTOM declares .entry-group-title with the hairline border-bottom" \
+check "GROUND-03 $CUSTOM declares .entry-group-title with the hairline border-bottom" \
   'grep -qE "\.entry-group-title" "$CUSTOM" && awk "/\.entry-group-title[^{]*\{/,/\}/" "$CUSTOM" | grep -qE -- "border-bottom:[[:space:]]*var\(--rule-hairline\)[[:space:]]+solid[[:space:]]+var\(--rule-500\)"'
 echo
 
@@ -328,7 +328,7 @@ echo "GROUND-05 — the marks are decoration; the content is markup"
 check "GROUND-05 no pseudo-element carries announceable text (empty content only)" \
   "! grep -rnE 'content:[[:space:]]*\"[^\"]+\"' _sass/"
 # 20
-check "GROUND-05 [red until plan 04-03] .entry-note::before exists and uses an EMPTY content string" \
+check "GROUND-05 .entry-note::before exists and uses an EMPTY content string" \
   'grep -qE "\.entry-note::before" "$CUSTOM" && awk "/\.entry-note::before[^{]*\{/,/\}/" "$CUSTOM" | grep -qE "content:[[:space:]]*\"\""'
 # 21 — real markup in reading order. The <aside> must be a SIBLING of
 # .entry-body and appear after it, so an unstyled page reads the note inline

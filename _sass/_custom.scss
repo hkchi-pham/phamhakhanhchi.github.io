@@ -68,8 +68,14 @@
   padding-left: 0;
 }
 
+// flex-wrap belongs to MARK 2 in the notebook-marks section below and is
+// load-bearing there, not polish -- it is what keeps a fixed note column from
+// forcing horizontal overflow at 390px. It lives here rather than in that
+// section only because this is the existing .entry block and one selector
+// should not be declared twice in one file.
 .entry {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-4);
   margin-bottom: var(--space-4);
 }
@@ -201,6 +207,192 @@
 .post article > .clearfix > h4 {
   max-width: var(--measure);
 }
+
+// ===========================================================================
+// THE NOTEBOOK MARKS. There are FOUR. The cap is four.
+//
+// The vocabulary, the argument for each mark and the cliche blocklist live in
+// docs/NOTEBOOK-MARKS.md, and the number also lives beside the TOKEN-06 caps
+// in _sass/_tokens.scss. Stated in three places on purpose: a fifth mark then
+// means visibly editing a stated number twice and writing a fifth defence
+// sentence, rather than quietly appending a block to a stylesheet.
+//
+// Every rule below carries its ONE-SENTENCE DEFENCE, quoted from
+// docs/NOTEBOOK-MARKS.md so the two cannot drift. Adding a rule here without
+// adding it there is exactly the failure the cap exists to catch -- and the
+// harness catches it, because it counts the `Defence:` lines in that document
+// and requires EXACTLY four.
+//
+// Two things that look like marks and are not, so nobody counts them:
+// the ground (paper plus grain) and the type. They have no edges and name no
+// content; they are the page itself. The disclosure triangle on MARK 2's
+// summary is a third: it is the browser's own affordance for an interactive
+// control, drawn by the UA and deliberately not styled here, not ink this
+// stylesheet spends.
+// ===========================================================================
+
+// MARK 1 — THE SECTION RULE.
+// Defence: it shows the reader where one group of work ends and the next
+// begins.
+//
+// The same border idiom already shipped on .subject above, deliberately: two
+// unrelated separators drawn two different ways read as accident, and the
+// same separator drawn the same way twice reads as a system. That repetition
+// is the whole perceptual mechanism of this phase.
+//
+// --rule-500 and NOT the decorative --rule-200, because this rule is
+// STRUCTURAL: it carries "the list changes here", so a reader who cannot see
+// it loses something, and WCAG 1.4.11's 3:1 floor applies. Plan 04-02
+// re-pointed --rule-500 to clear that floor on the COMPOSITED ground rather
+// than on flat paper; the ratio binds, the hex does not.
+//
+// SCOPE, decided rather than defaulted: .entry-group-title reaches three of
+// the seven pages (Academics, Research, Activities). Scoping to h2 instead
+// would reach five and pull in the HOME page, whose composition Phase 6 owns.
+// Further Reading and CV have no h2 at all and therefore carry no mark --
+// that is the honest consequence of "every mark names the content it serves"
+// applied to pages with no sections, not a miss. Written up in
+// docs/NOTEBOOK-MARKS.md so Phase 8's screenshot count reads those two pages
+// as zero BY DESIGN. Same precedent as Phase 3's title-full decision.
+.entry-group-title {
+  padding-bottom: var(--space-2);
+  border-bottom: var(--rule-hairline) solid var(--rule-500);
+}
+
+// MARK 2 — THE MARGIN NOTE, which has TWO STATES and is still ONE MARK.
+// Defence: it carries the open question or caveat behind the item it sits
+// next to, in one sentence that opens to the full account for a reader who
+// wants it.
+//
+// The site owner supplied real prose roughly ten times the length of a margin
+// note and chose a disclosure toggle over discarding it (04-02's checkpoint,
+// answer C). Collapsed, the note is the summary sentence in the margin
+// column; expanded, it is the owner's full text. One mark with two states is
+// not a fifth mark, and the cap in _tokens.scss stays at 4.
+//
+// NATIVE <details>/<summary>, NO JAVASCRIPT, and that is not a preference:
+// all of the text is in the DOM whether the widget is open or shut, so a
+// screen reader reaches it, the stylesheet-off page still has it, and nothing
+// has to be announced out of a pseudo-element. A scripted toggle would have
+// put the expanded text behind a class this site has no way to guarantee.
+//
+// THE NOTE IS A SIBLING OF .entry-body, never a nested absolutely-positioned
+// element, and this is the load-bearing part. With the stylesheet off,
+// li.entry is ordinary block flow and its three children stack -- year,
+// entry, note -- so the note reads as a sentence immediately after the item
+// it annotates. GROUND-05 and criterion 3 are then true BY CONSTRUCTION
+// rather than by inspection: there is no way to get it wrong later without
+// moving the markup. A flex row also grows to its tallest item, so TWO
+// CONSECUTIVE NOTES CANNOT OVERLAP -- 04-CONTEXT's open question, answered by
+// construction rather than tuned away.
+//
+// --entry-body-basis is what makes the note sit BESIDE the entry at all. A
+// wrapping flex line breaks on each item's hypothetical main size, which for
+// a content-sized item is its max-content width; this site's entry titles are
+// 80-100 characters on one unwrapped line, so with a content basis the note
+// wrapped below the entry at EVERY width. The token carries the arithmetic
+// and the ~766px breakpoint it produces.
+//
+// flex-wrap on .entry (above) is load-bearing too: without it a fixed note
+// column at a 390px viewport produces horizontal overflow, which Phase 7
+// criterion 1 forbids and which would be live in the meantime. It needs NO
+// media query, which keeps 04-CONTEXT's no-breakpoint instinct intact and
+// leaves Phase 5 free to formalise the collapse on top of it.
+//
+// min-width: 0 on .entry-body is load-bearing as well: a flex item's default
+// min-width is auto, which refuses to shrink below its content, so one long
+// unbroken title would otherwise push the note out of the row.
+.entry-body {
+  flex: 1 1 var(--entry-body-basis);
+  min-width: 0;
+}
+
+.entry-note {
+  position: relative;
+  flex: 0 0 var(--note-col);
+  margin: 0;
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  color: var(--ink-500);
+}
+
+.entry-note-summary {
+  cursor: pointer;
+}
+
+// THE EXPANDED STATE BREAKS OUT of the margin column, and the arithmetic is
+// why: 230 words at roughly 27 characters per line is about 50 lines, which
+// inside a 208px column would run far past the entry and collide with the
+// next note -- breaking the non-overlap property the flex row otherwise gives
+// for free. A basis of 100% pushes the open note onto its own flex line at
+// full entry width, and --measure caps the line length there so four
+// paragraphs are read at the same measure as the rest of the site's prose.
+//
+// max-width only ever CAPS, so at a 390px viewport the open note is the
+// container width and not 576px: no horizontal overflow, no media query.
+//
+// This is a layout judgement made from arithmetic and not from a render.
+// Plan 04-04's human sweep is the check. If the breakout reads as a jump
+// rather than as a disclosure, the fallback is already written in
+// docs/NOTEBOOK-MARKS.md -- drop the mark, keep the ground and the type.
+.entry-note[open] {
+  flex-basis: 100%;
+  max-width: var(--measure);
+}
+
+.entry-note-full {
+  margin-top: var(--space-2);
+}
+
+// MARK 3 — THE ANNOTATION BRACKET.
+// Defence: it shows which item the note belongs to.
+//
+// BORDERS, NEVER A GLYPH. Screen readers announce generated text content, so
+// a bracket character in `content` would be precisely the orphaned symbol
+// criterion 3 forbids, and hiding it again would need a second mechanism on
+// top of the first. An empty content string has nothing to announce and
+// nothing to hide. The standing assertion is that `content:` never carries a
+// non-empty quoted string anywhere in _sass/; keep it empty.
+//
+// Colour is --rule-200 at 1.43:1, and that is argued rather than overlooked:
+// WCAG 1.4.11's 3:1 floor covers graphical objects NEEDED TO UNDERSTAND
+// content, and this bracket is not one. Remove it and the note is still
+// there, still readable, still in the right place in the reading order, still
+// obviously about the entry it sits beside -- because it sits beside it. The
+// full argument is in docs/NOTEBOOK-MARKS.md, which is where to disagree with
+// it.
+//
+// It stays on .entry-note itself rather than moving to the summary, so it
+// marks the note in both states and the harness row that proves its content
+// string is empty needs no re-pointing. Absolutely positioned, so on a
+// <details> it is out of flow and the disclosure widget is untouched.
+//
+// NO TRANSITION AND NO MOTION. The gem's html.transition class is only ever
+// added by theme.js, which enable_darkmode: false drops entirely, so the
+// class never appears on this site and the bracket cannot inherit one. Do not
+// add one.
+.entry-note::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--space-3) * -1);
+  top: var(--space-1);
+  width: var(--space-2);
+  height: var(--space-3);
+  border-left: var(--rule-hairline) solid var(--rule-200);
+  border-top: var(--rule-hairline) solid var(--rule-200);
+}
+
+// MARK 4 — THE LINK UNDERLINE. Already shipped, in override 5 below
+// (.post article a), and listed here only because the vocabulary is the
+// COMPLETE list: a mark that exists on the site but is absent from the list
+// is a leftover, and leftovers are how a four-mark vocabulary becomes a
+// six-mark one without anyone deciding to make it so.
+// Defence: it marks a link without spending colour, which every warm ink
+// accent on this site fails the 3:1 test against.
+//
+// NO VALUE OF IT CHANGES IN THIS PHASE. --underline-thickness and
+// --underline-offset are out of scope, both were eye-verified at the 03-04
+// checkpoint, and a harness row watches the offset.
 
 // ===========================================================================
 // Nine gem behaviours no token can reach.
