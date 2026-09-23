@@ -16,7 +16,7 @@
 // live domain. Re-date it and push a _sass-only commit to answer "did my
 // change ship?" without guessing. See docs/DEPLOYMENT.md.
 :root {
-  --deploy-proof: "2026-09-14 phase-02-tokens";
+  --deploy-proof: "2026-09-18 phase-04-notebook";
 }
 
 // ONE NAME, ONE APPEARANCE (TYPE-03). Both of the places this site renders the
@@ -246,8 +246,19 @@ code {
 //    Without this a card is an invisible box wearing a grey halo. The
 //    .hoverable lift goes with it (gem _sass/_components.scss:56-67: a
 //    translate plus two more black shadows). The projects page renders .card.
+//
+//    TEXTURE CONSUMER 3 of 3 (GROUND-02), and the only one that consumes the
+//    grain by REFUSING a ground rather than by painting one. A card is already
+//    flush and shadowless on the same paper as the page, so making it
+//    transparent gives EXACT grain continuity for free: the body's single tile
+//    shows straight through. Painting a second tile here would give the card
+//    its own tile origin, and two tilings whose origins differ by a few pixels
+//    read as a seam down the card edge -- the one artefact this token's pinned
+//    filter region exists to avoid. The projects page renders eight .card
+//    elements and is the page nobody thinks to re-check.
 .card {
   box-shadow: none;
+  background-color: transparent;
 }
 
 .hoverable:hover {
@@ -261,8 +272,23 @@ code {
 //    this phase's no-faded-text grep over _sass/ cannot see it; the fix has
 //    to be asserted here instead. This is the one deliberate reset in the
 //    file, and it is the only reason the grep is value-aware.
+//
+//    TEXTURE CONSUMER 2 of 3 (GROUND-02). The bar is fixed and opaque and
+//    cannot be made transparent -- content scrolls underneath it -- so it is a
+//    genuinely separate paper surface and needs its own line. A flat bar
+//    sitting above a textured page does not read as restraint; it reads as a
+//    rendering bug, which is exactly why 04-CONTEXT rejected "body only" and
+//    asked for one continuous sheet.
+//
+//    Known and accepted: a fixed element's tile origin is the VIEWPORT, not
+//    the document, so the bar's grain does not scroll with the page beneath
+//    it. At alpha 0.06 over a 200px tile that is imperceptible, and the
+//    alternative -- pinning the page's own tile to the viewport too -- is the
+//    technique 04-RESEARCH ruled out for repainting the full viewport every
+//    frame and stuttering on iOS Safari.
 .navbar {
   opacity: 1;
+  background-image: var(--paper-texture);
 }
 
 // 4. HEADINGS ARE A DEEPER INK THAN BODY COPY. Gem _sass/_typography.scss:7-19
@@ -344,12 +370,54 @@ h6,
 //        the 400 and 600 cuts loaded, 300 silently resolves to the 400 FACE --
 //        so nothing looks broken. That is exactly why it would go unnoticed if
 //        it propagated into h1/h2, where the locked 600 is the hierarchy lever.
+//
+//    TEXTURE CONSUMER 1 of 3 (GROUND-02), and the one that does most of the
+//    work. The body background PROPAGATES to the canvas, so the grain covers
+//    the whole viewport even on a page whose content is shorter than the
+//    window -- there is no band of flat paper below the last line. Declaring
+//    it on html as well would be a second tile for the same surface and is
+//    deliberately not done.
+//
+//    The tile itself, its alpha and its pinned filter region live in
+//    _sass/_tokens.scss with the measurements that chose them. Nothing about
+//    the image is repeated here: this file names the surface, the token file
+//    owns the value.
+//
+//    The technique that pins a background to the viewport instead of the
+//    document is deliberately NOT used, here or anywhere -- it repaints the
+//    full viewport every frame while scrolling and stutters on iOS Safari
+//    (04-RESEARCH). This paragraph names it rather than quoting it, because
+//    the phase harness greps _sass/ for the declaration and a comment that
+//    spells it out turns a green negative assertion red. Twice paid for
+//    already on this project; do not "helpfully" paste it back in.
 body {
   font-family: var(--font-serif);
   font-size: var(--step-1);
   font-weight: 400;
   line-height: var(--leading-body);
+  background-image: var(--paper-texture);
 }
+
+// THE TWO PAPER-COLOURED SURFACES THAT DELIBERATELY GET NOTHING. Written down
+// so the absence reads as a decision and a later phase does not "fix" it.
+//
+//   The FOOTER. 04-CONTEXT lists it among the textured surfaces. It has no
+//   background rule at all -- var(--global-footer-bg-color) has zero consumers
+//   in the served main.css -- so it already shows the body ground and inherits
+//   the grain for free. A footer rule would be ADDING a surface that does not
+//   exist today, and would have its own tile origin against the body's.
+//
+//   pre and code. 04-CONTEXT lists code blocks. No page on this site renders
+//   either tag (tag census of all seven live pages, 03-RESEARCH Finding 7), so
+//   a texture rule there is dead source that PurgeCSS would strip anyway. It
+//   is the same call Phase 3 made when it declined to declare a monospace
+//   family for code that does not exist, and recorded the refusal as the
+//   decision. Override 1 above paints them only because a colour rule the gem
+//   already ships had to be corrected.
+//
+// Three surfaces, not five. 04-CONTEXT's actual decision -- everything
+// paper-coloured is one continuous sheet -- is honoured exactly by three
+// rules, because there are three surfaces.
 
 // 8. HIERARCHY GETS A WEIGHT LEVER, NOT ONLY A SIZE ONE. The same base layer
 //    ships h1,h2,h3,h4,h5,h6{font-weight:300}, and the size scale carries

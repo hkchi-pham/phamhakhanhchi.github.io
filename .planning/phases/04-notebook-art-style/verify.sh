@@ -266,11 +266,11 @@ check "GROUND-02 zero new network requests — no texture image in _sass/, $CONF
 # 9 — the three consumers. CONTEXT locks the texture as ONE continuous sheet
 # across every paper-coloured surface; a flat navbar above a textured page
 # reads as a rendering bug (PITFALLS).
-check "GROUND-02 [red until plan 04-03] $CUSTOM: body takes background-image: var(--paper-texture)" \
+check "GROUND-02 $CUSTOM: body takes background-image: var(--paper-texture)" \
   'grep -qE -- "body[^{]*\{" "$CUSTOM" && grep -qE -- "background-image:[[:space:]]*var\(--paper-texture\)" "$CUSTOM"'
-check "GROUND-02 [red until plan 04-03] $CUSTOM: .navbar takes background-image: var(--paper-texture)" \
+check "GROUND-02 $CUSTOM: .navbar takes background-image: var(--paper-texture)" \
   'awk "/\.navbar[^{]*\{/,/\}/" "$CUSTOM" | grep -qE -- "background-image:[[:space:]]*var\(--paper-texture\)"'
-check "GROUND-02 [red until plan 04-03] $CUSTOM: .card takes background-color: transparent" \
+check "GROUND-02 $CUSTOM: .card takes background-color: transparent" \
   'awk "/\.card[^{]*\{/,/\}/" "$CUSTOM" | grep -qE -- "background-color:[[:space:]]*transparent"'
 echo
 
