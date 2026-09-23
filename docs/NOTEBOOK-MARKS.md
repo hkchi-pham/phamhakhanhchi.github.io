@@ -38,11 +38,17 @@ Defence: it shows the reader where one group of work ends and the next begins.
 
 ### Margin note
 
-Defence: it carries the open question or caveat behind the item it sits next to.
+Defence: it carries the open question or caveat behind the item it sits next to, in one sentence that opens to the full account for a reader who wants it.
 
-**Where:** `.entry-note`, an `<aside>` that is a **sibling** of `.entry-body` inside `li.entry`. Research page only in this phase; the About page belongs to Phase 6's composition work and the other three list pages to Phase 5.
+**Two states, one mark.** Collapsed, the note is a one-or-two-sentence summary in the margin beside the entry. Expanded, it is the site owner's full text. The second state arrived at plan 04-02's checkpoint (answer C): the owner supplied real prose roughly ten times the length of a margin note and chose a disclosure toggle over discarding it. That is one mark with two states and **not a fifth mark**, so the cap in section 1 stays at four — which is why the defence sentence above was rewritten in place rather than joined by a fifth. The "exactly four" count is the mechanism that forces that choice to be made deliberately.
 
-**Why it occupies that space:** Phase 3 set `--measure: 36rem` against a 930px content width, which leaves roughly 354px of gutter on the right. That gutter was built deliberately and Phase 3's token file carries an in-line comment warning against reclaiming it. This is what it was built for.
+**Where:** `.entry-note`, a native `<details>` that is a **sibling** of `.entry-body` inside `li.entry`, with the collapsed summary in its `<summary>`. Research page only in this phase; the About page belongs to Phase 6's composition work and the other three list pages to Phase 5.
+
+**Native `<details>`, and no JavaScript.** A scripted toggle would put the expanded text behind a class this site has no way to guarantee. With the native element, every word of both states is in the DOM whether the widget is open or shut — so a screen reader reaches it, the stylesheet-off page still has all of it, and nothing has to be announced out of a pseudo-element.
+
+**Why the column exists — and where it does not.** Phase 3 set `--measure: 36rem` against a 930px content width, which leaves roughly 354px of gutter on the right. That gutter was built deliberately and Phase 3's token file carries an in-line comment warning against reclaiming it. But it is a **prose** gutter and it does not reach this list: `.entry` is a flex row in a 900px content box, and the measure selectors touch only direct children of `<article>`, which `.entry-list` is not. The note column is therefore **created** here, out of `--note-col` plus `flex-wrap`, rather than moved into a gutter that was already there. Phase 3's warning still stands on its own terms; this mark does not test it.
+
+**The expanded state breaks out of that column.** Roughly 230 words at about 27 characters per line is some 50 lines, and inside a ~208px column it would run far past its own entry and collide with the next note — breaking the non-overlap property the flex row otherwise gives for free. Open, the note takes its own flex line at the entry's full width, capped at `--measure` so four paragraphs read at the same measure as the rest of the site's prose. This is a layout judgement made from arithmetic and not from a render: plan 04-04's human sweep is the check, and if the breakout reads as a jump rather than as a disclosure, the fallback is the one already named in section 5 — drop the mark, keep the ground and the type.
 
 **Why it is real markup and not a pseudo-element:** a margin note is **content**. It has to be there when the stylesheet is off, it has to be there for a screen reader, and it has to read in a sensible order as prose. Putting it in the markup after the body it annotates satisfies that by construction rather than by inspection — there is nothing to verify afterwards, because there is no way to get it wrong.
 
