@@ -21,10 +21,19 @@
  *     ink steps .......... 4  (heading, body, footer-text, muted)
  *     accent colours ..... 1
  *     type families ...... 2  (Phase 3: Literata + Be Vietnam Pro)
+ *     notebook marks ..... 4  (see docs/NOTEBOOK-MARKS.md)
  *
  * Two, not three: code takes the bare `monospace` CSS generic, which is a
  * keyword rather than a chosen family, so it spends no slot. The reasoning
  * sits in full above the --font-serif / --font-sans declarations below.
+ *
+ * Four marks, not five: the section rule, the margin note, the annotation
+ * bracket and the link underline. The number is stated in TWO places — here
+ * and section 1 of docs/NOTEBOOK-MARKS.md — so a fifth mark means visibly
+ * editing a stated number twice AND writing a fifth defence sentence, which
+ * the phase harness asserts is exactly four. The margin note is ONE mark with
+ * two states (a collapsed summary that expands to the site owner's full text
+ * through native markup, decided at 04-02's checkpoint), not two marks.
  *
  * Register overshoot is only partly recoverable: a reader who has already
  * formed an impression of a busy, over-decorated page cannot un-form it. The
@@ -55,7 +64,24 @@
 
   /* Rules — hairline structure instead of tonal bands. */
   --rule-200: #d9cfba; /* 1.43:1  DECORATIVE ONLY — never load-bearing. WCAG 1.4.11 wants 3:1 for anything needed to understand content */
-  --rule-500: #9c8b6e; /* 3.08:1  structural separators (.subject rows, entry-group boundaries) */
+  /* --rule-500 WAS #9c8b6e at 3.08:1 on FLAT paper, and that is why Phase 2
+     chose it: WCAG 1.4.11 wants 3:1 for a graphical object needed to
+     understand content. The grain composites over that ground and takes it
+     BELOW the floor — 2.89:1 on the mean textured ground, 2.69:1 on the
+     darkest noise pixel. Re-pointed here, at 04-02's checkpoint (option B1,
+     2026-09-23), because .subject's border on the Academics page is an
+     EXISTING LIVE CONSUMER: the separator is failing 1.4.11 today, before any
+     texture ships, and this change repairs it rather than only protecting the
+     new section rule. Every consumer follows from this one line.
+     The measured figures for the value below, at the chosen alpha 0.06 —
+     3.79:1 on flat #faf6ee, 3.57:1 on the mean ground #f3efe7, 3.41:1 was the
+     0.05 worst case and 3.32:1 is the real one on #ebe7e0. The last figure is
+     the binding one, and verify.sh re-measures it rather than trusting this
+     comment. Visually a hairline apart from the old value, which is the
+     point: the Academics separator will be very slightly darker than the
+     Phase 2 human sweep approved, and that trade was put to the site owner
+     rather than taken silently. */
+  --rule-500: #8d7b60; /* 3.32:1 on the worst-case composited ground #ebe7e0 (3.79:1 flat) — structural separators (.subject rows, entry-group boundaries) */
 
   /* Ratios on the recess ground --paper-200 #f2ebdd, measured the same way,
      for the footer and for code blocks:
@@ -64,9 +90,12 @@
          #3d3630 on #f2ebdd = 10.01:1   footer text
          #5c5349 on #f2ebdd =  6.35:1   muted meta
          #1d4ed8 on #f2ebdd =  5.65:1   accent
-     On that recess ground --rule-500 drops to 2.80:1 and --rule-200 to
-     1.30:1, so a structural hairline inside the footer or a code block needs
-     an ink, not a rule colour.
+     On that recess ground the OLD --rule-500 #9c8b6e dropped to 2.80:1, so
+     the standing rule was that a structural hairline inside the footer or a
+     code block needed an ink, not a rule colour. UPDATED 2026-09-23: the B1
+     re-point takes it to 3.45:1 on #f2ebdd, which clears the 1.4.11 floor
+     there too, so that constraint is lifted for --rule-500. --rule-200 is
+     unchanged at 1.30:1 on this ground and stays decorative-only.
 
      AGREED FALLBACK, not a re-opened decision: --accent-600 may be swapped to
      oxblood #9a3412 (6.78:1 on paper) if the blue reads too loud once the real
@@ -250,6 +279,32 @@
      scale, so they are named rather than numbered — and they exist so that
      `_custom.scss` can be literal-free. */
   --entry-year-col: 5rem; /* year gutter in .entry */
+
+  /* THE MARGIN-NOTE COLUMN, carrying its arithmetic, because this column is
+     CREATED — it is not the ~354px prose gutter left over by --measure.
+     CONTEXT assumed that gutter already reached here; it does not. The
+     measure only applies to DIRECT CHILDREN of <article>, and .entry-list is
+     not one, so the Research entry list has the full content box and no
+     gutter at all.
+
+         --max-content-width 930px - 15px padding each side = 900px content
+         .entry is a flex row with gap: var(--space-4) = 24px
+         --entry-year-col 5rem = 80px
+
+         80 + 24 + body + 24 + 208 = 900
+
+     which leaves ~208px for the note — roughly 27 characters per line at
+     --step-0, so one or two sentences is the natural length and three is too
+     many. 13rem is 208px on the 16px root.
+
+     PIN THE NOTE, NOT THE BODY. The body column stays fluid, so Phase 5 can
+     re-tune this one number and every entry reflows without a second edit.
+     The expanded state of the two-state note deliberately does NOT live in
+     this column — 230 words at 27 characters per line is ~50 lines tall and
+     would collide with the next note. See 04-VALIDATION.md's checkpoint
+     verdicts, section C. */
+  --note-col: 13rem; /* 208px — the created margin-note column in .entry */
+
   --subject-row-max: 26rem; /* .subject row measure */
   --rule-hairline: 1px; /* stroke width for a hairline rule; the colour is --rule-200 or --rule-500 */
   --underline-thickness: 1px; /* GROUND-04: body-copy links are underlined */

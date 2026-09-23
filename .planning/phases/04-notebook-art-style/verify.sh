@@ -232,23 +232,23 @@ echo
 
 echo "GROUND-02 — the paper grain is a token, pinned, cheap and request-free"
 # 1
-check "GROUND-02 [red until plan 04-02] $TOKENS declares --paper-texture as a url()" \
+check "GROUND-02 $TOKENS declares --paper-texture as a url()" \
   'grep -qE -- "--paper-texture:[[:space:]]*url\(" "$TOKENS"'
 # 2 — without stitchTiles the per-tile noise is generated independently and the
 # 200x200 grid is visible as a checkerboard.
-check "GROUND-02 [red until plan 04-02] the tile sets stitchTiles='stitch'" \
+check "GROUND-02 the tile sets stitchTiles='stitch'" \
   "grep -qF \"stitchTiles='stitch'\" \"\$TOKENS\""
 # 3 — <filter>'s region DEFAULTS to x=-10% y=-10% width=120% height=120%, so
 # stitchTiles stitches a 240x240 region against a 200x200 image and the tile
 # seams. Pinning the region to the image is what makes the grain seamless.
-check "GROUND-02 [red until plan 04-02] the filter region is PINNED (x='0' y='0')" \
+check "GROUND-02 the filter region is PINNED (x='0' y='0')" \
   "grep -qF \"x='0' y='0'\" \"\$TOKENS\""
 # 4 — 3+ octaves clusters the noise and reads as aged blotching, which is on
 # the cliche blocklist in docs/NOTEBOOK-MARKS.md.
-check "GROUND-02 [red until plan 04-02] numOctaves is 1 or 2, never 3+ (blotching)" \
+check "GROUND-02 numOctaves is 1 or 2, never 3+ (blotching)" \
   "grep -qE \"numOctaves='[12]'\" \"\$TOKENS\""
 # 5 — see note (e): the non-empty clause is a deliberate strengthening.
-check "GROUND-02 [red until plan 04-02] the data URI is non-empty and under 2048 B (have: $(texture_uri_bytes))" \
+check "GROUND-02 the data URI is non-empty and under 2048 B (have: $(texture_uri_bytes))" \
   '[ "$(texture_uri_bytes)" -gt 0 ] && [ "$(texture_uri_bytes)" -lt 2048 ]'
 # 6 — unlabelled green. Ruled out in 04-RESEARCH: per-frame repaint, iOS
 # Safari stutter. A later "parallax" idea must fail loudly here.
@@ -296,7 +296,7 @@ for term in coffee tape paperclip pushpin torn spiral ruled highlighter crosshat
 done
 # 14 — the cap as a NUMBER in the token file, beside the TOKEN-06 caps, so a
 # fifth mark means visibly editing a stated number in two places.
-check "GROUND-03 [red until plan 04-02] $TOKENS cap line reads 'notebook marks ... 4'" \
+check "GROUND-03 $TOKENS cap line reads 'notebook marks ... 4'" \
   'grep -qE "notebook marks[ .]+4" "$TOKENS"'
 # 15 — unlabelled green, VERIFIED empty on the day this row was written. This
 # is criterion 5 enforced against the shipping CSS rather than against the
@@ -309,13 +309,13 @@ check "Crit-5    no rotate() or skew() anywhere in _sass/ (marks are geometric, 
 # different value; the BINDING requirement is row 17 (the composited ratio),
 # not this literal. If a different hex is chosen, re-point this row to it —
 # do not delete it, and do not weaken row 17 to match.
-check "GROUND-03 [red until plan 04-02] --rule-500 is re-pointed to #8d7b60 (see row 17: the ratio binds, not this hex)" \
+check "GROUND-03 --rule-500 is re-pointed to #8d7b60 (see row 17: the ratio binds, not this hex)" \
   'grep -qE -- "--rule-500:[[:space:]]*#8d7b60" "$TOKENS"'
 # 17 — the binding row. Every ink ratio in _tokens.scss was measured against
 # FLAT #faf6ee; the texture composites OVER it and lowers every one of them.
 # The ground hex is read from 04-02's own comment, never hardcoded — #eeeae2
 # is correct only for alpha 0.05.
-check "GROUND-03 [red until plan 04-02] --rule-500 clears 3.0 on the COMPOSITED ground (rule $(rule_500_hex) on $(composited_ground_hex))" \
+check "GROUND-03 --rule-500 clears 3.0 on the COMPOSITED ground (rule $(rule_500_hex) on $(composited_ground_hex))" \
   'rule_on_ground_clears_3'
 # 18 — the section rule itself, the same border idiom already shipped on
 # .subject: repetition reads as a system.
